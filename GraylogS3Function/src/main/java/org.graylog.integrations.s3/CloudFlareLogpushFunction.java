@@ -9,6 +9,8 @@ import com.amazonaws.services.s3.model.S3Object;
 import com.amazonaws.util.IOUtils;
 import com.google.common.io.ByteStreams;
 import org.apache.commons.lang3.exception.ExceptionUtils;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.graylog2.gelfclient.GelfConfiguration;
 import org.graylog2.gelfclient.GelfMessage;
 import org.graylog2.gelfclient.GelfTransports;
@@ -20,18 +22,12 @@ import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.zip.GZIPInputStream;
 
-
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
-
-
 /**
- * Handler for requests to Lambda function.
+ * This method is called each time a CloudFlare Logpush HTTP log file is written to S3.
  */
-public class CloudFlareApp implements RequestHandler<S3Event, Object> {
+public class CloudFlareLogpushFunction implements RequestHandler<S3Event, Object> {
 
-    static final Logger LOG = LogManager.getLogger(CloudFlareApp.class);
+    static final Logger LOG = LogManager.getLogger(CloudFlareLogpushFunction.class);
 
     public Object handleRequest(final S3Event s3Event, final Context context) {
 
@@ -63,7 +59,7 @@ public class CloudFlareApp implements RequestHandler<S3Event, Object> {
 
         // Split all messages by line breaks.
         String lines[] = logContents.split("\\r?\\n");
-        LOG.info(logContents);
+        LOG.info("Log payload: [{}]", logContents);
         if (lines.length != 0) {
             // Send message to Graylog.
             final GelfConfiguration gelfConfiguration = new GelfConfiguration(config.getGraylogHost(),
@@ -85,7 +81,7 @@ public class CloudFlareApp implements RequestHandler<S3Event, Object> {
                 }
 
                 try {
-                    final GelfMessage message = MessageParser.parseMessage(line, config.getGraylogHost());
+                    final GelfMessage message = CloudFlareLogsParser.parseMessage(line, config.getGraylogHost());
                     gelfTransport.send(message);
                 } catch (InterruptedException e) {
                     e.printStackTrace();

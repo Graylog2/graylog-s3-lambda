@@ -160,7 +160,7 @@ public class GelfTcpTransport extends AbstractGelfTransport {
                 .withRetryListener(new RetryListener() {
                     @Override
                     public <V> void onRetry(Attempt<V> attempt) {
-                        System.out.println("Blocking and waiting for queue to drain before shutting down.");
+                        LOG.info("Blocking and waiting for queue to drain before shutting down.");
                     }
                 })
                 .build();
