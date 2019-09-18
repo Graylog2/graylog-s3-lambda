@@ -32,34 +32,35 @@ public class CloudFlareLogpushFunction implements RequestHandler<S3Event, Object
     public Object handleRequest(final S3Event s3Event, final Context context) {
 
         Config config = Config.newInstance();
-
-        AmazonS3 s3 = AmazonS3Client.builder().build();  // anonymous credentials are possible if this isn't your bucket
+        AmazonS3 s3 = AmazonS3Client.builder().build();
         final String fileKey = s3Event.getRecords().get(0).getS3().getObject().getKey();
 
-        LOG.info("File key [{}]", fileKey);
-
-        LOG.info(String.format("Host: %s:%d", config.getGraylogHost(),
+        LOG.debug("Object key [{}]", fileKey);
+        LOG.debug(String.format("Host: %s:%d", config.getGraylogHost(),
                                          config.getGraylogPort()));
 
-        // Factor out bucket name into an environment variable.
-        LOG.debug("Before reading from S3");
+        LOG.debug("Reading object from S3");
         S3Object object = s3.getObject(config.getS3BucketName(), fileKey);
-        LOG.debug("After reading from S3");
+        LOG.debug("Object read from S3");
 
         // Log contents of file.
         final String logContents;
         try {
             final byte[] compressedData = IOUtils.toByteArray(object.getObjectContent());
-            LOG.info("Compressed data length [{}]", compressedData.length);
+            LOG.debug("Compressed data length [{}]", compressedData.length);
             logContents = decompressGzip(compressedData, Long.MAX_VALUE);
         } catch (IOException e) {
             e.printStackTrace();
             return ExceptionUtils.getMessage(e);
         }
 
+        if (logContents.equals("")) {
+            LOG.debug("File is empty. Skipping.");
+        }
+
         // Split all messages by line breaks.
         String lines[] = logContents.split("\\r?\\n");
-        LOG.info("Log payload: [{}]", logContents);
+        LOG.debug("Log payload: [{}]", logContents);
         if (lines.length != 0) {
             // Send message to Graylog.
             final GelfConfiguration gelfConfiguration = new GelfConfiguration(config.getGraylogHost(),
@@ -76,7 +77,7 @@ public class CloudFlareLogpushFunction implements RequestHandler<S3Event, Object
 
             for (String line : lines) {
                 if (line.equals("")) {
-                    LOG.info("Line is empty. Skipping.");
+                    LOG.debug("Line is empty. Skipping.");
                     continue;
                 }
 
@@ -90,6 +91,7 @@ public class CloudFlareLogpushFunction implements RequestHandler<S3Event, Object
                     return String.format("Failed to parse message %s", e.getMessage());
                 }
             }
+
             // Make sure to stop the GELF Transport to ensure that any queued messages are sent before Lambda terminates the JVM.
             gelfTransport.drainQueueAndStop();
         }
@@ -100,7 +102,6 @@ public class CloudFlareLogpushFunction implements RequestHandler<S3Event, Object
                                              config.getGraylogPort(),
                                              fileKey,
                                              config.getS3BucketName());
-        LOG.info(message);
         return message;
     }
 
