@@ -8,7 +8,6 @@ import com.amazonaws.services.s3.AmazonS3Client;
 import com.amazonaws.services.s3.model.S3Object;
 import com.amazonaws.util.IOUtils;
 import com.google.common.io.ByteStreams;
-import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.graylog2.gelfclient.GelfConfiguration;
@@ -33,11 +32,16 @@ public class CloudFlareLogpushFunction implements RequestHandler<S3Event, Object
 
         Config config = Config.newInstance();
         AmazonS3 s3 = AmazonS3Client.builder().build();
-        final String fileKey = s3Event.getRecords().get(0).getS3().getObject().getKey();
 
+        // Multiple messages could be provided with the callback.
+        s3Event.getRecords().forEach(record -> processObject(config, s3, record.getS3().getObject().getKey()));
+        return String.format("Processed %d records.", s3Event.getRecords().size());
+    }
+
+    private void processObject(Config config, AmazonS3 s3, String fileKey) {
         LOG.debug("Object key [{}]", fileKey);
         LOG.debug(String.format("Host: %s:%d", config.getGraylogHost(),
-                                         config.getGraylogPort()));
+                                config.getGraylogPort()));
 
         LOG.debug("Reading object from S3");
         S3Object object = s3.getObject(config.getS3BucketName(), fileKey);
@@ -51,7 +55,7 @@ public class CloudFlareLogpushFunction implements RequestHandler<S3Event, Object
             logContents = decompressGzip(compressedData, Long.MAX_VALUE);
         } catch (IOException e) {
             e.printStackTrace();
-            return ExceptionUtils.getMessage(e);
+            return;
         }
 
         if (logContents.equals("")) {
@@ -82,27 +86,19 @@ public class CloudFlareLogpushFunction implements RequestHandler<S3Event, Object
                 }
 
                 try {
-                    final GelfMessage message = CloudFlareLogsParser.parseMessage(line, config.getGraylogHost());
+                    final GelfMessage message = CloudFlareLogsParser.parseMessage(line, config.getGraylogHost(), config);
                     gelfTransport.send(message);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 } catch (IOException e) {
                     e.printStackTrace();
-                    return String.format("Failed to parse message %s", e.getMessage());
+                    return;
                 }
             }
 
             // Make sure to stop the GELF Transport to ensure that any queued messages are sent before Lambda terminates the JVM.
             gelfTransport.drainQueueAndStop();
         }
-
-        final String message = String.format("[%s] messages sent to host [%s:%d]. from file [%s] in bucket [%s]",
-                                             lines.length,
-                                             config.getGraylogHost(),
-                                             config.getGraylogPort(),
-                                             fileKey,
-                                             config.getS3BucketName());
-        return message;
     }
 
     /**

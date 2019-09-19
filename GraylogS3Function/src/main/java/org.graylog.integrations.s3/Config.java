@@ -7,6 +7,10 @@ package org.graylog.integrations.s3;
  */
 public class Config {
 
+    // Use newInstance() instead.
+    private Config() {
+    }
+
     // Each of these environment variables need to be defined on the Lambda function.
     private static final String S3_BUCKET_NAME = "s3_bucket_name";
     private static final String GRAYLOG_HOST = "graylog_host";
@@ -17,6 +21,7 @@ public class Config {
     private static final String TCP_NO_DELAY = "tcp_no_delay";
     private static final String TCP_QUEUE_SIZE = "tcp_queue_size";
     private static final String TCP_MAX_IN_FLIGHT_SENDS = "tcp_max_in_flight_sends";
+    private static final String USE_NOW_TIMESTAMP = "use_now_timestamp";
     private String s3BucketName;
 
     // Transport settings
@@ -28,6 +33,7 @@ public class Config {
     private Boolean tcpNoDelay;
     private Integer queueSize;
     private Integer maxInflightSends;
+    private Boolean useNowTimestamp;
 
 
     public static Config newInstance() {
@@ -45,6 +51,8 @@ public class Config {
         // Max inflight sends must be 1 in order for synchronous sending VIA gelfclient to work.
         // This forces the client to send the messages serially. Once the queue size is zero, then the transport can be shut down.
         config.maxInflightSends = safeParseInteger(TCP_MAX_IN_FLIGHT_SENDS) != null ? safeParseInteger(TCP_MAX_IN_FLIGHT_SENDS) : 512;
+
+        config.useNowTimestamp = Boolean.valueOf(System.getenv(USE_NOW_TIMESTAMP));
         return config;
     }
 
@@ -105,5 +113,9 @@ public class Config {
 
     public Integer getMaxInflightSends() {
         return maxInflightSends;
+    }
+
+    public Boolean getUseNowTimestamp() {
+        return useNowTimestamp;
     }
 }
