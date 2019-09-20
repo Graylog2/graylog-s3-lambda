@@ -19,6 +19,19 @@ public class CloudFlareLogsParserTest {
         GelfMessage gelfMessage = CloudFlareLogsParser.parseMessage(RFC3339_TIMESTAMP_MESSAGE, "a-host", Config.newInstance());
         assertEquals(Double.valueOf(1568406189), Double.valueOf(gelfMessage.getTimestamp()));
         assertEquals(59, gelfMessage.getAdditionalFields().size());
+        assertEquals("ClientRequestHost: sendafox.com:8080 | ClientRequestPath: /search | OriginIP: 34.229.66.141 | ClientSrcPort: 52039 | EdgeServerIP: 108.162.221.188 | EdgeResponseBytes: 705", gelfMessage.getMessage());
+    }
+
+    @Test
+    public void testOnlyIncludeSpecificFields() throws IOException {
+
+        final Config config = Config.newInstance();
+        config.setMessageFields("ClientSrcPort,EdgeServerIP, EdgeResponseBytes");
+        config.setMessageSummaryFields("ClientRequestHost,ClientRequestPath");
+        GelfMessage gelfMessage = CloudFlareLogsParser.parseMessage(RFC3339_TIMESTAMP_MESSAGE, "a-host", config);
+        assertEquals(Double.valueOf(1568406189), Double.valueOf(gelfMessage.getTimestamp()));
+        assertEquals(3, gelfMessage.getAdditionalFields().size());
+        assertEquals("ClientRequestHost: sendafox.com:8080 | ClientRequestPath: /search", gelfMessage.getMessage());
     }
 
     @Test

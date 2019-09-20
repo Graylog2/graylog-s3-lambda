@@ -7,6 +7,8 @@ package org.graylog.integrations.s3;
  */
 public class Config {
 
+    private static final String DEFAULT_MESSAGE_SUMMARY_FIELDS = "ClientRequestHost,ClientRequestPath,OriginIP,ClientSrcPort,EdgeServerIP,EdgeResponseBytes";
+
     // Use newInstance() instead.
     private Config() {
     }
@@ -22,6 +24,11 @@ public class Config {
     private static final String TCP_QUEUE_SIZE = "tcp_queue_size";
     private static final String TCP_MAX_IN_FLIGHT_SENDS = "tcp_max_in_flight_sends";
     private static final String USE_NOW_TIMESTAMP = "use_now_timestamp";
+    // Fields to parse and store with the message in Graylog
+    private static final String MESSAGE_FIELDS = "message_fields";
+    // Fields to store in the message field in the GELF message field.
+    private static final String MESSAGE_SUMMARY_FIELDS = "message_summary_fields";
+
     private String s3BucketName;
 
     // Transport settings
@@ -34,6 +41,12 @@ public class Config {
     private Integer queueSize;
     private Integer maxInflightSends;
     private Boolean useNowTimestamp;
+
+    // Defaults to all fields
+    private String messageFields;
+
+    // Defaults to the indicated fields
+    private String messageSummaryFields;
 
 
     public static Config newInstance() {
@@ -53,7 +66,18 @@ public class Config {
         config.maxInflightSends = safeParseInteger(TCP_MAX_IN_FLIGHT_SENDS) != null ? safeParseInteger(TCP_MAX_IN_FLIGHT_SENDS) : 512;
 
         config.useNowTimestamp = Boolean.valueOf(System.getenv(USE_NOW_TIMESTAMP));
+
+        config.messageFields = getStringEnvironmentVariable(MESSAGE_FIELDS, null);
+        config.messageSummaryFields = getStringEnvironmentVariable(MESSAGE_SUMMARY_FIELDS, DEFAULT_MESSAGE_SUMMARY_FIELDS);
+
         return config;
+    }
+
+    /**
+     * @return Get the indicated string environment variable or return the default value if not present.
+     */
+    private static String getStringEnvironmentVariable(String envVarName, String defaultValue) {
+        return System.getenv(envVarName) != null && !System.getenv(envVarName).trim().isEmpty() ? System.getenv(envVarName) : defaultValue;
     }
 
     /**
@@ -83,39 +107,95 @@ public class Config {
         return s3BucketName;
     }
 
+    public void setS3BucketName(String s3BucketName) {
+        this.s3BucketName = s3BucketName;
+    }
+
     public String getGraylogHost() {
         return graylogHost;
+    }
+
+    public void setGraylogHost(String graylogHost) {
+        this.graylogHost = graylogHost;
     }
 
     public Integer getGraylogPort() {
         return graylogPort;
     }
 
+    public void setGraylogPort(Integer graylogPort) {
+        this.graylogPort = graylogPort;
+    }
+
     public Integer getConnectTimeout() {
         return connectTimeout;
+    }
+
+    public void setConnectTimeout(Integer connectTimeout) {
+        this.connectTimeout = connectTimeout;
     }
 
     public Integer getReconnectDelay() {
         return reconnectDelay;
     }
 
+    public void setReconnectDelay(Integer reconnectDelay) {
+        this.reconnectDelay = reconnectDelay;
+    }
+
     public Boolean getTcpKeepAlive() {
         return tcpKeepAlive;
+    }
+
+    public void setTcpKeepAlive(Boolean tcpKeepAlive) {
+        this.tcpKeepAlive = tcpKeepAlive;
     }
 
     public Boolean getTcpNoDelay() {
         return tcpNoDelay;
     }
 
+    public void setTcpNoDelay(Boolean tcpNoDelay) {
+        this.tcpNoDelay = tcpNoDelay;
+    }
+
     public Integer getQueueSize() {
         return queueSize;
+    }
+
+    public void setQueueSize(Integer queueSize) {
+        this.queueSize = queueSize;
     }
 
     public Integer getMaxInflightSends() {
         return maxInflightSends;
     }
 
+    public void setMaxInflightSends(Integer maxInflightSends) {
+        this.maxInflightSends = maxInflightSends;
+    }
+
     public Boolean getUseNowTimestamp() {
         return useNowTimestamp;
+    }
+
+    public void setUseNowTimestamp(Boolean useNowTimestamp) {
+        this.useNowTimestamp = useNowTimestamp;
+    }
+
+    public String getMessageFields() {
+        return messageFields;
+    }
+
+    public void setMessageFields(String messageFields) {
+        this.messageFields = messageFields;
+    }
+
+    public String getMessageSummaryFields() {
+        return messageSummaryFields;
+    }
+
+    public void setMessageSummaryFields(String messageSummaryFields) {
+        this.messageSummaryFields = messageSummaryFields;
     }
 }

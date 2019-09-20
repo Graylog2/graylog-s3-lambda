@@ -1,5 +1,6 @@
 package org.graylog.integrations.s3;
 
+import com.amazonaws.util.StringUtils;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -29,18 +30,19 @@ public class CloudFlareLogsParser {
         mapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS)
               .disable(DeserializationFeature.ADJUST_DATES_TO_CONTEXT_TIME_ZONE);
 
+        // The valueMap makes it easier to get access to each field.
         HashMap<String, Object> valueMap = mapper.readValue(stringMessage, HashMap.class);
-        final JsonNode jsonNode = mapper.readTree(stringMessage);
+        final JsonNode entireJsonNode = mapper.readTree(stringMessage);
 
-
-        // Prepare message string with a few select fields.
         final Map<String, Object> messageMap = new LinkedHashMap<>();
-        messageMap.put("ClientRequestHost", valueMap.get("ClientRequestHost"));
-        messageMap.put("ClientRequestPath", valueMap.get("ClientRequestURI"));
-        messageMap.put("OriginIP", valueMap.get("OriginIP"));
-        messageMap.put("ClientSrcPort", valueMap.get("ClientSrcPort"));
-        messageMap.put("EdgeServerIP", valueMap.get("EdgeServerIP"));
-        messageMap.put("EdgeResponseBytes", valueMap.get("EdgeResponseBytes"));
+
+        // Prepare message summary. Use fields indicated in the configuration.
+        Arrays.stream(config.getMessageSummaryFields().split(","))
+              .map(String::trim)
+              .filter(s -> !s.isEmpty())
+              .filter(valueMap::containsKey)
+              // TODO: This is pulling the .toString() value which might be an invalid or unexpected. format
+              .forEach(s -> messageMap.put(s, valueMap.get(s)));
         final String messageSummary = messageMap.keySet().stream().map(key -> key + ": " + valueMap.get(key)).collect(Collectors.joining(" | "));
 
         final GelfMessage message = new GelfMessage(messageSummary, graylogHost);
@@ -49,22 +51,38 @@ public class CloudFlareLogsParser {
         if (config.getUseNowTimestamp()) {
             message.setTimestamp(Instant.now().getEpochSecond());
         } else {
-            final JsonNode edgeStartTimestamp = jsonNode.findValue("EdgeStartTimestamp");
+            final JsonNode edgeStartTimestamp = entireJsonNode.findValue("EdgeStartTimestamp");
             if (edgeStartTimestamp != null) {
-                final double timestamp = parseTimestamp(jsonNode);
+                final double timestamp = parseTimestamp(edgeStartTimestamp);
                 message.setTimestamp(timestamp);
-            }
-            else {
+            } else {
                 // Default to now.
                 message.setTimestamp(Instant.now().getEpochSecond());
             }
-            message.setTimestamp(parseTimestamp(edgeStartTimestamp));
         }
-        Iterator<Map.Entry<String, JsonNode>> fieldIterator = jsonNode.fields();
+
+        // Get a list of parsed fields to include in the message.
+        List<String> fieldNamesToInclude = null;
+        if (!StringUtils.isNullOrEmpty(config.getMessageFields())) {
+            fieldNamesToInclude = Arrays.stream(config.getMessageFields().split(","))
+                                        .map(String::trim)
+                                        .filter(s -> !s.isEmpty())
+                                        .filter(valueMap::containsKey)
+                                        .collect(Collectors.toList());
+        }
+
+        Iterator<Map.Entry<String, JsonNode>> fieldIterator = entireJsonNode.fields();
         while (fieldIterator.hasNext()) {
             Map.Entry<String, JsonNode> fieldPair = fieldIterator.next();
             final String key = fieldPair.getKey();
             final JsonNode valueNode = fieldPair.getValue();
+
+            // Skip fields not indicated to be included in the Config.messageFields field.
+            // An empty value means all fields should be included.
+            if (fieldNamesToInclude != null && !fieldNamesToInclude.contains(key)) {
+                continue;
+            }
+
             if (!valueNode.isArray()) {
 
                 // Pick off and parse timestamp fields first.
