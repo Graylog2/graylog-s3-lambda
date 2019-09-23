@@ -109,19 +109,26 @@ public class CloudFlareLogsParser {
                 }
 
                 // Scalar values can be written directly to the GelfMessage.
-                if (valueNode.isNumber()) {
-                    message.addAdditionalField(key, valueNode.numberValue());
-                } else if (valueNode.isBoolean()) {
-                    message.addAdditionalField(key, valueNode.booleanValue());
-                } else if (valueNode.isTextual()) {
-                    message.addAdditionalField(key, valueNode.textValue());
-                }
+                message.addAdditionalField(key, getNodeValue(valueNode));
             } else {
                 message.addAdditionalField(key, "array_placeholder");
             }
         }
 
         return message;
+    }
+
+    /**
+     * Selects the node value based on its datatype.
+     */
+    private static Object getNodeValue(JsonNode valueNode) {
+        if (valueNode.isNumber()) {
+            return valueNode.numberValue();
+        } else if (valueNode.isBoolean()) {
+            return valueNode.booleanValue();
+        } else if (valueNode.isTextual()) {
+            return valueNode.textValue();
+        }
     }
 
     private static double parseTimestamp(JsonNode node) {
@@ -136,6 +143,7 @@ public class CloudFlareLogsParser {
             return (double) node.longValue() / 1_000_000_000;
         }
 
-        throw new IllegalArgumentException("");
+        throw new IllegalArgumentException("Invalid Timestamp type [" + node.getNodeType() + "]. " +
+                                           "Expected a string, an integer, or a long value.");
     }
 }
