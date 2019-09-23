@@ -38,7 +38,7 @@ public class CloudFlareLogsParserTest {
     public void testUnixParsing() throws IOException {
 
         GelfMessage gelfMessage = CloudFlareLogsParser.parseMessage(UNIX_TIMESTAMP_MESSAGE, "a-host", Config.newInstance());
-        assertEquals(Double.valueOf(1568406189), Double.valueOf(gelfMessage.getTimestamp()));
+        assertEquals(Double.valueOf(1568923202), Double.valueOf(gelfMessage.getTimestamp()));
         assertEquals(59, gelfMessage.getAdditionalFields().size());
     }
 

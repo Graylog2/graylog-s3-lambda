@@ -121,14 +121,16 @@ public class CloudFlareLogsParser {
     /**
      * Selects the node value based on its datatype.
      */
-    private static Object getNodeValue(JsonNode valueNode) {
-        if (valueNode.isNumber()) {
-            return valueNode.numberValue();
-        } else if (valueNode.isBoolean()) {
-            return valueNode.booleanValue();
-        } else if (valueNode.isTextual()) {
-            return valueNode.textValue();
+    private static Object getNodeValue(JsonNode node) {
+        if (node.isNumber()) {
+            return node.numberValue();
+        } else if (node.isBoolean()) {
+            return node.booleanValue();
+        } else if (node.isTextual()) {
+            return node.textValue();
         }
+
+        throw new IllegalArgumentException("Invalid node type [" + node.getNodeType() + "].");
     }
 
     private static double parseTimestamp(JsonNode node) {
