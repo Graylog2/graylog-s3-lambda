@@ -47,8 +47,8 @@ public interface GelfTransport {
     void stop();
 
     /**
-     * Stops the transport after draining the queue. This blocks the caller to block wait until all messages have
-     * been sent before shutting down the transport. This is best used with maxInFlightMessages = 1
+     * Stops the transport after flushing/sending all enqueued messages.
+     * Should be used to gracefully shutdown the backend.
      */
-    void drainQueueAndStop();
+    void flushAndStop();
 }

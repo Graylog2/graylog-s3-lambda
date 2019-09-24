@@ -31,6 +31,7 @@ public class CloudFlareLogpushFunction implements RequestHandler<S3Event, Object
     public Object handleRequest(final S3Event s3Event, final Context context) {
 
         Config config = Config.newInstance();
+        LOG.debug(config);
         AmazonS3 s3 = AmazonS3Client.builder().build();
 
         // Multiple messages could be provided with the callback.
@@ -39,6 +40,7 @@ public class CloudFlareLogpushFunction implements RequestHandler<S3Event, Object
     }
 
     private void processObject(Config config, AmazonS3 s3, String fileKey) {
+
         LOG.debug("Object key [{}]", fileKey);
         LOG.debug(String.format("Host: %s:%d", config.getGraylogHost(),
                                 config.getGraylogPort()));
@@ -96,8 +98,9 @@ public class CloudFlareLogpushFunction implements RequestHandler<S3Event, Object
                 }
             }
 
-            // Make sure to stop the GELF Transport to ensure that any queued messages are sent before Lambda terminates the JVM.
-            gelfTransport.drainQueueAndStop();
+            // Flush and stop the GelfTransport to ensure that all in flight messages are sent before this method exits.
+            LOG.debug("Beginning shutdown...");
+            gelfTransport.flushAndStop();
         }
     }
 

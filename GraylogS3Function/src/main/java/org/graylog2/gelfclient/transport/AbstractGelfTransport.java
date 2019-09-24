@@ -16,13 +16,6 @@
 
 package org.graylog2.gelfclient.transport;
 
-import com.github.rholder.retry.Attempt;
-import com.github.rholder.retry.RetryException;
-import com.github.rholder.retry.RetryListener;
-import com.github.rholder.retry.Retryer;
-import com.github.rholder.retry.RetryerBuilder;
-import com.github.rholder.retry.StopStrategies;
-import com.github.rholder.retry.WaitStrategies;
 import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.util.concurrent.DefaultThreadFactory;
@@ -31,9 +24,7 @@ import org.graylog2.gelfclient.GelfMessage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.Objects;
 import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.ExecutionException;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
 
@@ -42,7 +33,7 @@ import java.util.concurrent.TimeUnit;
  * <p>This class is thread-safe.</p>
  */
 public abstract class AbstractGelfTransport implements GelfTransport {
-    private static final Logger LOG = LoggerFactory.getLogger(org.graylog2.gelfclient.transport.AbstractGelfTransport.class);
+    private static final Logger LOG = LoggerFactory.getLogger(AbstractGelfTransport.class);
 
     protected final GelfConfiguration config;
     protected final BlockingQueue<GelfMessage> queue;
@@ -50,7 +41,7 @@ public abstract class AbstractGelfTransport implements GelfTransport {
     private final EventLoopGroup workerGroup;
 
     /**
-     * Creates a new GELF transport with the given configuration and {@link BlockingQueue}.
+     * Creates a new GELF transport with the given configuration and {@link java.util.concurrent.BlockingQueue}.
      *
      * @param config the client configuration
      * @param queue  the {@link BlockingQueue} used to buffer GELF messages
@@ -86,8 +77,8 @@ public abstract class AbstractGelfTransport implements GelfTransport {
 
     /**
      * {@inheritDoc}
-     * <p>This implementation is backed by a {@link BlockingQueue}. When this method returns the
-     * message has been added to the {@link BlockingQueue} but has not been sent to the remote
+     * <p>This implementation is backed by a {@link java.util.concurrent.BlockingQueue}. When this method returns the
+     * message has been added to the {@link java.util.concurrent.BlockingQueue} but has not been sent to the remote
      * host yet.</p>
      *
      * @param message message to send to the remote host
@@ -100,8 +91,8 @@ public abstract class AbstractGelfTransport implements GelfTransport {
 
     /**
      * {@inheritDoc}
-     * <p>This implementation is backed by a {@link BlockingQueue}. When this method returns the
-     * message has been added to the {@link BlockingQueue} but has not been sent to the remote
+     * <p>This implementation is backed by a {@link java.util.concurrent.BlockingQueue}. When this method returns the
+     * message has been added to the {@link java.util.concurrent.BlockingQueue} but has not been sent to the remote
      * host yet.</p>
      *
      * @param message message to send to the remote host

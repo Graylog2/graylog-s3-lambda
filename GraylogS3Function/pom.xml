@@ -5,7 +5,7 @@
     <artifactId>HelloWorld</artifactId>
     <version>1.0</version>
     <packaging>jar</packaging>
-    <name>A sample Hello World created for SAM CLI.</name>
+    <name>A Lambda function which reads CloudFlare Logpush messages and sends them to Graylog.</name>
     <properties>
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>

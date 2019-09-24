@@ -16,13 +16,6 @@
 
 package org.graylog2.gelfclient.transport;
 
-import com.github.rholder.retry.Attempt;
-import com.github.rholder.retry.RetryException;
-import com.github.rholder.retry.RetryListener;
-import com.github.rholder.retry.Retryer;
-import com.github.rholder.retry.RetryerBuilder;
-import com.github.rholder.retry.StopStrategies;
-import com.github.rholder.retry.WaitStrategies;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelFuture;
@@ -43,16 +36,12 @@ import org.graylog2.gelfclient.encoder.GelfTcpFrameDelimiterEncoder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.Objects;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.TimeUnit;
-
 /**
  * A {@link GelfTransport} implementation that uses TCP to send GELF messages.
  * <p>This class is thread-safe.</p>
  */
 public class GelfTcpTransport extends AbstractGelfTransport {
-    private static final Logger LOG = LoggerFactory.getLogger(org.graylog2.gelfclient.transport.GelfTcpTransport.class);
+    private static final Logger LOG = LoggerFactory.getLogger(GelfTcpTransport.class);
 
     GelfSenderThread senderThread;
 
@@ -69,6 +58,7 @@ public class GelfTcpTransport extends AbstractGelfTransport {
     protected void createBootstrap(final EventLoopGroup workerGroup) {
         final Bootstrap bootstrap = new Bootstrap();
         senderThread = new GelfSenderThread(queue, config.getMaxInflightSends());
+
         bootstrap.group(workerGroup)
                  .channel(NioSocketChannel.class)
                  .option(ChannelOption.CONNECT_TIMEOUT_MILLIS, config.getConnectTimeout())
@@ -150,26 +140,10 @@ public class GelfTcpTransport extends AbstractGelfTransport {
     }
 
     @Override
-    public void drainQueueAndStop() {
+    public void flushAndStop() {
 
-        // Wait up to 10 seconds for all queued and in-flight messages to send.
-        final Retryer<Boolean> retryer = RetryerBuilder.<Boolean>newBuilder()
-                .retryIfResult(b -> Objects.equals(b, Boolean.TRUE))
-                .withWaitStrategy(WaitStrategies.fixedWait(100, TimeUnit.MILLISECONDS))
-                .withStopStrategy(StopStrategies.stopAfterAttempt(100))
-                .withRetryListener(new RetryListener() {
-                    @Override
-                    public <V> void onRetry(Attempt<V> attempt) {
-                        LOG.info("Blocking and waiting for queue to drain before shutting down.");
-                    }
-                })
-                .build();
-        try {
-            retryer.call(() -> senderThread.sendingInProgress());
-        } catch (ExecutionException e) {
-            e.printStackTrace();
-        } catch (RetryException e) {
-            e.printStackTrace();
+        if (senderThread != null) {
+            senderThread.flushSynchronously();
         }
         super.stop();
     }

@@ -57,20 +57,24 @@ public class Config {
         config.graylogPort = safeParseInteger(GRAYLOG_PORT);
         config.connectTimeout = safeParseInteger(CONNECT_TIMEOUT) != null ? safeParseInteger(CONNECT_TIMEOUT) : 10000;
         config.reconnectDelay = safeParseInteger(RECONNECT_DELAY) != null ? safeParseInteger(RECONNECT_DELAY) : 10000;
-        config.tcpKeepAlive = Boolean.valueOf(System.getenv(TCP_KEEP_ALIVE));
-        config.tcpNoDelay = Boolean.valueOf(System.getenv(TCP_NO_DELAY));
+        config.tcpKeepAlive = readBoolean(TCP_KEEP_ALIVE, true);
+        config.tcpNoDelay = readBoolean(TCP_NO_DELAY, true);
         config.queueSize = safeParseInteger(TCP_QUEUE_SIZE) != null ? safeParseInteger(TCP_QUEUE_SIZE) : 512;
 
         // Max inflight sends must be 1 in order for synchronous sending VIA gelfclient to work.
         // This forces the client to send the messages serially. Once the queue size is zero, then the transport can be shut down.
         config.maxInflightSends = safeParseInteger(TCP_MAX_IN_FLIGHT_SENDS) != null ? safeParseInteger(TCP_MAX_IN_FLIGHT_SENDS) : 512;
 
-        config.useNowTimestamp = Boolean.valueOf(System.getenv(USE_NOW_TIMESTAMP));
+        config.useNowTimestamp = readBoolean(USE_NOW_TIMESTAMP, false);
 
         config.messageFields = getStringEnvironmentVariable(MESSAGE_FIELDS, null);
         config.messageSummaryFields = getStringEnvironmentVariable(MESSAGE_SUMMARY_FIELDS, DEFAULT_MESSAGE_SUMMARY_FIELDS);
 
         return config;
+    }
+
+    private static boolean readBoolean(String property, boolean defaultValue) {
+        return System.getenv(property) != null ? Boolean.valueOf(System.getenv(property)) : defaultValue;
     }
 
     /**
@@ -197,5 +201,23 @@ public class Config {
 
     public void setMessageSummaryFields(String messageSummaryFields) {
         this.messageSummaryFields = messageSummaryFields;
+    }
+
+    @Override
+    public String toString() {
+        return "Config{" +
+               "s3BucketName='" + s3BucketName + '\'' +
+               ", graylogHost='" + graylogHost + '\'' +
+               ", graylogPort=" + graylogPort +
+               ", connectTimeout=" + connectTimeout +
+               ", reconnectDelay=" + reconnectDelay +
+               ", tcpKeepAlive=" + tcpKeepAlive +
+               ", tcpNoDelay=" + tcpNoDelay +
+               ", queueSize=" + queueSize +
+               ", maxInflightSends=" + maxInflightSends +
+               ", useNowTimestamp=" + useNowTimestamp +
+               ", messageFields='" + messageFields + '\'' +
+               ", messageSummaryFields='" + messageSummaryFields + '\'' +
+               '}';
     }
 }

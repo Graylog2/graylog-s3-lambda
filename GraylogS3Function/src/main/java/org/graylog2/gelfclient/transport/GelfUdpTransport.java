@@ -39,7 +39,9 @@ import org.slf4j.LoggerFactory;
  * <p>This class is thread-safe.</p>
  */
 public class GelfUdpTransport extends AbstractGelfTransport {
-    private static final Logger LOG = LoggerFactory.getLogger(org.graylog2.gelfclient.transport.GelfUdpTransport.class);
+    private static final Logger LOG = LoggerFactory.getLogger(GelfUdpTransport.class);
+
+    GelfSenderThread senderThread;
 
     /**
      * Creates a new UDP GELF transport.
@@ -53,49 +55,49 @@ public class GelfUdpTransport extends AbstractGelfTransport {
     @Override
     protected void createBootstrap(final EventLoopGroup workerGroup) {
         final Bootstrap bootstrap = new Bootstrap();
-        final GelfSenderThread senderThread = new GelfSenderThread(queue, config.getMaxInflightSends());
+        senderThread = new GelfSenderThread(queue, config.getMaxInflightSends());
 
         bootstrap.group(workerGroup)
-                .channel(NioDatagramChannel.class)
-                .handler(new ChannelInitializer<Channel>() {
-                    @Override
-                    protected void initChannel(Channel ch) throws Exception {
-                        ch.pipeline().addLast(new GelfMessageUdpEncoder(config.getRemoteAddress()));
-                        ch.pipeline().addLast(new GelfMessageChunkEncoder());
-                        switch (config.getCompression()) {
-                            case GZIP:
-                                ch.pipeline().addLast(new GelfCompressionGzipEncoder());
-                                break;
-                            case ZLIB:
-                                ch.pipeline().addLast(new GelfCompressionZlibEncoder());
-                                break;
-                            case NONE:
-                            default:
-                        }
-                        ch.pipeline().addLast(new GelfMessageJsonEncoder());
-                        ch.pipeline().addLast(new SimpleChannelInboundHandler<DatagramPacket>() {
-                            @Override
-                            protected void channelRead0(ChannelHandlerContext ctx, DatagramPacket msg) throws Exception {
-                                // We do not receive data.
-                            }
+                 .channel(NioDatagramChannel.class)
+                 .handler(new ChannelInitializer<Channel>() {
+                     @Override
+                     protected void initChannel(Channel ch) throws Exception {
+                         ch.pipeline().addLast(new GelfMessageUdpEncoder(config.getRemoteAddress()));
+                         ch.pipeline().addLast(new GelfMessageChunkEncoder());
+                         switch (config.getCompression()) {
+                             case GZIP:
+                                 ch.pipeline().addLast(new GelfCompressionGzipEncoder());
+                                 break;
+                             case ZLIB:
+                                 ch.pipeline().addLast(new GelfCompressionZlibEncoder());
+                                 break;
+                             case NONE:
+                             default:
+                         }
+                         ch.pipeline().addLast(new GelfMessageJsonEncoder());
+                         ch.pipeline().addLast(new SimpleChannelInboundHandler<DatagramPacket>() {
+                             @Override
+                             protected void channelRead0(ChannelHandlerContext ctx, DatagramPacket msg) throws Exception {
+                                 // We do not receive data.
+                             }
 
-                            @Override
-                            public void channelActive(ChannelHandlerContext ctx) throws Exception {
-                                senderThread.start(ctx.channel());
-                            }
+                             @Override
+                             public void channelActive(ChannelHandlerContext ctx) throws Exception {
+                                 senderThread.start(ctx.channel());
+                             }
 
-                            @Override
-                            public void channelInactive(ChannelHandlerContext ctx) throws Exception {
-                                senderThread.stop();
-                            }
+                             @Override
+                             public void channelInactive(ChannelHandlerContext ctx) throws Exception {
+                                 senderThread.stop();
+                             }
 
-                            @Override
-                            public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
-                                LOG.error("Exception caught", cause);
-                            }
-                        });
-                    }
-                });
+                             @Override
+                             public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
+                                 LOG.error("Exception caught", cause);
+                             }
+                         });
+                     }
+                 });
 
         if (config.getSendBufferSize() != -1) {
             bootstrap.option(ChannelOption.SO_SNDBUF, config.getSendBufferSize());
@@ -105,8 +107,11 @@ public class GelfUdpTransport extends AbstractGelfTransport {
     }
 
     @Override
-    public void drainQueueAndStop() {
+    public void flushAndStop() {
 
-        stop();
+        if (senderThread != null) {
+            senderThread.flushSynchronously();
+        }
+        super.stop();
     }
 }

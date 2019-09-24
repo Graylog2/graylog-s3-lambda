@@ -111,7 +111,17 @@ public class CloudFlareLogsParser {
                 // Scalar values can be written directly to the GelfMessage.
                 message.addAdditionalField(key, getNodeValue(valueNode));
             } else {
-                message.addAdditionalField(key, "array_placeholder");
+                // TODO: Arrays can be comma-separated. See these examples:
+                // "FirewallMatchesActions": [
+                //    "allow"
+                // ],
+                //"FirewallMatchesSources": [
+                //    "firewallRules"
+                // ],
+                //"FirewallMatchesRuleIDs": [
+                //    "test"
+                // ],
+                message.addAdditionalField(key, valueNode.toString());
             }
         }
 

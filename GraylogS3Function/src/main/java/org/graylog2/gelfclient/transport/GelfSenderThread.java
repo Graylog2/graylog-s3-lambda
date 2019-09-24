@@ -37,14 +37,18 @@ import static java.util.concurrent.TimeUnit.MICROSECONDS;
  * The main event thread used by the {@link org.graylog2.gelfclient.transport.GelfTransport}s.
  */
 public class GelfSenderThread {
-    private static final Logger LOG = LoggerFactory.getLogger(org.graylog2.gelfclient.transport.GelfSenderThread.class);
+    private static final Logger LOG = LoggerFactory.getLogger(GelfSenderThread.class);
+
+    private static final int FLUSH_WAIT_RETRIES = 250;
+    private static final int FLUSH_WAIT_MS = 240;
+
     private final ReentrantLock lock;
     private final Condition connectedCond;
     private final AtomicBoolean keepRunning = new AtomicBoolean(true);
     private final Thread senderThread;
     private Channel channel;
     private final int maxInflightSends;
-    BlockingQueue<GelfMessage> queue;
+    private BlockingQueue<GelfMessage> queue;
     private AtomicInteger inflightSends;
 
     /**
@@ -54,10 +58,11 @@ public class GelfSenderThread {
      * @param maxInflightSends the maximum number of outstanding network writes/flushes before the sender spins
      */
     public GelfSenderThread(final BlockingQueue<GelfMessage> queue, int maxInflightSends) {
-        this.queue = queue;
         this.maxInflightSends = maxInflightSends;
         this.lock = new ReentrantLock();
         this.connectedCond = lock.newCondition();
+        this.inflightSends = new AtomicInteger(0);
+        this.queue = queue;
 
         if (maxInflightSends <= 0) {
             throw new IllegalArgumentException("maxInflightSends must be larger than 0");
@@ -67,7 +72,6 @@ public class GelfSenderThread {
             @Override
             public void run() {
                 GelfMessage gelfMessage = null;
-                inflightSends = new AtomicInteger(0);
                 final ChannelFutureListener inflightListener = new ChannelFutureListener() {
                     @Override
                     public void operationComplete(ChannelFuture future) throws Exception {
@@ -101,7 +105,7 @@ public class GelfSenderThread {
                             if (gelfMessage != null && channel != null && channel.isActive()) {
                                 // Do not allow more than "maxInflightSends" concurrent writes in netty, to avoid having netty buffer
                                 // excessively when faced with slower consumers
-                                while (inflightSends.get() > org.graylog2.gelfclient.transport.GelfSenderThread.this.maxInflightSends) {
+                                while (inflightSends.get() > GelfSenderThread.this.maxInflightSends) {
                                     Uninterruptibles.sleepUninterruptibly(1, MICROSECONDS);
                                 }
                                 inflightSends.incrementAndGet();
@@ -144,9 +148,37 @@ public class GelfSenderThread {
     }
 
     /**
+     * Block and wait for all messages in the queue to send. This can be used during shutdown to wait for
+     * queued messages to send before shutting down.
+     * Waiting will continue for the indicated {@code FLUSH_WAIT_RETRIES} and {@code FLUSH_WAIT_MS.}
+     */
+    void flushSynchronously() {
+
+        for (int i = 0; i <= FLUSH_WAIT_RETRIES; i++) {
+            if (!flushingInProgress()) {
+                LOG.debug("Successfully flushed messages. Shutting down now.");
+                continue;
+            }
+
+            LOG.debug("Flushing in progress. [{}] messages are still enqueued, and [{}] messages are still in-flight.",
+                      queue.size(), inflightSends.get());
+
+            try {
+                Thread.sleep(FLUSH_WAIT_MS);
+            } catch (InterruptedException e) {
+                LOG.error("Interrupted message flushing during shutdown after [{}}] attempts.", i);
+            }
+
+            if (i == FLUSH_WAIT_MS) {
+                LOG.error("Failed to flush messages in [{}] attempts. Shutting down anyway.", FLUSH_WAIT_RETRIES);
+            }
+        }
+    }
+
+    /**
      * @return {@code true} if messages are queued or in-flight.
      */
-    boolean sendingInProgress() {
+    private boolean flushingInProgress() {
 
         return (inflightSends != null && inflightSends.get() != 0) || !queue.isEmpty();
     }
