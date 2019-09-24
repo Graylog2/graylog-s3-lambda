@@ -1,0 +1,589 @@
+{
+  "v": 1,
+  "id": "943a013b-c3c8-4d1b-a938-bf6e66b2bf1f",
+  "rev": 1,
+  "name": "CloudFlare Web Traffic",
+  "summary": "Web stats",
+  "description": "",
+  "vendor": "Graylog",
+  "url": "",
+  "parameters": [],
+  "entities": [
+    {
+      "v": "1",
+      "type": {
+        "name": "dashboard",
+        "version": "1"
+      },
+      "id": "75f2b76d-e856-4b66-a087-524e0fa85038",
+      "data": {
+        "title": {
+          "@type": "string",
+          "@value": "CloudFlare Traffic"
+        },
+        "description": {
+          "@type": "string",
+          "@value": "CloudFlare Traffic"
+        },
+        "widgets": [
+          {
+            "id": {
+              "@type": "string",
+              "@value": "ed2141fc-ff58-4fd0-8ef5-a61918558eb8"
+            },
+            "description": {
+              "@type": "string",
+              "@value": "Request Methods"
+            },
+            "type": {
+              "@type": "string",
+              "@value": "QUICKVALUES"
+            },
+            "cache_time": {
+              "@type": "integer",
+              "@value": 10
+            },
+            "time_range": {
+              "type": {
+                "@type": "string",
+                "@value": "relative"
+              },
+              "range": {
+                "@type": "integer",
+                "@value": 0
+              }
+            },
+            "configuration": {
+              "query": {
+                "@type": "string",
+                "@value": ""
+              },
+              "show_pie_chart": {
+                "@type": "boolean",
+                "@value": true
+              },
+              "sort_order": {
+                "@type": "string",
+                "@value": "desc"
+              },
+              "timerange": {
+                "type": {
+                  "@type": "string",
+                  "@value": "relative"
+                },
+                "range": {
+                  "@type": "integer",
+                  "@value": 0
+                }
+              },
+              "stacked_fields": {
+                "@type": "string",
+                "@value": ""
+              },
+              "data_table_limit": {
+                "@type": "integer",
+                "@value": 50
+              },
+              "field": {
+                "@type": "string",
+                "@value": "ClientRequestMethod"
+              },
+              "show_data_table": {
+                "@type": "boolean",
+                "@value": true
+              },
+              "limit": {
+                "@type": "integer",
+                "@value": 5
+              }
+            },
+            "position": {
+              "width": {
+                "@type": "integer",
+                "@value": 2
+              },
+              "height": {
+                "@type": "integer",
+                "@value": 4
+              },
+              "row": {
+                "@type": "integer",
+                "@value": 3
+              },
+              "col": {
+                "@type": "integer",
+                "@value": 1
+              }
+            }
+          },
+          {
+            "id": {
+              "@type": "string",
+              "@value": "59f1e89a-31a8-41c1-8cc5-7929242700ff"
+            },
+            "description": {
+              "@type": "string",
+              "@value": "Response Bytes"
+            },
+            "type": {
+              "@type": "string",
+              "@value": "FIELD_CHART"
+            },
+            "cache_time": {
+              "@type": "integer",
+              "@value": 10
+            },
+            "time_range": {
+              "type": {
+                "@type": "string",
+                "@value": "relative"
+              },
+              "range": {
+                "@type": "integer",
+                "@value": 1800
+              }
+            },
+            "configuration": {
+              "renderer": {
+                "@type": "string",
+                "@value": "line"
+              },
+              "interpolation": {
+                "@type": "string",
+                "@value": "linear"
+              },
+              "interval": {
+                "@type": "string",
+                "@value": "minute"
+              },
+              "query": {
+                "@type": "string",
+                "@value": ""
+              },
+              "valuetype": {
+                "@type": "string",
+                "@value": "count"
+              },
+              "relative": {
+                "@type": "integer",
+                "@value": 1800
+              },
+              "timerange": {
+                "type": {
+                  "@type": "string",
+                  "@value": "relative"
+                },
+                "range": {
+                  "@type": "integer",
+                  "@value": 1800
+                }
+              },
+              "rangeType": {
+                "@type": "string",
+                "@value": "relative"
+              },
+              "field": {
+                "@type": "string",
+                "@value": "EdgeResponseBytes"
+              }
+            },
+            "position": {
+              "width": {
+                "@type": "integer",
+                "@value": 3
+              },
+              "height": {
+                "@type": "integer",
+                "@value": 2
+              },
+              "row": {
+                "@type": "integer",
+                "@value": 5
+              },
+              "col": {
+                "@type": "integer",
+                "@value": 3
+              }
+            }
+          },
+          {
+            "id": {
+              "@type": "string",
+              "@value": "8cd7d8dc-d9f6-463b-8311-f31095957c9b"
+            },
+            "description": {
+              "@type": "string",
+              "@value": "Blocked Requests"
+            },
+            "type": {
+              "@type": "string",
+              "@value": "SEARCH_RESULT_COUNT"
+            },
+            "cache_time": {
+              "@type": "integer",
+              "@value": 10
+            },
+            "time_range": {
+              "type": {
+                "@type": "string",
+                "@value": "relative"
+              },
+              "range": {
+                "@type": "integer",
+                "@value": 1800
+              }
+            },
+            "configuration": {
+              "timerange": {
+                "type": {
+                  "@type": "string",
+                  "@value": "relative"
+                },
+                "range": {
+                  "@type": "integer",
+                  "@value": 1800
+                }
+              },
+              "lower_is_better": {
+                "@type": "boolean",
+                "@value": false
+              },
+              "trend": {
+                "@type": "boolean",
+                "@value": false
+              },
+              "query": {
+                "@type": "string",
+                "@value": "EdgePathingOp:ban"
+              }
+            },
+            "position": {
+              "width": {
+                "@type": "integer",
+                "@value": 2
+              },
+              "height": {
+                "@type": "integer",
+                "@value": 2
+              },
+              "row": {
+                "@type": "integer",
+                "@value": 1
+              },
+              "col": {
+                "@type": "integer",
+                "@value": 5
+              }
+            }
+          },
+          {
+            "id": {
+              "@type": "string",
+              "@value": "a905b859-d82d-4978-b3ba-73944e17a5d9"
+            },
+            "description": {
+              "@type": "string",
+              "@value": "Device Type"
+            },
+            "type": {
+              "@type": "string",
+              "@value": "QUICKVALUES_HISTOGRAM"
+            },
+            "cache_time": {
+              "@type": "integer",
+              "@value": 10
+            },
+            "time_range": {
+              "type": {
+                "@type": "string",
+                "@value": "relative"
+              },
+              "range": {
+                "@type": "integer",
+                "@value": 1800
+              }
+            },
+            "configuration": {
+              "timerange": {
+                "type": {
+                  "@type": "string",
+                  "@value": "relative"
+                },
+                "range": {
+                  "@type": "integer",
+                  "@value": 1800
+                }
+              },
+              "field": {
+                "@type": "string",
+                "@value": "ClientDeviceType"
+              },
+              "query": {
+                "@type": "string",
+                "@value": ""
+              },
+              "limit": {
+                "@type": "integer",
+                "@value": 5
+              },
+              "sort_order": {
+                "@type": "string",
+                "@value": "desc"
+              },
+              "stacked_fields": {
+                "@type": "string",
+                "@value": ""
+              }
+            },
+            "position": {
+              "width": {
+                "@type": "integer",
+                "@value": 3
+              },
+              "height": {
+                "@type": "integer",
+                "@value": 2
+              },
+              "row": {
+                "@type": "integer",
+                "@value": 7
+              },
+              "col": {
+                "@type": "integer",
+                "@value": 3
+              }
+            }
+          },
+          {
+            "id": {
+              "@type": "string",
+              "@value": "8d5e0c0c-a783-44ab-b803-dee3b2e70536"
+            },
+            "description": {
+              "@type": "string",
+              "@value": "Blocked vs. Permitted Traffic"
+            },
+            "type": {
+              "@type": "string",
+              "@value": "QUICKVALUES_HISTOGRAM"
+            },
+            "cache_time": {
+              "@type": "integer",
+              "@value": 10
+            },
+            "time_range": {
+              "type": {
+                "@type": "string",
+                "@value": "relative"
+              },
+              "range": {
+                "@type": "integer",
+                "@value": 1800
+              }
+            },
+            "configuration": {
+              "timerange": {
+                "type": {
+                  "@type": "string",
+                  "@value": "relative"
+                },
+                "range": {
+                  "@type": "integer",
+                  "@value": 1800
+                }
+              },
+              "field": {
+                "@type": "string",
+                "@value": "EdgePathingOp"
+              },
+              "query": {
+                "@type": "string",
+                "@value": ""
+              },
+              "limit": {
+                "@type": "integer",
+                "@value": 5
+              },
+              "sort_order": {
+                "@type": "string",
+                "@value": "desc"
+              },
+              "stacked_fields": {
+                "@type": "string",
+                "@value": ""
+              }
+            },
+            "position": {
+              "width": {
+                "@type": "integer",
+                "@value": 3
+              },
+              "height": {
+                "@type": "integer",
+                "@value": 2
+              },
+              "row": {
+                "@type": "integer",
+                "@value": 3
+              },
+              "col": {
+                "@type": "integer",
+                "@value": 3
+              }
+            }
+          },
+          {
+            "id": {
+              "@type": "string",
+              "@value": "df347ed2-bf2c-4aeb-bda9-6dbb4e0bbb71"
+            },
+            "description": {
+              "@type": "string",
+              "@value": "All Requests"
+            },
+            "type": {
+              "@type": "string",
+              "@value": "SEARCH_RESULT_COUNT"
+            },
+            "cache_time": {
+              "@type": "integer",
+              "@value": 10
+            },
+            "time_range": {
+              "type": {
+                "@type": "string",
+                "@value": "relative"
+              },
+              "range": {
+                "@type": "integer",
+                "@value": 1800
+              }
+            },
+            "configuration": {
+              "interval": {
+                "@type": "string",
+                "@value": "hour"
+              },
+              "timerange": {
+                "type": {
+                  "@type": "string",
+                  "@value": "relative"
+                },
+                "range": {
+                  "@type": "integer",
+                  "@value": 1800
+                }
+              },
+              "lower_is_better": {
+                "@type": "boolean",
+                "@value": false
+              },
+              "trend": {
+                "@type": "boolean",
+                "@value": false
+              },
+              "query": {
+                "@type": "string",
+                "@value": ""
+              }
+            },
+            "position": {
+              "width": {
+                "@type": "integer",
+                "@value": 2
+              },
+              "height": {
+                "@type": "integer",
+                "@value": 2
+              },
+              "row": {
+                "@type": "integer",
+                "@value": 1
+              },
+              "col": {
+                "@type": "integer",
+                "@value": 1
+              }
+            }
+          },
+          {
+            "id": {
+              "@type": "string",
+              "@value": "47c63199-73df-43f1-a703-cf110d2ffd85"
+            },
+            "description": {
+              "@type": "string",
+              "@value": "Permitted Requests"
+            },
+            "type": {
+              "@type": "string",
+              "@value": "SEARCH_RESULT_COUNT"
+            },
+            "cache_time": {
+              "@type": "integer",
+              "@value": 10
+            },
+            "time_range": {
+              "type": {
+                "@type": "string",
+                "@value": "relative"
+              },
+              "range": {
+                "@type": "integer",
+                "@value": 1800
+              }
+            },
+            "configuration": {
+              "timerange": {
+                "type": {
+                  "@type": "string",
+                  "@value": "relative"
+                },
+                "range": {
+                  "@type": "integer",
+                  "@value": 1800
+                }
+              },
+              "lower_is_better": {
+                "@type": "boolean",
+                "@value": false
+              },
+              "trend": {
+                "@type": "boolean",
+                "@value": false
+              },
+              "query": {
+                "@type": "string",
+                "@value": "EdgePathingOp:wl"
+              }
+            },
+            "position": {
+              "width": {
+                "@type": "integer",
+                "@value": 2
+              },
+              "height": {
+                "@type": "integer",
+                "@value": 2
+              },
+              "row": {
+                "@type": "integer",
+                "@value": 1
+              },
+              "col": {
+                "@type": "integer",
+                "@value": 3
+              }
+            }
+          }
+        ]
+      },
+      "constraints": [
+        {
+          "type": "server-version",
+          "version": ">=3.1.2+9e96b08"
+        }
+      ]
+    }
+  ]
+}
