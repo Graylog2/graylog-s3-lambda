@@ -8,6 +8,7 @@ package org.graylog.integrations.s3;
 public class Config {
 
     private static final String DEFAULT_MESSAGE_SUMMARY_FIELDS = "ClientRequestHost,ClientRequestPath,OriginIP,ClientSrcPort,EdgeServerIP,EdgeResponseBytes";
+    private static final String DEFAULT_CONTENT_TYPE = "text/plain";
 
     // Use newInstance() instead.
     private Config() {
@@ -28,6 +29,7 @@ public class Config {
     private static final String MESSAGE_FIELDS = "message_fields";
     // Fields to store in the message field in the GELF message field.
     private static final String MESSAGE_SUMMARY_FIELDS = "message_summary_fields";
+    private static final String CONTENT_TYPE = "content_type";
 
     private String s3BucketName;
 
@@ -47,6 +49,8 @@ public class Config {
 
     // Defaults to the indicated fields
     private String messageSummaryFields;
+
+    private ContentType contentType;
 
 
     public static Config newInstance() {
@@ -69,6 +73,8 @@ public class Config {
 
         config.messageFields = getStringEnvironmentVariable(MESSAGE_FIELDS, null);
         config.messageSummaryFields = getStringEnvironmentVariable(MESSAGE_SUMMARY_FIELDS, DEFAULT_MESSAGE_SUMMARY_FIELDS);
+
+        config.contentType = ContentType.findByType(getStringEnvironmentVariable(CONTENT_TYPE, DEFAULT_CONTENT_TYPE));
 
         return config;
     }
@@ -203,6 +209,14 @@ public class Config {
         this.messageSummaryFields = messageSummaryFields;
     }
 
+    public ContentType getContentType() {
+        return contentType;
+    }
+
+    public void setContentType(ContentType contentType) {
+        this.contentType = contentType;
+    }
+
     @Override
     public String toString() {
         return "Config{" +
@@ -218,6 +232,7 @@ public class Config {
                ", useNowTimestamp=" + useNowTimestamp +
                ", messageFields='" + messageFields + '\'' +
                ", messageSummaryFields='" + messageSummaryFields + '\'' +
+               ", contentType=" + contentType +
                '}';
     }
 }

@@ -88,7 +88,7 @@ public class CloudFlareLogpushFunction implements RequestHandler<S3Event, Object
                 }
 
                 try {
-                    final GelfMessage message = CloudFlareLogsParser.parseMessage(line, config.getGraylogHost(), config);
+                    final GelfMessage message = new CodecProcessor(config, line).decode();
                     gelfTransport.send(message);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
