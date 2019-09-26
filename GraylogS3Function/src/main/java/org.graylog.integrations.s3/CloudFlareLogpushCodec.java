@@ -51,10 +51,8 @@ public class CloudFlareLogpushCodec extends AbstractS3Codec implements S3Codec {
 
         final GelfMessage message = new GelfMessage(messageSummary, config.getGraylogHost());
 
-        // Set message timestamp.
-        if (config.getUseNowTimestamp()) {
-            message.setTimestamp(Instant.now().getEpochSecond());
-        } else {
+        // Set message timestamp. Timestamp defaults to now, so no need to set when useNowTimestamp = false.
+        if (!config.getUseNowTimestamp()) {
             final JsonNode edgeStartTimestamp = entireJsonNode.findValue("EdgeStartTimestamp");
             if (edgeStartTimestamp != null) {
                 final double timestamp = parseTimestamp(edgeStartTimestamp);
@@ -95,18 +93,15 @@ public class CloudFlareLogpushCodec extends AbstractS3Codec implements S3Codec {
                     // If textual, then Timestamp is in RFC 3339 format: 2019-09-13T20:23:09Z
                     if (valueNode.isTextual()) {
                         final long timestamp = Instant.parse(valueNode.textValue()).getEpochSecond();
-                        message.setTimestamp(timestamp);
                         message.addAdditionalField(key, timestamp);
                     } else if (valueNode.isInt()) {
                         // Unix timestamp in seconds.
                         // Int automatically casts to a double.
-                        message.setTimestamp(valueNode.intValue());
                         message.addAdditionalField(key, valueNode.intValue());
                     } else if (valueNode.isLong()) {
                         // Unix nanos
                         // Move the decimal place 9 places and cast to a double.
                         final double timestampFractionalSeconds = (double) valueNode.longValue() / 1_000_000_000;
-                        message.setTimestamp(timestampFractionalSeconds);
                         message.addAdditionalField(key, timestampFractionalSeconds);
                     }
                     continue;
