@@ -39,9 +39,10 @@ public abstract class AbstractGelfTransport implements GelfTransport {
     protected final BlockingQueue<GelfMessage> queue;
 
     private final EventLoopGroup workerGroup;
+    final GelfSenderThread senderThread;
 
     /**
-     * Creates a new GELF transport with the given configuration and {@link java.util.concurrent.BlockingQueue}.
+     * Creates a new GELF transport with the given configuration and {@link BlockingQueue}.
      *
      * @param config the client configuration
      * @param queue  the {@link BlockingQueue} used to buffer GELF messages
@@ -50,6 +51,7 @@ public abstract class AbstractGelfTransport implements GelfTransport {
         this.config = config;
         this.queue = queue;
         this.workerGroup = new NioEventLoopGroup(config.getThreads(), new DefaultThreadFactory(getClass(), true));
+        this.senderThread = new GelfSenderThread(queue, config.getMaxInflightSends());
         createBootstrap(workerGroup);
     }
 
@@ -77,8 +79,8 @@ public abstract class AbstractGelfTransport implements GelfTransport {
 
     /**
      * {@inheritDoc}
-     * <p>This implementation is backed by a {@link java.util.concurrent.BlockingQueue}. When this method returns the
-     * message has been added to the {@link java.util.concurrent.BlockingQueue} but has not been sent to the remote
+     * <p>This implementation is backed by a {@link BlockingQueue}. When this method returns the
+     * message has been added to the {@link BlockingQueue} but has not been sent to the remote
      * host yet.</p>
      *
      * @param message message to send to the remote host
@@ -91,8 +93,8 @@ public abstract class AbstractGelfTransport implements GelfTransport {
 
     /**
      * {@inheritDoc}
-     * <p>This implementation is backed by a {@link java.util.concurrent.BlockingQueue}. When this method returns the
-     * message has been added to the {@link java.util.concurrent.BlockingQueue} but has not been sent to the remote
+     * <p>This implementation is backed by a {@link BlockingQueue}. When this method returns the
+     * message has been added to the {@link BlockingQueue} but has not been sent to the remote
      * host yet.</p>
      *
      * @param message message to send to the remote host
@@ -110,5 +112,17 @@ public abstract class AbstractGelfTransport implements GelfTransport {
     @Override
     public void stop() {
         workerGroup.shutdownGracefully().syncUninterruptibly();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void flushAndStopSynchronously(int waitDuration, TimeUnit timeUnit, int retries) {
+
+        if (senderThread != null) {
+            senderThread.flushSynchronously(waitDuration, timeUnit, retries);
+        }
+        stop();
     }
 }

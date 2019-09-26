@@ -19,6 +19,7 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
+import java.util.concurrent.TimeUnit;
 import java.util.zip.GZIPInputStream;
 
 /**
@@ -99,8 +100,10 @@ public class CloudFlareLogpushFunction implements RequestHandler<S3Event, Object
             }
 
             // Flush and stop the GelfTransport to ensure that all in flight messages are sent before this method exits.
-            LOG.debug("Beginning shutdown...");
-            gelfTransport.flushAndStop();
+            LOG.debug("Beginning shutdown.");
+
+            // Wait up to 60 seconds.
+            gelfTransport.flushAndStopSynchronously(100, TimeUnit.MILLISECONDS, 6000);
         }
     }
 
