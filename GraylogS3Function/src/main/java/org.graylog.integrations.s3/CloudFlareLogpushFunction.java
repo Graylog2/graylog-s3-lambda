@@ -31,7 +31,7 @@ public class CloudFlareLogpushFunction implements RequestHandler<S3Event, Object
 
     public Object handleRequest(final S3Event s3Event, final Context context) {
 
-        Config config = Config.newInstance();
+        Configuration config = Configuration.newInstance();
         LOG.debug(config);
         AmazonS3 s3 = AmazonS3Client.builder().build();
 
@@ -40,7 +40,7 @@ public class CloudFlareLogpushFunction implements RequestHandler<S3Event, Object
         return String.format("Processed %d records.", s3Event.getRecords().size());
     }
 
-    private void processObject(Config config, AmazonS3 s3, String fileKey) {
+    private void processObject(Configuration config, AmazonS3 s3, String fileKey) {
 
         LOG.debug("Object key [{}]", fileKey);
         LOG.debug(String.format("Host: %s:%d", config.getGraylogHost(),

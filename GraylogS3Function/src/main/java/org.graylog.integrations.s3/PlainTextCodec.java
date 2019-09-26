@@ -6,7 +6,7 @@ import java.io.IOException;
 
 public class PlainTextCodec extends AbstractS3Codec implements S3Codec {
 
-    public PlainTextCodec(String stringMessage, Config config) {
+    public PlainTextCodec(String stringMessage, Configuration config) {
         super(stringMessage, config);
     }
 

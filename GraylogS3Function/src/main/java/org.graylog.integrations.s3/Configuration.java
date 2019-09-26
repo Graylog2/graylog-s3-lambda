@@ -5,13 +5,13 @@ package org.graylog.integrations.s3;
  *
  * @see <a href="https://docs.aws.amazon.com/lambda/latest/dg/tutorial-env_cli.html">S3 Environment Variables</a>
  */
-public class Config {
+public class Configuration {
 
     private static final String DEFAULT_MESSAGE_SUMMARY_FIELDS = "ClientRequestHost,ClientRequestPath,OriginIP,ClientSrcPort,EdgeServerIP,EdgeResponseBytes";
     private static final String DEFAULT_CONTENT_TYPE = "text/plain";
 
     // Use newInstance() instead.
-    private Config() {
+    private Configuration() {
     }
 
     // Each of these environment variables need to be defined on the Lambda function.
@@ -53,9 +53,9 @@ public class Config {
     private ContentType contentType;
 
 
-    public static Config newInstance() {
+    public static Configuration newInstance() {
 
-        final Config config = new Config();
+        final Configuration config = new Configuration();
         config.s3BucketName = System.getenv(S3_BUCKET_NAME);
         config.graylogHost = System.getenv(GRAYLOG_HOST);
         config.graylogPort = safeParseInteger(GRAYLOG_PORT);

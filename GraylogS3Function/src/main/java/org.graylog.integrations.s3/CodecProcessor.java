@@ -7,9 +7,9 @@ import java.io.IOException;
 public class CodecProcessor {
 
     private final String stringMessage;
-    private final Config config;
+    private final Configuration config;
 
-    public CodecProcessor(Config config, String stringMessage) {
+    public CodecProcessor(Configuration config, String stringMessage) {
         this.stringMessage = stringMessage;
         this.config = config;
     }

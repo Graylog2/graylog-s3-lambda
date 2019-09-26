@@ -24,7 +24,7 @@ public class CloudFlareLogpushCodec extends AbstractS3Codec implements S3Codec {
     static final Logger LOG = LogManager.getLogger(CloudFlareLogsParser.class);
     static final List<String> TIMESTAMP_FIELDS = Arrays.asList("EdgeEndTimestamp", "EdgeStartTimestamp");
 
-    public CloudFlareLogpushCodec(String stringMessage, Config config) {
+    public CloudFlareLogpushCodec(String stringMessage, Configuration config) {
         super(stringMessage, config);
     }
 

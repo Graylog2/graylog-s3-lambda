@@ -3,12 +3,12 @@ package org.graylog.integrations.s3;
 import org.junit.Assert;
 import org.junit.Test;
 
-public class ConfigTest {
+public class ConfigurationTest {
 
     @Test
     public void testDefaults() {
 
-        final Config config = Config.newInstance();
+        final Configuration config = Configuration.newInstance();
         Assert.assertEquals(ContentType.TEXT_PLAIN, config.getContentType());
     }
 }

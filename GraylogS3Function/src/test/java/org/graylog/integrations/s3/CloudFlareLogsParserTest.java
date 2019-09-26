@@ -16,7 +16,7 @@ public class CloudFlareLogsParserTest {
     @Test
     public void testParsing() throws IOException {
 
-        final Config config = Config.newInstance();
+        final Configuration config = Configuration.newInstance();
         config.setContentType(ContentType.CLOUD_FLARE_LOGPUSH);
         GelfMessage gelfMessage = new CodecProcessor(config, RFC3339_TIMESTAMP_MESSAGE).decode();
         assertEquals(Double.valueOf(1568406189), Double.valueOf(gelfMessage.getTimestamp()));
@@ -27,7 +27,7 @@ public class CloudFlareLogsParserTest {
     @Test
     public void testOnlyIncludeSpecificFields() throws IOException {
 
-        final Config config = Config.newInstance();
+        final Configuration config = Configuration.newInstance();
         config.setContentType(ContentType.CLOUD_FLARE_LOGPUSH);
         config.setMessageFields("ClientSrcPort,EdgeServerIP, EdgeResponseBytes");
         config.setMessageSummaryFields("ClientRequestHost,ClientRequestPath");
@@ -39,7 +39,7 @@ public class CloudFlareLogsParserTest {
 
     @Test
     public void testUnixParsing() throws IOException {
-        final Config config = Config.newInstance();
+        final Configuration config = Configuration.newInstance();
         config.setContentType(ContentType.CLOUD_FLARE_LOGPUSH);
         config.setMessageFields("ClientSrcPort,EdgeServerIP, EdgeResponseBytes");
         config.setMessageSummaryFields("ClientRequestHost,ClientRequestPath");
@@ -51,7 +51,7 @@ public class CloudFlareLogsParserTest {
     @Test
     public void testUnixNanoParsing() throws IOException {
 
-        final Config config = Config.newInstance();
+        final Configuration config = Configuration.newInstance();
         config.setContentType(ContentType.CLOUD_FLARE_LOGPUSH);
         GelfMessage gelfMessage = new CodecProcessor(config, UNIX_NANO_TIMESTAMP_MESSAGE).decode();
         assertEquals(Double.valueOf(1568924647.0300002), Double.valueOf(gelfMessage.getTimestamp()));
