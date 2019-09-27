@@ -6,11 +6,11 @@ import java.io.IOException;
 
 public class PlainTextCodec extends AbstractS3Codec implements S3Codec {
 
-    public PlainTextCodec(String stringMessage, Configuration config) {
+    PlainTextCodec(String stringMessage, Configuration config) {
         super(stringMessage, config);
     }
 
-    public GelfMessage decode() throws IOException {
+    public GelfMessage decode() {
 
         // Nothing to do here.
         return new GelfMessage(stringMessage);

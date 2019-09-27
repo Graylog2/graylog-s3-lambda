@@ -7,7 +7,7 @@ public enum ContentType {
     CLOUD_FLARE_LOGPUSH("cloudflare/logpush"),
     TEXT_PLAIN("text/plain");
 
-    private String type;
+    private final String type;
 
     ContentType(String type) {
         this.type = type;

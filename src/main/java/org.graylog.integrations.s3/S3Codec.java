@@ -4,7 +4,7 @@ import org.graylog2.gelfclient.GelfMessage;
 
 import java.io.IOException;
 
-public interface S3Codec {
+interface S3Codec {
 
     GelfMessage decode() throws IOException;
 }

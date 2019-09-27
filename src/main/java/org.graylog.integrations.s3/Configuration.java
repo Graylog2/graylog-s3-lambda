@@ -5,7 +5,7 @@ package org.graylog.integrations.s3;
  *
  * @see <a href="https://docs.aws.amazon.com/lambda/latest/dg/tutorial-env_cli.html">S3 Environment Variables</a>
  */
-public class Configuration {
+class Configuration {
 
     private static final String DEFAULT_MESSAGE_SUMMARY_FIELDS = "ClientRequestHost,ClientRequestPath,OriginIP,ClientSrcPort,EdgeServerIP,EdgeResponseBytes";
     private static final String DEFAULT_CONTENT_TYPE = "text/plain";
@@ -53,7 +53,7 @@ public class Configuration {
     private ContentType contentType;
 
 
-    public static Configuration newInstance() {
+    static Configuration newInstance() {
 
         final Configuration config = new Configuration();
         config.s3BucketName = System.getenv(S3_BUCKET_NAME);
@@ -65,7 +65,7 @@ public class Configuration {
         config.tcpNoDelay = readBoolean(TCP_NO_DELAY, true);
         config.queueSize = safeParseInteger(TCP_QUEUE_SIZE) != null ? safeParseInteger(TCP_QUEUE_SIZE) : 512;
 
-        // Max inflight sends must be 1 in order for synchronous sending VIA gelfclient to work.
+        // Max inflight sends must be 1 in order for synchronous sending VIA GELF client to work.
         // This forces the client to send the messages serially. Once the queue size is zero, then the transport can be shut down.
         config.maxInflightSends = safeParseInteger(TCP_MAX_IN_FLIGHT_SENDS) != null ? safeParseInteger(TCP_MAX_IN_FLIGHT_SENDS) : 512;
 
@@ -113,107 +113,107 @@ public class Configuration {
         }
     }
 
-    public String getS3BucketName() {
+    String getS3BucketName() {
         return s3BucketName;
     }
 
-    public void setS3BucketName(String s3BucketName) {
+    void setS3BucketName(String s3BucketName) {
         this.s3BucketName = s3BucketName;
     }
 
-    public String getGraylogHost() {
+    String getGraylogHost() {
         return graylogHost;
     }
 
-    public void setGraylogHost(String graylogHost) {
+    void setGraylogHost(String graylogHost) {
         this.graylogHost = graylogHost;
     }
 
-    public Integer getGraylogPort() {
+    Integer getGraylogPort() {
         return graylogPort;
     }
 
-    public void setGraylogPort(Integer graylogPort) {
+    void setGraylogPort(Integer graylogPort) {
         this.graylogPort = graylogPort;
     }
 
-    public Integer getConnectTimeout() {
+    Integer getConnectTimeout() {
         return connectTimeout;
     }
 
-    public void setConnectTimeout(Integer connectTimeout) {
+    void setConnectTimeout(Integer connectTimeout) {
         this.connectTimeout = connectTimeout;
     }
 
-    public Integer getReconnectDelay() {
+    Integer getReconnectDelay() {
         return reconnectDelay;
     }
 
-    public void setReconnectDelay(Integer reconnectDelay) {
+    void setReconnectDelay(Integer reconnectDelay) {
         this.reconnectDelay = reconnectDelay;
     }
 
-    public Boolean getTcpKeepAlive() {
+    Boolean getTcpKeepAlive() {
         return tcpKeepAlive;
     }
 
-    public void setTcpKeepAlive(Boolean tcpKeepAlive) {
+    void setTcpKeepAlive(Boolean tcpKeepAlive) {
         this.tcpKeepAlive = tcpKeepAlive;
     }
 
-    public Boolean getTcpNoDelay() {
+    Boolean getTcpNoDelay() {
         return tcpNoDelay;
     }
 
-    public void setTcpNoDelay(Boolean tcpNoDelay) {
+    void setTcpNoDelay(Boolean tcpNoDelay) {
         this.tcpNoDelay = tcpNoDelay;
     }
 
-    public Integer getQueueSize() {
+    Integer getQueueSize() {
         return queueSize;
     }
 
-    public void setQueueSize(Integer queueSize) {
+    void setQueueSize(Integer queueSize) {
         this.queueSize = queueSize;
     }
 
-    public Integer getMaxInflightSends() {
+    Integer getMaxInflightSends() {
         return maxInflightSends;
     }
 
-    public void setMaxInflightSends(Integer maxInflightSends) {
+    void setMaxInflightSends(Integer maxInflightSends) {
         this.maxInflightSends = maxInflightSends;
     }
 
-    public Boolean getUseNowTimestamp() {
+    Boolean getUseNowTimestamp() {
         return useNowTimestamp;
     }
 
-    public void setUseNowTimestamp(Boolean useNowTimestamp) {
+    void setUseNowTimestamp(Boolean useNowTimestamp) {
         this.useNowTimestamp = useNowTimestamp;
     }
 
-    public String getMessageFields() {
+    String getMessageFields() {
         return messageFields;
     }
 
-    public void setMessageFields(String messageFields) {
+    void setMessageFields(String messageFields) {
         this.messageFields = messageFields;
     }
 
-    public String getMessageSummaryFields() {
+    String getMessageSummaryFields() {
         return messageSummaryFields;
     }
 
-    public void setMessageSummaryFields(String messageSummaryFields) {
+    void setMessageSummaryFields(String messageSummaryFields) {
         this.messageSummaryFields = messageSummaryFields;
     }
 
-    public ContentType getContentType() {
+    ContentType getContentType() {
         return contentType;
     }
 
-    public void setContentType(ContentType contentType) {
+    void setContentType(ContentType contentType) {
         this.contentType = contentType;
     }
 

@@ -7,7 +7,7 @@ import java.util.Map;
 
 public class ApplicationJsonCodec extends AbstractS3Codec implements S3Codec {
 
-    public ApplicationJsonCodec(String stringMessage, Configuration config) {
+    ApplicationJsonCodec(String stringMessage, Configuration config) {
         super(stringMessage, config);
     }
 

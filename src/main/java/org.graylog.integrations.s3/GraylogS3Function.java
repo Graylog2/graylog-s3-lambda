@@ -23,11 +23,11 @@ import java.util.concurrent.TimeUnit;
 import java.util.zip.GZIPInputStream;
 
 /**
- * This method is called each time a CloudFlare Logpush HTTP log file is written to S3.
+ * This method is called each time a file is written to S3.
  */
-public class CloudFlareLogpushFunction implements RequestHandler<S3Event, Object> {
+class GraylogS3Function implements RequestHandler<S3Event, Object> {
 
-    static final Logger LOG = LogManager.getLogger(CloudFlareLogpushFunction.class);
+    private static final Logger LOG = LogManager.getLogger(GraylogS3Function.class);
 
     public Object handleRequest(final S3Event s3Event, final Context context) {
 
@@ -66,7 +66,7 @@ public class CloudFlareLogpushFunction implements RequestHandler<S3Event, Object
         }
 
         // Split all messages by line breaks.
-        String lines[] = logContents.split("\\r?\\n");
+        String[] lines = logContents.split("\\r?\\n");
         LOG.debug("Log payload: [{}]", logContents);
         if (lines.length != 0) {
             // Send message to Graylog.
@@ -114,7 +114,7 @@ public class CloudFlareLogpushFunction implements RequestHandler<S3Event, Object
      * @param maxBytes       The maximum number of uncompressed bytes to read.
      * @return A string containing the decompressed data
      */
-    public static String decompressGzip(byte[] compressedData, long maxBytes) throws IOException {
+    private static String decompressGzip(byte[] compressedData, long maxBytes) throws IOException {
         try (final ByteArrayInputStream dataStream = new ByteArrayInputStream(compressedData);
              final GZIPInputStream in = new GZIPInputStream(dataStream);
              final InputStream limited = ByteStreams.limit(in, maxBytes)) {
