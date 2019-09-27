@@ -5,9 +5,12 @@ package org.graylog.integrations.s3;
  *
  * @see <a href="https://docs.aws.amazon.com/lambda/latest/dg/tutorial-env_cli.html">S3 Environment Variables</a>
  */
-class Configuration {
-
-    private static final String DEFAULT_MESSAGE_SUMMARY_FIELDS = "ClientRequestHost,ClientRequestPath,OriginIP,ClientSrcPort,EdgeServerIP,EdgeResponseBytes";
+class Configuration extends AbstractConfiguration {
+    
+    private static final int DEFAULT_CONNECT_TIMEOUT = 10000;
+    private static final int DEFAULT_RECONNECT_DELAY = 10000;
+    private static final int DEFAULT_TCP_QUEUE_SIZE = 512;
+    private static final int DEFAULT_TCP_MAX_IN_FLIGHT_SENDS = 512;
     private static final String DEFAULT_CONTENT_TYPE = "text/plain";
 
     // Use newInstance() instead.
@@ -24,11 +27,6 @@ class Configuration {
     private static final String TCP_NO_DELAY = "tcp_no_delay";
     private static final String TCP_QUEUE_SIZE = "tcp_queue_size";
     private static final String TCP_MAX_IN_FLIGHT_SENDS = "tcp_max_in_flight_sends";
-    private static final String USE_NOW_TIMESTAMP = "use_now_timestamp";
-    // Fields to parse and store with the message in Graylog
-    private static final String MESSAGE_FIELDS = "message_fields";
-    // Fields to store in the message field in the GELF message field.
-    private static final String MESSAGE_SUMMARY_FIELDS = "message_summary_fields";
     private static final String CONTENT_TYPE = "content_type";
 
     private String s3BucketName;
@@ -42,171 +40,61 @@ class Configuration {
     private Boolean tcpNoDelay;
     private Integer queueSize;
     private Integer maxInflightSends;
-    private Boolean useNowTimestamp;
-
-    // Defaults to all fields
-    private String messageFields;
-
-    // Defaults to the indicated fields
-    private String messageSummaryFields;
-
     private ContentType contentType;
 
+    private LogpushConfiguration logPushConfiguration;
 
     static Configuration newInstance() {
-
         final Configuration config = new Configuration();
         config.s3BucketName = System.getenv(S3_BUCKET_NAME);
         config.graylogHost = System.getenv(GRAYLOG_HOST);
         config.graylogPort = safeParseInteger(GRAYLOG_PORT);
-        config.connectTimeout = safeParseInteger(CONNECT_TIMEOUT) != null ? safeParseInteger(CONNECT_TIMEOUT) : 10000;
-        config.reconnectDelay = safeParseInteger(RECONNECT_DELAY) != null ? safeParseInteger(RECONNECT_DELAY) : 10000;
+        config.connectTimeout = safeParseInteger(CONNECT_TIMEOUT) != null ? safeParseInteger(CONNECT_TIMEOUT) : DEFAULT_CONNECT_TIMEOUT;
+        config.reconnectDelay = safeParseInteger(RECONNECT_DELAY) != null ? safeParseInteger(RECONNECT_DELAY) : DEFAULT_RECONNECT_DELAY;
         config.tcpKeepAlive = readBoolean(TCP_KEEP_ALIVE, true);
         config.tcpNoDelay = readBoolean(TCP_NO_DELAY, true);
-        config.queueSize = safeParseInteger(TCP_QUEUE_SIZE) != null ? safeParseInteger(TCP_QUEUE_SIZE) : 512;
-
-        // Max inflight sends must be 1 in order for synchronous sending VIA GELF client to work.
-        // This forces the client to send the messages serially. Once the queue size is zero, then the transport can be shut down.
-        config.maxInflightSends = safeParseInteger(TCP_MAX_IN_FLIGHT_SENDS) != null ? safeParseInteger(TCP_MAX_IN_FLIGHT_SENDS) : 512;
-
-        config.useNowTimestamp = readBoolean(USE_NOW_TIMESTAMP, false);
-
-        config.messageFields = getStringEnvironmentVariable(MESSAGE_FIELDS, null);
-        config.messageSummaryFields = getStringEnvironmentVariable(MESSAGE_SUMMARY_FIELDS, DEFAULT_MESSAGE_SUMMARY_FIELDS);
-
+        config.queueSize = safeParseInteger(TCP_QUEUE_SIZE) != null ? safeParseInteger(TCP_QUEUE_SIZE) : DEFAULT_TCP_QUEUE_SIZE;
+        config.maxInflightSends = safeParseInteger(TCP_MAX_IN_FLIGHT_SENDS) != null ? safeParseInteger(TCP_MAX_IN_FLIGHT_SENDS) : DEFAULT_TCP_MAX_IN_FLIGHT_SENDS;
         config.contentType = ContentType.findByType(getStringEnvironmentVariable(CONTENT_TYPE, DEFAULT_CONTENT_TYPE));
-
+        config.logPushConfiguration = LogpushConfiguration.newInstance();
         return config;
     }
 
-    private static boolean readBoolean(String property, boolean defaultValue) {
-        return System.getenv(property) != null ? Boolean.valueOf(System.getenv(property)) : defaultValue;
-    }
-
-    /**
-     * @return Get the indicated string environment variable or return the default value if not present.
-     */
-    private static String getStringEnvironmentVariable(String envVarName, String defaultValue) {
-        return System.getenv(envVarName) != null && !System.getenv(envVarName).trim().isEmpty() ? System.getenv(envVarName) : defaultValue;
-    }
-
-    /**
-     * Read the specified environment variable and attempt to convert it to an integer. Handle error condition.
-     *
-     * @param envVariableName The environment variable name to parse.
-     * @return The parsed integer.
-     */
-    private static Integer safeParseInteger(String envVariableName) {
-
-        final String envValue = System.getenv(envVariableName);
-        // Safely ignore blank values.
-        if (envValue == null || envValue.equals(envVariableName)) {
-            return null;
-        }
-        try {
-            return Integer.valueOf(envValue);
-        } catch (NumberFormatException e) {
-            final String errorMessage = String.format("The specified value [%s] for field [%s] is not a valid integer.",
-                                                      envValue, envVariableName);
-            e.printStackTrace();
-            throw new RuntimeException(errorMessage);
-        }
-    }
 
     String getS3BucketName() {
         return s3BucketName;
-    }
-
-    void setS3BucketName(String s3BucketName) {
-        this.s3BucketName = s3BucketName;
     }
 
     String getGraylogHost() {
         return graylogHost;
     }
 
-    void setGraylogHost(String graylogHost) {
-        this.graylogHost = graylogHost;
-    }
-
     Integer getGraylogPort() {
         return graylogPort;
-    }
-
-    void setGraylogPort(Integer graylogPort) {
-        this.graylogPort = graylogPort;
     }
 
     Integer getConnectTimeout() {
         return connectTimeout;
     }
 
-    void setConnectTimeout(Integer connectTimeout) {
-        this.connectTimeout = connectTimeout;
-    }
-
     Integer getReconnectDelay() {
         return reconnectDelay;
-    }
-
-    void setReconnectDelay(Integer reconnectDelay) {
-        this.reconnectDelay = reconnectDelay;
     }
 
     Boolean getTcpKeepAlive() {
         return tcpKeepAlive;
     }
 
-    void setTcpKeepAlive(Boolean tcpKeepAlive) {
-        this.tcpKeepAlive = tcpKeepAlive;
-    }
-
     Boolean getTcpNoDelay() {
         return tcpNoDelay;
-    }
-
-    void setTcpNoDelay(Boolean tcpNoDelay) {
-        this.tcpNoDelay = tcpNoDelay;
     }
 
     Integer getQueueSize() {
         return queueSize;
     }
 
-    void setQueueSize(Integer queueSize) {
-        this.queueSize = queueSize;
-    }
-
     Integer getMaxInflightSends() {
         return maxInflightSends;
-    }
-
-    void setMaxInflightSends(Integer maxInflightSends) {
-        this.maxInflightSends = maxInflightSends;
-    }
-
-    Boolean getUseNowTimestamp() {
-        return useNowTimestamp;
-    }
-
-    void setUseNowTimestamp(Boolean useNowTimestamp) {
-        this.useNowTimestamp = useNowTimestamp;
-    }
-
-    String getMessageFields() {
-        return messageFields;
-    }
-
-    void setMessageFields(String messageFields) {
-        this.messageFields = messageFields;
-    }
-
-    String getMessageSummaryFields() {
-        return messageSummaryFields;
-    }
-
-    void setMessageSummaryFields(String messageSummaryFields) {
-        this.messageSummaryFields = messageSummaryFields;
     }
 
     ContentType getContentType() {
@@ -217,9 +105,13 @@ class Configuration {
         this.contentType = contentType;
     }
 
+    public LogpushConfiguration getLogpushConfiguration() {
+        return logPushConfiguration;
+    }
+
     @Override
     public String toString() {
-        return "Config{" +
+        return "Configuration{" +
                "s3BucketName='" + s3BucketName + '\'' +
                ", graylogHost='" + graylogHost + '\'' +
                ", graylogPort=" + graylogPort +
@@ -229,10 +121,8 @@ class Configuration {
                ", tcpNoDelay=" + tcpNoDelay +
                ", queueSize=" + queueSize +
                ", maxInflightSends=" + maxInflightSends +
-               ", useNowTimestamp=" + useNowTimestamp +
-               ", messageFields='" + messageFields + '\'' +
-               ", messageSummaryFields='" + messageSummaryFields + '\'' +
                ", contentType=" + contentType +
+               ", logpushConfiguration=" + logPushConfiguration +
                '}';
     }
 }

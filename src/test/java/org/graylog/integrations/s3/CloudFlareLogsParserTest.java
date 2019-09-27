@@ -29,8 +29,8 @@ public class CloudFlareLogsParserTest {
 
         final Configuration config = Configuration.newInstance();
         config.setContentType(ContentType.CLOUD_FLARE_LOGPUSH);
-        config.setMessageFields("ClientSrcPort,EdgeServerIP, EdgeResponseBytes");
-        config.setMessageSummaryFields("ClientRequestHost,ClientRequestPath");
+        config.getLogpushConfiguration().setMessageFields("ClientSrcPort,EdgeServerIP, EdgeResponseBytes");
+        config.getLogpushConfiguration().setMessageSummaryFields("ClientRequestHost,ClientRequestPath");
         GelfMessage gelfMessage = new CodecProcessor(config, RFC3339_TIMESTAMP_MESSAGE).decode();
         assertEquals(Double.valueOf(1568406189), Double.valueOf(gelfMessage.getTimestamp()));
         assertEquals(3, gelfMessage.getAdditionalFields().size());
@@ -41,7 +41,7 @@ public class CloudFlareLogsParserTest {
     public void testUnixParsing() throws IOException {
         final Configuration config = Configuration.newInstance();
         config.setContentType(ContentType.CLOUD_FLARE_LOGPUSH);
-        config.setMessageSummaryFields("ClientRequestHost,ClientRequestPath");
+        config.getLogpushConfiguration().setMessageSummaryFields("ClientRequestHost,ClientRequestPath");
         GelfMessage gelfMessage = new CodecProcessor(config, UNIX_TIMESTAMP_MESSAGE).decode();
         assertEquals(Double.valueOf(1568923202), Double.valueOf(gelfMessage.getTimestamp()));
         assertEquals(59, gelfMessage.getAdditionalFields().size());
