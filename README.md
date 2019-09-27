@@ -1,2 +1,6 @@
-# graylog-cloudflare-logpush
-An AWS Lamba function that reads CloudFlare logs from S3 and sends them to Graylog.
+# Graylog S3 Lambda
+An AWS Lambda function payload that reads log files S3 and publishes sends them to Graylog.
+
+This repository will be used for the S3 -> Graylog proof of concept and eventually the final function that we plan to publish. 
+
+This repository is private for now. Please add approprate licensing before making public.
