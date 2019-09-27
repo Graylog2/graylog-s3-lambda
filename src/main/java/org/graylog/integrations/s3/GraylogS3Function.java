@@ -27,7 +27,7 @@ import java.util.zip.GZIPInputStream;
 /**
  * This method is called each time a file is written to S3.
  */
-class GraylogS3Function implements RequestHandler<S3Event, Object> {
+public class GraylogS3Function implements RequestHandler<S3Event, Object> {
 
     private static final Logger LOG = LogManager.getLogger(GraylogS3Function.class);
 
@@ -37,9 +37,9 @@ class GraylogS3Function implements RequestHandler<S3Event, Object> {
         LOG.debug(config);
         AmazonS3 s3Client = AmazonS3Client.builder().build();
 
-        // Multiple messages could be provided with the callback.
+        // Multiple messages could be provided with the S3 event callback.
         s3Event.getRecords().forEach(record -> processObject(config, s3Client, record.getS3().getObject().getKey()));
-        return String.format("Processed %d records.", s3Event.getRecords().size());
+        return String.format("Processed %d S3 records.", s3Event.getRecords().size());
     }
 
     /**
@@ -51,20 +51,19 @@ class GraylogS3Function implements RequestHandler<S3Event, Object> {
      */
     private void processObject(Configuration config, AmazonS3 s3Client, String objectKey) {
 
-        LOG.debug("Object key [{}]", objectKey);
-        LOG.debug(String.format("Host: %s:%d", config.getGraylogHost(),
+        LOG.debug(String.format("Graylog host: %s:%d", config.getGraylogHost(),
                                 config.getGraylogPort()));
 
-        LOG.debug("Reading object from S3...");
+        LOG.debug("Attempting to read object [{}] from S3.", objectKey);
         S3Object object = s3Client.getObject(config.getS3BucketName(), objectKey);
-        LOG.debug("Object read from S3.");
+        LOG.debug("Object read from S3 successfully.");
 
         final String stringLogContents;
         try {
             stringLogContents = handleCompression(config, object);
-            LOG.trace("Log contents: [{}]", stringLogContents);
+            LOG.trace("Full log file [{}]", stringLogContents);
         } catch (IOException e) {
-            e.printStackTrace();
+            LOG.error("Failed to decompress file [{}]", objectKey, e);
             return;
         }
 
@@ -98,9 +97,10 @@ class GraylogS3Function implements RequestHandler<S3Event, Object> {
                     final GelfMessage message = new CodecProcessor(config, messageLine).decode();
                     gelfTransport.send(message);
                 } catch (InterruptedException e) {
-                    e.printStackTrace();
+                    LOG.error("Failed to send message [{}]", messageLine, e);
+                    return;
                 } catch (IOException e) {
-                    e.printStackTrace();
+                    LOG.error("Failed to decode message [{}]", messageLine, e);
                     return;
                 }
             }
@@ -116,7 +116,7 @@ class GraylogS3Function implements RequestHandler<S3Event, Object> {
     private String handleCompression(Configuration config, S3Object object) throws IOException {
         String stringLogContents;
         final byte[] logData = IOUtils.toByteArray(object.getObjectContent());
-        LOG.debug("Compressed data length [{}]", logData.length);
+        LOG.debug("Compressed data length [{}].", logData.length);
 
         if (config.getCompressionType() == CompressionType.GZIP) {
             stringLogContents = decompressGzip(logData, Long.MAX_VALUE);

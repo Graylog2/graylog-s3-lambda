@@ -4,6 +4,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.util.Arrays;
+import java.util.Objects;
 
 /**
  * Configurable compression type for the S3 Lambda function.
@@ -27,6 +28,7 @@ public enum CompressionType {
     public static CompressionType findByType(String type) {
 
         return Arrays.stream(CompressionType.values())
+                     .filter(Objects::nonNull)
                      .filter(v -> v.type.equals(type))
                      .findAny()
                      .orElseGet(() -> {

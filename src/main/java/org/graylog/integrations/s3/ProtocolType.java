@@ -5,6 +5,7 @@ import org.apache.logging.log4j.Logger;
 import org.graylog2.gelfclient.GelfTransports;
 
 import java.util.Arrays;
+import java.util.Objects;
 
 /**
  * Configurable protocol type for the S3 Lambda function.
@@ -34,6 +35,7 @@ public enum ProtocolType {
     public static ProtocolType findByType(String type) {
 
         return Arrays.stream(ProtocolType.values())
+                     .filter(Objects::nonNull)
                      .filter(v -> v.type.equals(type))
                      .findAny()
                      .orElseGet(() -> {

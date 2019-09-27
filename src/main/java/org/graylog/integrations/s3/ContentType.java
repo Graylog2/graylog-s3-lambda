@@ -4,6 +4,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.util.Arrays;
+import java.util.Objects;
 
 /**
  * Configurable content type for the S3 Lambda function.
@@ -30,6 +31,7 @@ public enum ContentType {
     public static ContentType findByType(String type) {
 
         return Arrays.stream(ContentType.values())
+                     .filter(Objects::nonNull)
                      .filter(v -> v.type.equals(type))
                      .findAny()
                      .orElseGet(() -> {

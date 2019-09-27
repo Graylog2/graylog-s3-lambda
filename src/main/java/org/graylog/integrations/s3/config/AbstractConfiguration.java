@@ -1,11 +1,16 @@
 package org.graylog.integrations.s3.config;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 /**
  * Abstract class which has shared configuration methods.
  *
  * @see <a href="https://docs.aws.amazon.com/lambda/latest/dg/tutorial-env_cli.html">S3 Environment Variables</a>
  */
 class AbstractConfiguration {
+
+    private static final Logger LOG = LogManager.getLogger(AbstractConfiguration.class);
 
     static boolean readBoolean(String property, boolean defaultValue) {
         return System.getenv(property) != null ? Boolean.parseBoolean(System.getenv(property)) : defaultValue;
@@ -36,7 +41,7 @@ class AbstractConfiguration {
         } catch (NumberFormatException e) {
             final String errorMessage = String.format("The specified value [%s] for field [%s] is not a valid integer.",
                                                       envValue, envVariableName);
-            e.printStackTrace();
+            LOG.error(errorMessage, e);
             throw new RuntimeException(errorMessage);
         }
     }

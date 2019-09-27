@@ -3,7 +3,6 @@ package org.graylog.integrations.s3.config;
 import org.graylog.integrations.s3.CompressionType;
 import org.graylog.integrations.s3.ContentType;
 import org.graylog.integrations.s3.ProtocolType;
-import org.graylog2.gelfclient.Compression;
 
 /**
  * This class reads the needed configuration values from environment variables defined on the S3 function.
