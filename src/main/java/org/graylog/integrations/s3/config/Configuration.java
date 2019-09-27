@@ -1,12 +1,14 @@
-package org.graylog.integrations.s3;
+package org.graylog.integrations.s3.config;
+
+import org.graylog.integrations.s3.ContentType;
 
 /**
  * This class reads the needed configuration values from environment variables defined on the S3 function.
  *
  * @see <a href="https://docs.aws.amazon.com/lambda/latest/dg/tutorial-env_cli.html">S3 Environment Variables</a>
  */
-class Configuration extends AbstractConfiguration {
-    
+public class Configuration extends AbstractConfiguration {
+
     private static final int DEFAULT_CONNECT_TIMEOUT = 10000;
     private static final int DEFAULT_RECONNECT_DELAY = 10000;
     private static final int DEFAULT_TCP_QUEUE_SIZE = 512;
@@ -44,7 +46,7 @@ class Configuration extends AbstractConfiguration {
 
     private LogpushConfiguration logPushConfiguration;
 
-    static Configuration newInstance() {
+    public static Configuration newInstance() {
         final Configuration config = new Configuration();
         config.s3BucketName = System.getenv(S3_BUCKET_NAME);
         config.graylogHost = System.getenv(GRAYLOG_HOST);
@@ -61,47 +63,47 @@ class Configuration extends AbstractConfiguration {
     }
 
 
-    String getS3BucketName() {
+    public String getS3BucketName() {
         return s3BucketName;
     }
 
-    String getGraylogHost() {
+    public String getGraylogHost() {
         return graylogHost;
     }
 
-    Integer getGraylogPort() {
+    public Integer getGraylogPort() {
         return graylogPort;
     }
 
-    Integer getConnectTimeout() {
+    public Integer getConnectTimeout() {
         return connectTimeout;
     }
 
-    Integer getReconnectDelay() {
+    public Integer getReconnectDelay() {
         return reconnectDelay;
     }
 
-    Boolean getTcpKeepAlive() {
+    public Boolean getTcpKeepAlive() {
         return tcpKeepAlive;
     }
 
-    Boolean getTcpNoDelay() {
+    public Boolean getTcpNoDelay() {
         return tcpNoDelay;
     }
 
-    Integer getQueueSize() {
+    public Integer getQueueSize() {
         return queueSize;
     }
 
-    Integer getMaxInflightSends() {
+    public Integer getMaxInflightSends() {
         return maxInflightSends;
     }
 
-    ContentType getContentType() {
+    public ContentType getContentType() {
         return contentType;
     }
 
-    void setContentType(ContentType contentType) {
+    public void setContentType(ContentType contentType) {
         this.contentType = contentType;
     }
 

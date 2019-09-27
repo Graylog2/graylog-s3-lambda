@@ -1,20 +1,20 @@
-package org.graylog.integrations.s3;
+package org.graylog.integrations.s3.config;
 
 /**
- * This class reads the needed configuration values from environment variables defined on the S3 function.
+ * Abstract class which has shared configuration methods.
  *
  * @see <a href="https://docs.aws.amazon.com/lambda/latest/dg/tutorial-env_cli.html">S3 Environment Variables</a>
  */
 class AbstractConfiguration {
 
-     static boolean readBoolean(String property, boolean defaultValue) {
-        return System.getenv(property) != null ? Boolean.valueOf(System.getenv(property)) : defaultValue;
+    static boolean readBoolean(String property, boolean defaultValue) {
+        return System.getenv(property) != null ? Boolean.parseBoolean(System.getenv(property)) : defaultValue;
     }
 
     /**
      * @return Get the indicated string environment variable or return the default value if not present.
      */
-     static String getStringEnvironmentVariable(String envVarName, String defaultValue) {
+    static String getStringEnvironmentVariable(String envVarName, String defaultValue) {
         return System.getenv(envVarName) != null && !System.getenv(envVarName).trim().isEmpty() ? System.getenv(envVarName) : defaultValue;
     }
 
@@ -24,7 +24,7 @@ class AbstractConfiguration {
      * @param envVariableName The environment variable name to parse.
      * @return The parsed integer.
      */
-     static Integer safeParseInteger(String envVariableName) {
+    static Integer safeParseInteger(String envVariableName) {
 
         final String envValue = System.getenv(envVariableName);
         // Safely ignore blank values.

@@ -1,4 +1,7 @@
-package org.graylog.integrations.s3;
+package org.graylog.integrations.s3.codec;
+
+
+import org.graylog.integrations.s3.config.Configuration;
 
 class AbstractS3Codec {
 

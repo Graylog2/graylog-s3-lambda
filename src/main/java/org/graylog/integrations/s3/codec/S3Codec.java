@@ -1,4 +1,4 @@
-package org.graylog.integrations.s3;
+package org.graylog.integrations.s3.codec;
 
 import org.graylog2.gelfclient.GelfMessage;
 

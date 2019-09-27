@@ -1,4 +1,4 @@
-package org.graylog.integrations.s3;
+package org.graylog.integrations.s3.codec;
 
 import com.amazonaws.util.StringUtils;
 import com.fasterxml.jackson.databind.DeserializationFeature;
@@ -7,6 +7,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.graylog.integrations.s3.config.Configuration;
 import org.graylog2.gelfclient.GelfMessage;
 
 import java.io.IOException;

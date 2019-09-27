@@ -1,13 +1,15 @@
-package org.graylog.integrations.s3;
+package org.graylog.integrations.s3.codec;
+
 
 import com.github.wnameless.json.flattener.JsonFlattener;
+import org.graylog.integrations.s3.config.Configuration;
 import org.graylog2.gelfclient.GelfMessage;
 
 import java.util.Map;
 
 public class ApplicationJsonCodec extends AbstractS3Codec implements S3Codec {
 
-    ApplicationJsonCodec(String stringMessage, Configuration config) {
+    public ApplicationJsonCodec(String stringMessage, Configuration config) {
         super(stringMessage, config);
     }
 

@@ -10,6 +10,8 @@ import com.amazonaws.util.IOUtils;
 import com.google.common.io.ByteStreams;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.graylog.integrations.s3.codec.CodecProcessor;
+import org.graylog.integrations.s3.config.Configuration;
 import org.graylog2.gelfclient.GelfConfiguration;
 import org.graylog2.gelfclient.GelfMessage;
 import org.graylog2.gelfclient.GelfTransports;

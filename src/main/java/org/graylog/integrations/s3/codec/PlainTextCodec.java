@@ -1,8 +1,8 @@
-package org.graylog.integrations.s3;
+package org.graylog.integrations.s3.codec;
 
+
+import org.graylog.integrations.s3.config.Configuration;
 import org.graylog2.gelfclient.GelfMessage;
-
-import java.io.IOException;
 
 public class PlainTextCodec extends AbstractS3Codec implements S3Codec {
 

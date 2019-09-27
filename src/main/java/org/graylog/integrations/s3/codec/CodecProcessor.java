@@ -1,15 +1,17 @@
-package org.graylog.integrations.s3;
+package org.graylog.integrations.s3.codec;
 
+
+import org.graylog.integrations.s3.config.Configuration;
 import org.graylog2.gelfclient.GelfMessage;
 
 import java.io.IOException;
 
-class CodecProcessor {
+public class CodecProcessor {
 
     private final String stringMessage;
     private final Configuration config;
 
-    CodecProcessor(Configuration config, String stringMessage) {
+    public CodecProcessor(Configuration config, String stringMessage) {
         this.stringMessage = stringMessage;
         this.config = config;
     }
@@ -19,7 +21,7 @@ class CodecProcessor {
      *
      * @throws IOException
      */
-    GelfMessage decode() throws IOException {
+    public GelfMessage decode() throws IOException {
 
         switch (config.getContentType()) {
             case APPLICATION_JSON:

@@ -1,4 +1,4 @@
-package org.graylog.integrations.s3;
+package org.graylog.integrations.s3.config;
 
 /**
  * All CloudFlare Logpush-specific configuration.
@@ -6,7 +6,7 @@ package org.graylog.integrations.s3;
  * @see <a href="https://developers.cloudflare.com/logs/logpush/">CloudFlare Logpush</a>
  * @see <a href="https://docs.aws.amazon.com/lambda/latest/dg/tutorial-env_cli.html">S3 Environment Variables</a>
  */
-class LogpushConfiguration extends AbstractConfiguration {
+public class LogpushConfiguration extends AbstractConfiguration {
 
     private static final String DEFAULT_MESSAGE_SUMMARY_FIELDS = "ClientRequestHost,ClientRequestPath,OriginIP,ClientSrcPort,EdgeServerIP,EdgeResponseBytes";
 
@@ -27,7 +27,7 @@ class LogpushConfiguration extends AbstractConfiguration {
     private String messageFields;
     private String messageSummaryFields;
 
-    static LogpushConfiguration newInstance() {
+    public static LogpushConfiguration newInstance() {
         final LogpushConfiguration config = new LogpushConfiguration();
         config.useNowTimestamp = readBoolean(USE_NOW_TIMESTAMP, false);
         // Defaults to all fields
@@ -37,27 +37,27 @@ class LogpushConfiguration extends AbstractConfiguration {
         return config;
     }
 
-    Boolean getUseNowTimestamp() {
+    public Boolean getUseNowTimestamp() {
         return useNowTimestamp;
     }
 
-    void setUseNowTimestamp(Boolean useNowTimestamp) {
+    public void setUseNowTimestamp(Boolean useNowTimestamp) {
         this.useNowTimestamp = useNowTimestamp;
     }
 
-    String getMessageFields() {
+    public String getMessageFields() {
         return messageFields;
     }
 
-    void setMessageFields(String messageFields) {
+    public void setMessageFields(String messageFields) {
         this.messageFields = messageFields;
     }
 
-    String getMessageSummaryFields() {
+    public String getMessageSummaryFields() {
         return messageSummaryFields;
     }
 
-    void setMessageSummaryFields(String messageSummaryFields) {
+    public void setMessageSummaryFields(String messageSummaryFields) {
         this.messageSummaryFields = messageSummaryFields;
     }
 
