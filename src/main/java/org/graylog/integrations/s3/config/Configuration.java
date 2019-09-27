@@ -1,6 +1,9 @@
 package org.graylog.integrations.s3.config;
 
+import org.graylog.integrations.s3.CompressionType;
 import org.graylog.integrations.s3.ContentType;
+import org.graylog.integrations.s3.ProtocolType;
+import org.graylog2.gelfclient.Compression;
 
 /**
  * This class reads the needed configuration values from environment variables defined on the S3 function.
@@ -30,6 +33,8 @@ public class Configuration extends AbstractConfiguration {
     private static final String TCP_QUEUE_SIZE = "tcp_queue_size";
     private static final String TCP_MAX_IN_FLIGHT_SENDS = "tcp_max_in_flight_sends";
     private static final String CONTENT_TYPE = "content_type";
+    private static final String COMPRESSION_TYPE = "compression_type";
+    private static final String PROTOCOL_TYPE = "protocol_type";
 
     private String s3BucketName;
 
@@ -43,6 +48,8 @@ public class Configuration extends AbstractConfiguration {
     private Integer queueSize;
     private Integer maxInflightSends;
     private ContentType contentType;
+    private CompressionType compressionType;
+    private ProtocolType protocolType;
 
     private LogpushConfiguration logPushConfiguration;
 
@@ -57,11 +64,12 @@ public class Configuration extends AbstractConfiguration {
         config.tcpNoDelay = readBoolean(TCP_NO_DELAY, true);
         config.queueSize = safeParseInteger(TCP_QUEUE_SIZE) != null ? safeParseInteger(TCP_QUEUE_SIZE) : DEFAULT_TCP_QUEUE_SIZE;
         config.maxInflightSends = safeParseInteger(TCP_MAX_IN_FLIGHT_SENDS) != null ? safeParseInteger(TCP_MAX_IN_FLIGHT_SENDS) : DEFAULT_TCP_MAX_IN_FLIGHT_SENDS;
-        config.contentType = ContentType.findByType(getStringEnvironmentVariable(CONTENT_TYPE, DEFAULT_CONTENT_TYPE));
+        config.contentType = ContentType.findByType(getStringEnvironmentVariable(CONTENT_TYPE, null));
+        config.compressionType = CompressionType.findByType(getStringEnvironmentVariable(COMPRESSION_TYPE, null));
+        config.protocolType = ProtocolType.findByType(getStringEnvironmentVariable(PROTOCOL_TYPE, null));
         config.logPushConfiguration = LogpushConfiguration.newInstance();
         return config;
     }
-
 
     public String getS3BucketName() {
         return s3BucketName;
@@ -107,6 +115,14 @@ public class Configuration extends AbstractConfiguration {
         this.contentType = contentType;
     }
 
+    public CompressionType getCompressionType() {
+        return compressionType;
+    }
+
+    public ProtocolType getProtocolType() {
+        return protocolType;
+    }
+
     public LogpushConfiguration getLogpushConfiguration() {
         return logPushConfiguration;
     }
@@ -124,6 +140,7 @@ public class Configuration extends AbstractConfiguration {
                ", queueSize=" + queueSize +
                ", maxInflightSends=" + maxInflightSends +
                ", contentType=" + contentType +
+               ", compressionType=" + compressionType +
                ", logpushConfiguration=" + logPushConfiguration +
                '}';
     }

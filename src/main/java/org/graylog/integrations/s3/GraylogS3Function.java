@@ -35,46 +35,51 @@ class GraylogS3Function implements RequestHandler<S3Event, Object> {
 
         Configuration config = Configuration.newInstance();
         LOG.debug(config);
-        AmazonS3 s3 = AmazonS3Client.builder().build();
+        AmazonS3 s3Client = AmazonS3Client.builder().build();
 
         // Multiple messages could be provided with the callback.
-        s3Event.getRecords().forEach(record -> processObject(config, s3, record.getS3().getObject().getKey()));
+        s3Event.getRecords().forEach(record -> processObject(config, s3Client, record.getS3().getObject().getKey()));
         return String.format("Processed %d records.", s3Event.getRecords().size());
     }
 
-    private void processObject(Configuration config, AmazonS3 s3, String fileKey) {
+    /**
+     * Iterates through each line in the file and sends it as a message to Graylog over TCP.
+     *
+     * @param config    The Lambda function configuration.
+     * @param s3Client  The S3 client.
+     * @param objectKey The key for the S3 object/file. This will be used to retrieve the object.
+     */
+    private void processObject(Configuration config, AmazonS3 s3Client, String objectKey) {
 
-        LOG.debug("Object key [{}]", fileKey);
+        LOG.debug("Object key [{}]", objectKey);
         LOG.debug(String.format("Host: %s:%d", config.getGraylogHost(),
                                 config.getGraylogPort()));
 
-        LOG.debug("Reading object from S3");
-        S3Object object = s3.getObject(config.getS3BucketName(), fileKey);
-        LOG.debug("Object read from S3");
+        LOG.debug("Reading object from S3...");
+        S3Object object = s3Client.getObject(config.getS3BucketName(), objectKey);
+        LOG.debug("Object read from S3.");
 
-        // Log contents of file.
-        final String logContents;
+        final String stringLogContents;
         try {
-            final byte[] compressedData = IOUtils.toByteArray(object.getObjectContent());
-            LOG.debug("Compressed data length [{}]", compressedData.length);
-            logContents = decompressGzip(compressedData, Long.MAX_VALUE);
+            stringLogContents = handleCompression(config, object);
+            LOG.trace("Log contents: [{}]", stringLogContents);
         } catch (IOException e) {
             e.printStackTrace();
             return;
         }
 
-        if (logContents.equals("")) {
-            LOG.debug("File is empty. Skipping.");
+        if (stringLogContents.trim().equals("")) {
+            LOG.warn("File is empty. Skipping.");
         }
 
         // Split all messages by line breaks.
-        String[] lines = logContents.split("\\r?\\n");
-        LOG.debug("Log payload: [{}]", logContents);
+        String[] lines = stringLogContents.split("\\r?\\n");
         if (lines.length != 0) {
-            // Send message to Graylog.
+
+            // Transmit the message to Graylog.
             final GelfConfiguration gelfConfiguration = new GelfConfiguration(config.getGraylogHost(),
                                                                               config.getGraylogPort())
-                    .transport(GelfTransports.TCP)
+                    .transport(config.getProtocolType().getGelfTransport())
                     .connectTimeout(config.getConnectTimeout())
                     .reconnectDelay(config.getReconnectDelay())
                     .tcpKeepAlive(config.getTcpKeepAlive())
@@ -83,15 +88,14 @@ class GraylogS3Function implements RequestHandler<S3Event, Object> {
                     .maxInflightSends(config.getMaxInflightSends());
 
             final GelfTransport gelfTransport = GelfTransports.create(gelfConfiguration);
-
-            for (String line : lines) {
-                if (line.equals("")) {
-                    LOG.debug("Line is empty. Skipping.");
+            for (String messageLine : lines) {
+                if (messageLine.trim().equals("")) {
+                    LOG.warn("Line is empty. Skipping.");
                     continue;
                 }
 
                 try {
-                    final GelfMessage message = new CodecProcessor(config, line).decode();
+                    final GelfMessage message = new CodecProcessor(config, messageLine).decode();
                     gelfTransport.send(message);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
@@ -101,12 +105,27 @@ class GraylogS3Function implements RequestHandler<S3Event, Object> {
                 }
             }
 
-            // Flush and stop the GelfTransport to ensure that all in flight messages are sent before this method exits.
-            LOG.debug("Beginning shutdown.");
-
-            // Wait up to 60 seconds.
+            // Wait up to 60 seconds for all messages to send before shutting down the transport.
             gelfTransport.flushAndStopSynchronously(100, TimeUnit.MILLISECONDS, 6000);
         }
+    }
+
+    /**
+     * Decompress the message if compressed.
+     */
+    private String handleCompression(Configuration config, S3Object object) throws IOException {
+        String stringLogContents;
+        final byte[] logData = IOUtils.toByteArray(object.getObjectContent());
+        LOG.debug("Compressed data length [{}]", logData.length);
+
+        if (config.getCompressionType() == CompressionType.GZIP) {
+            stringLogContents = decompressGzip(logData, Long.MAX_VALUE);
+        } else if (config.getCompressionType() == CompressionType.NONE) {
+            stringLogContents = new String(logData);
+        } else {
+            throw new IllegalArgumentException("The ContentType [" + config.getContentType() + "] has not been implemented. This is a bug.");
+        }
+        return stringLogContents;
     }
 
     /**

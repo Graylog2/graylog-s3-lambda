@@ -12,7 +12,7 @@ public class PlainTextCodec extends AbstractS3Codec implements S3Codec {
 
     public GelfMessage decode() {
 
-        // Nothing to do here.
+        // Nothing to do here, just pass the message along.
         return new GelfMessage(stringMessage);
     }
 }
