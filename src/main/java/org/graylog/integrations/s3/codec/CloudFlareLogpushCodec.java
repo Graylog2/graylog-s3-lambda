@@ -111,7 +111,8 @@ public class CloudFlareLogpushCodec extends AbstractS3Codec implements S3Codec {
                 // Scalar values can be written directly to the GelfMessage.
                 message.addAdditionalField(key, getNodeValue(valueNode));
             } else {
-                // TODO: Arrays can be comma-separated. See these examples:
+                // TODO: The Initial version can be shipped without support for lists.
+                //  Arrays can be comma-separated. See these examples:
                 // "FirewallMatchesActions": [
                 //    "allow"
                 // ],
@@ -121,7 +122,7 @@ public class CloudFlareLogpushCodec extends AbstractS3Codec implements S3Codec {
                 //"FirewallMatchesRuleIDs": [
                 //    "test"
                 // ],
-                message.addAdditionalField(key, valueNode.toString());
+                // message.addAdditionalField(key, valueNode.toString());
             }
         }
 
