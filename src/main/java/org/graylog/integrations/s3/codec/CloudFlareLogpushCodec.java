@@ -24,6 +24,7 @@ public class CloudFlareLogpushCodec extends AbstractS3Codec implements S3Codec {
 
     static final Logger LOG = LogManager.getLogger(CloudFlareLogpushCodec.class);
     private static final List<String> TIMESTAMP_FIELDS = Arrays.asList("EdgeEndTimestamp", "EdgeStartTimestamp");
+    private static final List<String> HTTP_CODE_FIELDS = Arrays.asList("CacheResponseStatus", "EdgeResponseStatus", "OriginResponseStatus");
 
     CloudFlareLogpushCodec(String stringMessage, Configuration config) {
         super(stringMessage, config);
@@ -65,14 +66,7 @@ public class CloudFlareLogpushCodec extends AbstractS3Codec implements S3Codec {
         }
 
         // Get a list of parsed fields to include in the message.
-        List<String> fieldNamesToInclude = null;
-        if (!StringUtils.isNullOrEmpty(config.getLogpushConfiguration().getMessageFields())) {
-            fieldNamesToInclude = Arrays.stream(config.getLogpushConfiguration().getMessageFields().split(","))
-                                        .map(String::trim)
-                                        .filter(s -> !s.isEmpty())
-                                        .filter(valueMap::containsKey)
-                                        .collect(Collectors.toList());
-        }
+        List<String> fieldNamesToInclude = getFieldsToInclude(valueMap);
 
         Iterator<Map.Entry<String, JsonNode>> fieldIterator = entireJsonNode.fields();
         while (fieldIterator.hasNext()) {
@@ -108,6 +102,37 @@ public class CloudFlareLogpushCodec extends AbstractS3Codec implements S3Codec {
                     continue;
                 }
 
+                // Set status class for all status fields (eg. "4xx" for 400 and 412)
+                if (HTTP_CODE_FIELDS.contains(key)) {
+                    final Object nodeValue = getNodeValue(valueNode);
+                    if (nodeValue != null) {
+                        final int statusValue = (int) nodeValue;
+                        if (statusValue >= 100 && statusValue < 200) {
+                            message.addAdditionalField(key + "Class", "1xx");
+                        }
+                        else if (statusValue >= 200 && statusValue < 300) {
+                            message.addAdditionalField(key + "Class", "2xx");
+                        }
+                        else if (statusValue >= 300 && statusValue < 400) {
+                            message.addAdditionalField(key + "Class", "3xx");
+                        }
+                        else if (statusValue >= 400 && statusValue < 500) {
+                            message.addAdditionalField(key + "Class", "4xx");
+                        }
+                        else if (statusValue >= 500 && statusValue < 600) {
+                            message.addAdditionalField(key + "Class", "5xx");
+                        }
+                    }
+                }
+
+                // Set response time millis.
+                if ("OriginResponseTime".equals(key)) {
+                    final Object nodeValue = getNodeValue(valueNode);
+                    if (nodeValue != null) {
+                        message.addAdditionalField("OriginResponseTimeMillis", Double.valueOf((Integer) nodeValue) / 1_000_000);
+                    }
+                }
+
                 // Scalar values can be written directly to the GelfMessage.
                 message.addAdditionalField(key, getNodeValue(valueNode));
             } else {
@@ -127,6 +152,18 @@ public class CloudFlareLogpushCodec extends AbstractS3Codec implements S3Codec {
         }
 
         return message;
+    }
+
+    private List<String> getFieldsToInclude(HashMap<String, Object> valueMap) {
+        List<String> fieldNamesToInclude = null;
+        if (!StringUtils.isNullOrEmpty(config.getLogpushConfiguration().getMessageFields())) {
+            fieldNamesToInclude = Arrays.stream(config.getLogpushConfiguration().getMessageFields().split(","))
+                                        .map(String::trim)
+                                        .filter(s -> !s.isEmpty())
+                                        .filter(valueMap::containsKey)
+                                        .collect(Collectors.toList());
+        }
+        return fieldNamesToInclude;
     }
 
     /**
