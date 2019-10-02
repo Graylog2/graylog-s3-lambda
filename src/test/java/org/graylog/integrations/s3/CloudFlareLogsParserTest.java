@@ -60,6 +60,7 @@ public class CloudFlareLogsParserTest {
         assertEquals(60, gelfMessage.getAdditionalFields().size());
     }
 
+
     @Test
     public void testMillisParsing() throws IOException {
 
