@@ -47,7 +47,7 @@ public class CloudflareTestFileWriter {
             s3Client.putObject(new PutObjectRequest(System.getenv("bucket"), fileName, new ByteArrayInputStream(bytes), metadata));
 
             // Add a fixed additional time within 10 minute span to get a more random message distribution over time.
-            TimeUnit.MILLISECONDS.sleep(randomInRange(1, 100) + DateTime.now().getMinuteOfHour() % 10 * 2);
+            TimeUnit.MILLISECONDS.sleep(randomInRange(1, 100) + DateTime.now().getMinuteOfHour() % 10 * 10);
         }
     }
 
@@ -177,8 +177,7 @@ public class CloudflareTestFileWriter {
     }
 
     private static String randomIp() {
-        Random r = new Random();
-        return r.nextInt(256) + "." + r.nextInt(256) + "." + r.nextInt(256) + "." + r.nextInt(256);
+        return randomInRange(10, 254) + "." + randomInRange(10, 254) + "." + randomInRange(10, 254) + "." + randomInRange(10, 254);
     }
 
     private static String randomAgent() {
