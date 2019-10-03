@@ -7,6 +7,7 @@ import com.amazonaws.services.s3.model.PutObjectRequest;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
+import org.joda.time.DateTime;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -44,7 +45,9 @@ public class CloudflareTestFileWriter {
             final String fileName = "file-name-" + randomInRange(1, Integer.MAX_VALUE);
             System.out.println("Sending [" + batchSize + "] message [" + fileName + "]");
             s3Client.putObject(new PutObjectRequest(System.getenv("bucket"), fileName, new ByteArrayInputStream(bytes), metadata));
-            TimeUnit.MILLISECONDS.sleep(randomInRange(1, randomInRange(1, 100)));
+
+            // Add a fixed additional time within 10 minute span to get a more random message distribution over time.
+            TimeUnit.MILLISECONDS.sleep(randomInRange(1, 100) + DateTime.now().getMinuteOfHour() % 10 * 2);
         }
     }
 
@@ -78,6 +81,8 @@ public class CloudflareTestFileWriter {
         int responseStatus = pickRandom(200, 200, 200, 200, 200, 200, 200, 200, 200, 200, 200, 200, 200, 200, 200, 200,
                                         200, 200, 200, 200, 200, 200, 200, 200, 200, 200, 200, 200, 200, 200, 200, 200,
                                         200, 200, 200, 200, 200, 200, 200, 200, 200, 200, 200, 200, 200, 200, 200, 200,
+                                        200, 200, 200, 200, 200, 200, 200, 200, 200, 200, 200, 200, 200, 200, 200, 200,
+                                        200, 200, 200, 200, 200, 200, 200, 200, 200, 200, 200, 200, 200, 200, 200, 200,
                                         200, 200, 200, 200, 200, 200, 200, 200, 200, 200, 200, 200, 200, 300, 301, 302,
                                         304, 307, 400, 401, 403, 404, 410, 500, 501, 503, 550);
         String method = pickRandom("GET", "GET", "GET", "GET", "GET", "POST", "DELETE", "PUT");
@@ -94,11 +99,11 @@ public class CloudflareTestFileWriter {
                                "  \"ClientIP\": \"" + randomIp() + "\"," +
                                "  \"ClientIPClass\": \"noRecord\"," +
                                "  \"ClientRequestBytes\": " + randomInRange(50, 1024) + "," +
-                               "  \"ClientRequestHost\": \"sendafox.com:8080\"," +
+                               "  \"ClientRequestHost\": \"graylog.com:8080\"," +
                                "  \"ClientRequestMethod\": \"" + method + "\"," +
                                "  \"ClientRequestPath\": \"/search\"," +
                                "  \"ClientRequestProtocol\": \"" + pickRandom("HTTP/1.1", "HTTP/2.0") + "\"," +
-                               "  \"ClientRequestReferer\": \"\"," +
+                               "  \"ClientRequestReferer\": \"" + pickRandom("graylog.com", "graylog.org", "torch.sh") + "\"," +
                                "  \"ClientRequestURI\": \"/search\"," +
                                "  \"ClientRequestUserAgent\": \"" + randomAgent() + "\"," +
                                "  \"ClientSSLCipher\": \"NONE\"," +

@@ -1,9 +1,9 @@
 {
   "v": "1",
   "id": "dd8a19a0-205f-4ef5-90d3-1eb810fec14b",
-  "rev": 2,
-  "name": "CloudFlare Logpush",
-  "summary": "CloudFlare Logpush",
+  "rev": 3,
+  "name": "Cloudflare Logpush",
+  "summary": "Cloudflare Logpush",
   "description": "",
   "vendor": "Graylog",
   "url": "",
@@ -15,11 +15,11 @@
         "name": "dashboard",
         "version": "1"
       },
-      "id": "ecaae450-6eca-4f1a-afd8-88897346dfe6",
+      "id": "b70e361a-69f3-406c-8e76-1d453773e83c",
       "data": {
         "title": {
           "@type": "string",
-          "@value": "CloudFlare - Performance"
+          "@value": "Cloudflare - Performance"
         },
         "description": {
           "@type": "string",
@@ -1309,11 +1309,11 @@
         "name": "dashboard",
         "version": "1"
       },
-      "id": "58610731-2464-4d00-a090-200110a30ade",
+      "id": "e10ce0ed-74b9-4236-a2ea-b4d45ac99a0c",
       "data": {
         "title": {
           "@type": "string",
-          "@value": "CloudFlare - Snapshot"
+          "@value": "Cloudflare - Snapshot"
         },
         "description": {
           "@type": "string",
@@ -1532,7 +1532,7 @@
               },
               "stream_id": {
                 "@type": "string",
-                "@value": "86c181a1-dcc3-4dff-94a1-369cbf24a7f7"
+                "@value": "3194a702-6856-484b-b77a-450be1cd7a67"
               },
               "query": {
                 "@type": "string",
@@ -1892,7 +1892,7 @@
               },
               "stream_id": {
                 "@type": "string",
-                "@value": "86c181a1-dcc3-4dff-94a1-369cbf24a7f7"
+                "@value": "3194a702-6856-484b-b77a-450be1cd7a67"
               },
               "show_data_table": {
                 "@type": "boolean",
@@ -2106,7 +2106,7 @@
               },
               "range": {
                 "@type": "integer",
-                "@value": 900
+                "@value": 3600
               }
             },
             "configuration": {
@@ -2129,7 +2129,7 @@
                 },
                 "range": {
                   "@type": "integer",
-                  "@value": 900
+                  "@value": 3600
                 }
               },
               "stacked_fields": {
@@ -2474,7 +2474,7 @@
               },
               "stream_id": {
                 "@type": "string",
-                "@value": "86c181a1-dcc3-4dff-94a1-369cbf24a7f7"
+                "@value": "3194a702-6856-484b-b77a-450be1cd7a67"
               },
               "show_data_table": {
                 "@type": "boolean",
@@ -2519,11 +2519,11 @@
         "name": "dashboard",
         "version": "1"
       },
-      "id": "9eda0ee6-1566-4cf6-9df4-477d06908f1e",
+      "id": "3e6cc743-c015-4e72-b116-b361810fb1f4",
       "data": {
         "title": {
           "@type": "string",
-          "@value": "CloudFlare - Security"
+          "@value": "Cloudflare - Security"
         },
         "description": {
           "@type": "string",
@@ -2574,7 +2574,7 @@
               },
               "stream_id": {
                 "@type": "string",
-                "@value": "86c181a1-dcc3-4dff-94a1-369cbf24a7f7"
+                "@value": "3194a702-6856-484b-b77a-450be1cd7a67"
               },
               "query": {
                 "@type": "string",
@@ -2630,7 +2630,7 @@
             "configuration": {
               "query": {
                 "@type": "string",
-                "@value": "EdgePathingOp:ban OR EdgePathingOp:wl"
+                "@value": "Threat:true"
               },
               "show_pie_chart": {
                 "@type": "boolean",
@@ -2664,7 +2664,7 @@
               },
               "stream_id": {
                 "@type": "string",
-                "@value": "86c181a1-dcc3-4dff-94a1-369cbf24a7f7"
+                "@value": "3194a702-6856-484b-b77a-450be1cd7a67"
               },
               "show_data_table": {
                 "@type": "boolean",
@@ -2758,7 +2758,7 @@
               },
               "stream_id": {
                 "@type": "string",
-                "@value": "86c181a1-dcc3-4dff-94a1-369cbf24a7f7"
+                "@value": "3194a702-6856-484b-b77a-450be1cd7a67"
               },
               "show_data_table": {
                 "@type": "boolean",
@@ -2852,7 +2852,7 @@
               },
               "stream_id": {
                 "@type": "string",
-                "@value": "86c181a1-dcc3-4dff-94a1-369cbf24a7f7"
+                "@value": "3194a702-6856-484b-b77a-450be1cd7a67"
               },
               "show_data_table": {
                 "@type": "boolean",
@@ -2946,7 +2946,7 @@
               },
               "stream_id": {
                 "@type": "string",
-                "@value": "86c181a1-dcc3-4dff-94a1-369cbf24a7f7"
+                "@value": "3194a702-6856-484b-b77a-450be1cd7a67"
               },
               "show_data_table": {
                 "@type": "boolean",
@@ -3040,7 +3040,7 @@
               },
               "stream_id": {
                 "@type": "string",
-                "@value": "86c181a1-dcc3-4dff-94a1-369cbf24a7f7"
+                "@value": "3194a702-6856-484b-b77a-450be1cd7a67"
               },
               "show_data_table": {
                 "@type": "boolean",
@@ -3134,7 +3134,7 @@
               },
               "stream_id": {
                 "@type": "string",
-                "@value": "86c181a1-dcc3-4dff-94a1-369cbf24a7f7"
+                "@value": "3194a702-6856-484b-b77a-450be1cd7a67"
               },
               "show_data_table": {
                 "@type": "boolean",
@@ -3208,11 +3208,11 @@
               },
               "stream_id": {
                 "@type": "string",
-                "@value": "86c181a1-dcc3-4dff-94a1-369cbf24a7f7"
+                "@value": "3194a702-6856-484b-b77a-450be1cd7a67"
               },
               "query": {
                 "@type": "string",
-                "@value": "Threat:false"
+                "@value": "Threat:true"
               },
               "limit": {
                 "@type": "integer",
@@ -3360,7 +3360,7 @@
               },
               "stream_id": {
                 "@type": "string",
-                "@value": "86c181a1-dcc3-4dff-94a1-369cbf24a7f7"
+                "@value": "3194a702-6856-484b-b77a-450be1cd7a67"
               },
               "trend": {
                 "@type": "boolean",
@@ -3405,11 +3405,639 @@
         "name": "dashboard",
         "version": "1"
       },
-      "id": "649cf430-a94d-487e-b916-1e45bc39aad7",
+      "id": "308b4a53-a51b-4af7-9f07-4e19ff1ae8bf",
       "data": {
         "title": {
           "@type": "string",
-          "@value": "CloudFlare - Reliability"
+          "@value": "Cloudflare - Bots"
+        },
+        "description": {
+          "@type": "string",
+          "@value": "Detailed detection of bot traffic"
+        },
+        "widgets": [
+          {
+            "id": {
+              "@type": "string",
+              "@value": "733b962a-8926-4fee-aade-e2de9b6ecaf9"
+            },
+            "description": {
+              "@type": "string",
+              "@value": "Bot Traffic Over Time"
+            },
+            "type": {
+              "@type": "string",
+              "@value": "QUICKVALUES_HISTOGRAM"
+            },
+            "cache_time": {
+              "@type": "integer",
+              "@value": 10
+            },
+            "time_range": {
+              "type": {
+                "@type": "string",
+                "@value": "relative"
+              },
+              "range": {
+                "@type": "integer",
+                "@value": 3600
+              }
+            },
+            "configuration": {
+              "timerange": {
+                "type": {
+                  "@type": "string",
+                  "@value": "relative"
+                },
+                "range": {
+                  "@type": "integer",
+                  "@value": 3600
+                }
+              },
+              "field": {
+                "@type": "string",
+                "@value": "Bot"
+              },
+              "stream_id": {
+                "@type": "string",
+                "@value": "3194a702-6856-484b-b77a-450be1cd7a67"
+              },
+              "query": {
+                "@type": "string",
+                "@value": "Bot:true"
+              },
+              "limit": {
+                "@type": "integer",
+                "@value": 5
+              },
+              "sort_order": {
+                "@type": "string",
+                "@value": "desc"
+              },
+              "stacked_fields": {
+                "@type": "string",
+                "@value": ""
+              }
+            },
+            "position": {
+              "width": {
+                "@type": "integer",
+                "@value": 5
+              },
+              "height": {
+                "@type": "integer",
+                "@value": 2
+              },
+              "row": {
+                "@type": "integer",
+                "@value": 1
+              },
+              "col": {
+                "@type": "integer",
+                "@value": 3
+              }
+            }
+          },
+          {
+            "id": {
+              "@type": "string",
+              "@value": "1ae216e2-1420-4207-9fb7-d661c0659269"
+            },
+            "description": {
+              "@type": "string",
+              "@value": "Total Bot Requests"
+            },
+            "type": {
+              "@type": "string",
+              "@value": "STREAM_SEARCH_RESULT_COUNT"
+            },
+            "cache_time": {
+              "@type": "integer",
+              "@value": 10
+            },
+            "time_range": {
+              "type": {
+                "@type": "string",
+                "@value": "relative"
+              },
+              "range": {
+                "@type": "integer",
+                "@value": 3600
+              }
+            },
+            "configuration": {
+              "timerange": {
+                "type": {
+                  "@type": "string",
+                  "@value": "relative"
+                },
+                "range": {
+                  "@type": "integer",
+                  "@value": 3600
+                }
+              },
+              "lower_is_better": {
+                "@type": "boolean",
+                "@value": false
+              },
+              "stream_id": {
+                "@type": "string",
+                "@value": "3194a702-6856-484b-b77a-450be1cd7a67"
+              },
+              "trend": {
+                "@type": "boolean",
+                "@value": false
+              },
+              "query": {
+                "@type": "string",
+                "@value": "Bot:true"
+              }
+            },
+            "position": {
+              "width": {
+                "@type": "integer",
+                "@value": 2
+              },
+              "height": {
+                "@type": "integer",
+                "@value": 2
+              },
+              "row": {
+                "@type": "integer",
+                "@value": 1
+              },
+              "col": {
+                "@type": "integer",
+                "@value": 1
+              }
+            }
+          },
+          {
+            "id": {
+              "@type": "string",
+              "@value": "08d6ff68-4233-4d16-bce1-8a75eb7935d4"
+            },
+            "description": {
+              "@type": "string",
+              "@value": "Top Bot URIs"
+            },
+            "type": {
+              "@type": "string",
+              "@value": "QUICKVALUES"
+            },
+            "cache_time": {
+              "@type": "integer",
+              "@value": 10
+            },
+            "time_range": {
+              "type": {
+                "@type": "string",
+                "@value": "relative"
+              },
+              "range": {
+                "@type": "integer",
+                "@value": 3600
+              }
+            },
+            "configuration": {
+              "query": {
+                "@type": "string",
+                "@value": "Bot:true"
+              },
+              "show_pie_chart": {
+                "@type": "boolean",
+                "@value": false
+              },
+              "sort_order": {
+                "@type": "string",
+                "@value": "desc"
+              },
+              "timerange": {
+                "type": {
+                  "@type": "string",
+                  "@value": "relative"
+                },
+                "range": {
+                  "@type": "integer",
+                  "@value": 3600
+                }
+              },
+              "stacked_fields": {
+                "@type": "string",
+                "@value": ""
+              },
+              "data_table_limit": {
+                "@type": "integer",
+                "@value": 50
+              },
+              "field": {
+                "@type": "string",
+                "@value": "ClientRequestURI"
+              },
+              "stream_id": {
+                "@type": "string",
+                "@value": "3194a702-6856-484b-b77a-450be1cd7a67"
+              },
+              "show_data_table": {
+                "@type": "boolean",
+                "@value": true
+              },
+              "limit": {
+                "@type": "integer",
+                "@value": 5
+              }
+            },
+            "position": {
+              "width": {
+                "@type": "integer",
+                "@value": 7
+              },
+              "height": {
+                "@type": "integer",
+                "@value": 3
+              },
+              "row": {
+                "@type": "integer",
+                "@value": 6
+              },
+              "col": {
+                "@type": "integer",
+                "@value": 1
+              }
+            }
+          },
+          {
+            "id": {
+              "@type": "string",
+              "@value": "dbd1c482-c30d-4ce9-a0e4-ae862e0f22ff"
+            },
+            "description": {
+              "@type": "string",
+              "@value": "Top Bot User Agents"
+            },
+            "type": {
+              "@type": "string",
+              "@value": "QUICKVALUES"
+            },
+            "cache_time": {
+              "@type": "integer",
+              "@value": 10
+            },
+            "time_range": {
+              "type": {
+                "@type": "string",
+                "@value": "relative"
+              },
+              "range": {
+                "@type": "integer",
+                "@value": 3600
+              }
+            },
+            "configuration": {
+              "query": {
+                "@type": "string",
+                "@value": "Bot:true"
+              },
+              "show_pie_chart": {
+                "@type": "boolean",
+                "@value": false
+              },
+              "sort_order": {
+                "@type": "string",
+                "@value": "desc"
+              },
+              "timerange": {
+                "type": {
+                  "@type": "string",
+                  "@value": "relative"
+                },
+                "range": {
+                  "@type": "integer",
+                  "@value": 3600
+                }
+              },
+              "stacked_fields": {
+                "@type": "string",
+                "@value": ""
+              },
+              "data_table_limit": {
+                "@type": "integer",
+                "@value": 50
+              },
+              "field": {
+                "@type": "string",
+                "@value": "ClientRequestUserAgent"
+              },
+              "stream_id": {
+                "@type": "string",
+                "@value": "3194a702-6856-484b-b77a-450be1cd7a67"
+              },
+              "show_data_table": {
+                "@type": "boolean",
+                "@value": true
+              },
+              "limit": {
+                "@type": "integer",
+                "@value": 5
+              }
+            },
+            "position": {
+              "width": {
+                "@type": "integer",
+                "@value": 7
+              },
+              "height": {
+                "@type": "integer",
+                "@value": 4
+              },
+              "row": {
+                "@type": "integer",
+                "@value": 9
+              },
+              "col": {
+                "@type": "integer",
+                "@value": 1
+              }
+            }
+          },
+          {
+            "id": {
+              "@type": "string",
+              "@value": "6e374edc-eda6-402d-9b16-76f4a8fe6ab4"
+            },
+            "description": {
+              "@type": "string",
+              "@value": "Top Bots by Country"
+            },
+            "type": {
+              "@type": "string",
+              "@value": "org.graylog.plugins.map.widget.strategy.MapWidgetStrategy"
+            },
+            "cache_time": {
+              "@type": "integer",
+              "@value": 10
+            },
+            "time_range": {
+              "type": {
+                "@type": "string",
+                "@value": "relative"
+              },
+              "range": {
+                "@type": "integer",
+                "@value": 3600
+              }
+            },
+            "configuration": {
+              "timerange": {
+                "type": {
+                  "@type": "string",
+                  "@value": "relative"
+                },
+                "range": {
+                  "@type": "integer",
+                  "@value": 3600
+                }
+              },
+              "field": {
+                "@type": "string",
+                "@value": "ClientIpGeolocation"
+              },
+              "stream_id": {
+                "@type": "string",
+                "@value": "3194a702-6856-484b-b77a-450be1cd7a67"
+              },
+              "query": {
+                "@type": "string",
+                "@value": "Bot:false"
+              }
+            },
+            "position": {
+              "width": {
+                "@type": "integer",
+                "@value": 3
+              },
+              "height": {
+                "@type": "integer",
+                "@value": 3
+              },
+              "row": {
+                "@type": "integer",
+                "@value": 3
+              },
+              "col": {
+                "@type": "integer",
+                "@value": 1
+              }
+            }
+          },
+          {
+            "id": {
+              "@type": "string",
+              "@value": "63e8e90b-d138-4d5a-8097-f1dcd2fc60e3"
+            },
+            "description": {
+              "@type": "string",
+              "@value": "Top Bot Countries"
+            },
+            "type": {
+              "@type": "string",
+              "@value": "QUICKVALUES"
+            },
+            "cache_time": {
+              "@type": "integer",
+              "@value": 10
+            },
+            "time_range": {
+              "type": {
+                "@type": "string",
+                "@value": "relative"
+              },
+              "range": {
+                "@type": "integer",
+                "@value": 3600
+              }
+            },
+            "configuration": {
+              "query": {
+                "@type": "string",
+                "@value": "Bot:true"
+              },
+              "show_pie_chart": {
+                "@type": "boolean",
+                "@value": false
+              },
+              "sort_order": {
+                "@type": "string",
+                "@value": "desc"
+              },
+              "timerange": {
+                "type": {
+                  "@type": "string",
+                  "@value": "relative"
+                },
+                "range": {
+                  "@type": "integer",
+                  "@value": 3600
+                }
+              },
+              "stacked_fields": {
+                "@type": "string",
+                "@value": ""
+              },
+              "data_table_limit": {
+                "@type": "integer",
+                "@value": 50
+              },
+              "field": {
+                "@type": "string",
+                "@value": "ClientIpGeoCountry"
+              },
+              "stream_id": {
+                "@type": "string",
+                "@value": "3194a702-6856-484b-b77a-450be1cd7a67"
+              },
+              "show_data_table": {
+                "@type": "boolean",
+                "@value": true
+              },
+              "limit": {
+                "@type": "integer",
+                "@value": 5
+              }
+            },
+            "position": {
+              "width": {
+                "@type": "integer",
+                "@value": 2
+              },
+              "height": {
+                "@type": "integer",
+                "@value": 3
+              },
+              "row": {
+                "@type": "integer",
+                "@value": 3
+              },
+              "col": {
+                "@type": "integer",
+                "@value": 4
+              }
+            }
+          },
+          {
+            "id": {
+              "@type": "string",
+              "@value": "0701f00c-5cb4-4b0f-9458-713e0deaf459"
+            },
+            "description": {
+              "@type": "string",
+              "@value": "Top Bot Cities"
+            },
+            "type": {
+              "@type": "string",
+              "@value": "QUICKVALUES"
+            },
+            "cache_time": {
+              "@type": "integer",
+              "@value": 10
+            },
+            "time_range": {
+              "type": {
+                "@type": "string",
+                "@value": "relative"
+              },
+              "range": {
+                "@type": "integer",
+                "@value": 3600
+              }
+            },
+            "configuration": {
+              "query": {
+                "@type": "string",
+                "@value": "Bot:true"
+              },
+              "show_pie_chart": {
+                "@type": "boolean",
+                "@value": false
+              },
+              "sort_order": {
+                "@type": "string",
+                "@value": "desc"
+              },
+              "timerange": {
+                "type": {
+                  "@type": "string",
+                  "@value": "relative"
+                },
+                "range": {
+                  "@type": "integer",
+                  "@value": 3600
+                }
+              },
+              "stacked_fields": {
+                "@type": "string",
+                "@value": ""
+              },
+              "data_table_limit": {
+                "@type": "integer",
+                "@value": 50
+              },
+              "field": {
+                "@type": "string",
+                "@value": "ClientIpGeoCityCode"
+              },
+              "stream_id": {
+                "@type": "string",
+                "@value": "3194a702-6856-484b-b77a-450be1cd7a67"
+              },
+              "show_data_table": {
+                "@type": "boolean",
+                "@value": true
+              },
+              "limit": {
+                "@type": "integer",
+                "@value": 5
+              }
+            },
+            "position": {
+              "width": {
+                "@type": "integer",
+                "@value": 2
+              },
+              "height": {
+                "@type": "integer",
+                "@value": 3
+              },
+              "row": {
+                "@type": "integer",
+                "@value": 3
+              },
+              "col": {
+                "@type": "integer",
+                "@value": 6
+              }
+            }
+          }
+        ]
+      },
+      "constraints": [
+        {
+          "type": "server-version",
+          "version": ">=3.1.2+9e96b08"
+        }
+      ]
+    },
+    {
+      "v": "1",
+      "type": {
+        "name": "dashboard",
+        "version": "1"
+      },
+      "id": "a7914c58-ba13-4795-bb6b-85d16040592c",
+      "data": {
+        "title": {
+          "@type": "string",
+          "@value": "Cloudflare - Reliability"
         },
         "description": {
           "@type": "string",
@@ -3490,7 +4118,7 @@
               },
               "col": {
                 "@type": "integer",
-                "@value": 3
+                "@value": 4
               }
             }
           },
@@ -3568,18 +4196,18 @@
               },
               "col": {
                 "@type": "integer",
-                "@value": 2
+                "@value": 3
               }
             }
           },
           {
             "id": {
               "@type": "string",
-              "@value": "192a45be-5e41-489b-813e-5dd9ea432f71"
+              "@value": "cb1d08c3-dbbc-4375-a9c8-1d1c8b3bbda6"
             },
             "description": {
               "@type": "string",
-              "@value": "Client IPs"
+              "@value": "Top 4xx Request URIs"
             },
             "type": {
               "@type": "string",
@@ -3596,13 +4224,13 @@
               },
               "range": {
                 "@type": "integer",
-                "@value": 3600
+                "@value": 7200
               }
             },
             "configuration": {
               "query": {
                 "@type": "string",
-                "@value": ""
+                "@value": "EdgeResponseStatusClass:4xx"
               },
               "show_pie_chart": {
                 "@type": "boolean",
@@ -3619,7 +4247,7 @@
                 },
                 "range": {
                   "@type": "integer",
-                  "@value": 3600
+                  "@value": 7200
                 }
               },
               "stacked_fields": {
@@ -3632,7 +4260,7 @@
               },
               "field": {
                 "@type": "string",
-                "@value": "ClientIP"
+                "@value": "ClientRequestURI"
               },
               "show_data_table": {
                 "@type": "boolean",
@@ -3646,7 +4274,7 @@
             "position": {
               "width": {
                 "@type": "integer",
-                "@value": 4
+                "@value": 6
               },
               "height": {
                 "@type": "integer",
@@ -3654,7 +4282,7 @@
               },
               "row": {
                 "@type": "integer",
-                "@value": 10
+                "@value": 13
               },
               "col": {
                 "@type": "integer",
@@ -3716,7 +4344,7 @@
             "position": {
               "width": {
                 "@type": "integer",
-                "@value": 1
+                "@value": 2
               },
               "height": {
                 "@type": "integer",
@@ -3814,89 +4442,11 @@
               },
               "row": {
                 "@type": "integer",
-                "@value": 5
+                "@value": 6
               },
               "col": {
                 "@type": "integer",
                 "@value": 5
-              }
-            }
-          },
-          {
-            "id": {
-              "@type": "string",
-              "@value": "09b19818-df42-4d79-b543-e614ccf356d7"
-            },
-            "description": {
-              "@type": "string",
-              "@value": "Edge Response Status Over Time"
-            },
-            "type": {
-              "@type": "string",
-              "@value": "QUICKVALUES_HISTOGRAM"
-            },
-            "cache_time": {
-              "@type": "integer",
-              "@value": 10
-            },
-            "time_range": {
-              "type": {
-                "@type": "string",
-                "@value": "relative"
-              },
-              "range": {
-                "@type": "integer",
-                "@value": 1800
-              }
-            },
-            "configuration": {
-              "timerange": {
-                "type": {
-                  "@type": "string",
-                  "@value": "relative"
-                },
-                "range": {
-                  "@type": "integer",
-                  "@value": 1800
-                }
-              },
-              "field": {
-                "@type": "string",
-                "@value": "CacheResponseStatusClass"
-              },
-              "query": {
-                "@type": "string",
-                "@value": ""
-              },
-              "limit": {
-                "@type": "integer",
-                "@value": 5
-              },
-              "sort_order": {
-                "@type": "string",
-                "@value": "desc"
-              },
-              "stacked_fields": {
-                "@type": "string",
-                "@value": ""
-              }
-            },
-            "position": {
-              "width": {
-                "@type": "integer",
-                "@value": 4
-              },
-              "height": {
-                "@type": "integer",
-                "@value": 4
-              },
-              "row": {
-                "@type": "integer",
-                "@value": 2
-              },
-              "col": {
-                "@type": "integer",
-                "@value": 1
               }
             }
           },
@@ -3981,6 +4531,174 @@
           {
             "id": {
               "@type": "string",
+              "@value": "09b19818-df42-4d79-b543-e614ccf356d7"
+            },
+            "description": {
+              "@type": "string",
+              "@value": "Cache Response Status Over Time"
+            },
+            "type": {
+              "@type": "string",
+              "@value": "QUICKVALUES_HISTOGRAM"
+            },
+            "cache_time": {
+              "@type": "integer",
+              "@value": 10
+            },
+            "time_range": {
+              "type": {
+                "@type": "string",
+                "@value": "relative"
+              },
+              "range": {
+                "@type": "integer",
+                "@value": 1800
+              }
+            },
+            "configuration": {
+              "timerange": {
+                "type": {
+                  "@type": "string",
+                  "@value": "relative"
+                },
+                "range": {
+                  "@type": "integer",
+                  "@value": 1800
+                }
+              },
+              "field": {
+                "@type": "string",
+                "@value": "CacheResponseStatusClass"
+              },
+              "query": {
+                "@type": "string",
+                "@value": ""
+              },
+              "limit": {
+                "@type": "integer",
+                "@value": 5
+              },
+              "sort_order": {
+                "@type": "string",
+                "@value": "desc"
+              },
+              "stacked_fields": {
+                "@type": "string",
+                "@value": ""
+              }
+            },
+            "position": {
+              "width": {
+                "@type": "integer",
+                "@value": 4
+              },
+              "height": {
+                "@type": "integer",
+                "@value": 4
+              },
+              "row": {
+                "@type": "integer",
+                "@value": 2
+              },
+              "col": {
+                "@type": "integer",
+                "@value": 1
+              }
+            }
+          },
+          {
+            "id": {
+              "@type": "string",
+              "@value": "b8873c60-40ef-4e1d-9216-261fc8b4201d"
+            },
+            "description": {
+              "@type": "string",
+              "@value": "Top 5xx Request URIs"
+            },
+            "type": {
+              "@type": "string",
+              "@value": "QUICKVALUES"
+            },
+            "cache_time": {
+              "@type": "integer",
+              "@value": 10
+            },
+            "time_range": {
+              "type": {
+                "@type": "string",
+                "@value": "relative"
+              },
+              "range": {
+                "@type": "integer",
+                "@value": 7200
+              }
+            },
+            "configuration": {
+              "query": {
+                "@type": "string",
+                "@value": "EdgeResponseStatusClass:4xx"
+              },
+              "show_pie_chart": {
+                "@type": "boolean",
+                "@value": false
+              },
+              "sort_order": {
+                "@type": "string",
+                "@value": "desc"
+              },
+              "timerange": {
+                "type": {
+                  "@type": "string",
+                  "@value": "relative"
+                },
+                "range": {
+                  "@type": "integer",
+                  "@value": 7200
+                }
+              },
+              "stacked_fields": {
+                "@type": "string",
+                "@value": ""
+              },
+              "data_table_limit": {
+                "@type": "integer",
+                "@value": 50
+              },
+              "field": {
+                "@type": "string",
+                "@value": "ClientRequestURI"
+              },
+              "show_data_table": {
+                "@type": "boolean",
+                "@value": true
+              },
+              "limit": {
+                "@type": "integer",
+                "@value": 5
+              }
+            },
+            "position": {
+              "width": {
+                "@type": "integer",
+                "@value": 6
+              },
+              "height": {
+                "@type": "integer",
+                "@value": 3
+              },
+              "row": {
+                "@type": "integer",
+                "@value": 10
+              },
+              "col": {
+                "@type": "integer",
+                "@value": 1
+              }
+            }
+          },
+          {
+            "id": {
+              "@type": "string",
               "@value": "45c8e847-be84-4755-9741-08546cef446d"
             },
             "description": {
@@ -4052,7 +4770,7 @@
               },
               "col": {
                 "@type": "integer",
-                "@value": 4
+                "@value": 5
               }
             }
           },
@@ -4138,639 +4856,11 @@
               },
               "row": {
                 "@type": "integer",
-                "@value": 1
-              },
-              "col": {
-                "@type": "integer",
-                "@value": 5
-              }
-            }
-          }
-        ]
-      },
-      "constraints": [
-        {
-          "type": "server-version",
-          "version": ">=3.1.2+9e96b08"
-        }
-      ]
-    },
-    {
-      "v": "1",
-      "type": {
-        "name": "dashboard",
-        "version": "1"
-      },
-      "id": "d9f7d7dd-4124-4848-99de-48cd38099ba6",
-      "data": {
-        "title": {
-          "@type": "string",
-          "@value": "CloudFlare - Bots"
-        },
-        "description": {
-          "@type": "string",
-          "@value": "Detailed detection of bot traffic"
-        },
-        "widgets": [
-          {
-            "id": {
-              "@type": "string",
-              "@value": "733b962a-8926-4fee-aade-e2de9b6ecaf9"
-            },
-            "description": {
-              "@type": "string",
-              "@value": "Bot Traffic Over Time"
-            },
-            "type": {
-              "@type": "string",
-              "@value": "QUICKVALUES_HISTOGRAM"
-            },
-            "cache_time": {
-              "@type": "integer",
-              "@value": 10
-            },
-            "time_range": {
-              "type": {
-                "@type": "string",
-                "@value": "relative"
-              },
-              "range": {
-                "@type": "integer",
-                "@value": 3600
-              }
-            },
-            "configuration": {
-              "timerange": {
-                "type": {
-                  "@type": "string",
-                  "@value": "relative"
-                },
-                "range": {
-                  "@type": "integer",
-                  "@value": 3600
-                }
-              },
-              "field": {
-                "@type": "string",
-                "@value": "Bot"
-              },
-              "stream_id": {
-                "@type": "string",
-                "@value": "ad900120-a32f-4253-819d-86ed6c0e731f"
-              },
-              "query": {
-                "@type": "string",
-                "@value": "Bot:false"
-              },
-              "limit": {
-                "@type": "integer",
-                "@value": 5
-              },
-              "sort_order": {
-                "@type": "string",
-                "@value": "desc"
-              },
-              "stacked_fields": {
-                "@type": "string",
-                "@value": ""
-              }
-            },
-            "position": {
-              "width": {
-                "@type": "integer",
-                "@value": 5
-              },
-              "height": {
-                "@type": "integer",
                 "@value": 2
               },
-              "row": {
-                "@type": "integer",
-                "@value": 1
-              },
               "col": {
-                "@type": "integer",
-                "@value": 3
-              }
-            }
-          },
-          {
-            "id": {
-              "@type": "string",
-              "@value": "1ae216e2-1420-4207-9fb7-d661c0659269"
-            },
-            "description": {
-              "@type": "string",
-              "@value": "Total Bot Requests"
-            },
-            "type": {
-              "@type": "string",
-              "@value": "STREAM_SEARCH_RESULT_COUNT"
-            },
-            "cache_time": {
-              "@type": "integer",
-              "@value": 10
-            },
-            "time_range": {
-              "type": {
-                "@type": "string",
-                "@value": "relative"
-              },
-              "range": {
-                "@type": "integer",
-                "@value": 3600
-              }
-            },
-            "configuration": {
-              "timerange": {
-                "type": {
-                  "@type": "string",
-                  "@value": "relative"
-                },
-                "range": {
-                  "@type": "integer",
-                  "@value": 3600
-                }
-              },
-              "lower_is_better": {
-                "@type": "boolean",
-                "@value": false
-              },
-              "stream_id": {
-                "@type": "string",
-                "@value": "ad900120-a32f-4253-819d-86ed6c0e731f"
-              },
-              "trend": {
-                "@type": "boolean",
-                "@value": false
-              },
-              "query": {
-                "@type": "string",
-                "@value": "Bot:false"
-              }
-            },
-            "position": {
-              "width": {
-                "@type": "integer",
-                "@value": 2
-              },
-              "height": {
-                "@type": "integer",
-                "@value": 2
-              },
-              "row": {
-                "@type": "integer",
-                "@value": 1
-              },
-              "col": {
-                "@type": "integer",
-                "@value": 1
-              }
-            }
-          },
-          {
-            "id": {
-              "@type": "string",
-              "@value": "08d6ff68-4233-4d16-bce1-8a75eb7935d4"
-            },
-            "description": {
-              "@type": "string",
-              "@value": "Top Bot URIs"
-            },
-            "type": {
-              "@type": "string",
-              "@value": "QUICKVALUES"
-            },
-            "cache_time": {
-              "@type": "integer",
-              "@value": 10
-            },
-            "time_range": {
-              "type": {
-                "@type": "string",
-                "@value": "relative"
-              },
-              "range": {
-                "@type": "integer",
-                "@value": 3600
-              }
-            },
-            "configuration": {
-              "query": {
-                "@type": "string",
-                "@value": "Bot:false"
-              },
-              "show_pie_chart": {
-                "@type": "boolean",
-                "@value": false
-              },
-              "sort_order": {
-                "@type": "string",
-                "@value": "desc"
-              },
-              "timerange": {
-                "type": {
-                  "@type": "string",
-                  "@value": "relative"
-                },
-                "range": {
-                  "@type": "integer",
-                  "@value": 3600
-                }
-              },
-              "stacked_fields": {
-                "@type": "string",
-                "@value": ""
-              },
-              "data_table_limit": {
-                "@type": "integer",
-                "@value": 50
-              },
-              "field": {
-                "@type": "string",
-                "@value": "ClientRequestURI"
-              },
-              "stream_id": {
-                "@type": "string",
-                "@value": "ad900120-a32f-4253-819d-86ed6c0e731f"
-              },
-              "show_data_table": {
-                "@type": "boolean",
-                "@value": true
-              },
-              "limit": {
                 "@type": "integer",
                 "@value": 5
-              }
-            },
-            "position": {
-              "width": {
-                "@type": "integer",
-                "@value": 7
-              },
-              "height": {
-                "@type": "integer",
-                "@value": 3
-              },
-              "row": {
-                "@type": "integer",
-                "@value": 6
-              },
-              "col": {
-                "@type": "integer",
-                "@value": 1
-              }
-            }
-          },
-          {
-            "id": {
-              "@type": "string",
-              "@value": "dbd1c482-c30d-4ce9-a0e4-ae862e0f22ff"
-            },
-            "description": {
-              "@type": "string",
-              "@value": "Top Bot User Agents"
-            },
-            "type": {
-              "@type": "string",
-              "@value": "QUICKVALUES"
-            },
-            "cache_time": {
-              "@type": "integer",
-              "@value": 10
-            },
-            "time_range": {
-              "type": {
-                "@type": "string",
-                "@value": "relative"
-              },
-              "range": {
-                "@type": "integer",
-                "@value": 3600
-              }
-            },
-            "configuration": {
-              "query": {
-                "@type": "string",
-                "@value": "Bot:false"
-              },
-              "show_pie_chart": {
-                "@type": "boolean",
-                "@value": false
-              },
-              "sort_order": {
-                "@type": "string",
-                "@value": "desc"
-              },
-              "timerange": {
-                "type": {
-                  "@type": "string",
-                  "@value": "relative"
-                },
-                "range": {
-                  "@type": "integer",
-                  "@value": 3600
-                }
-              },
-              "stacked_fields": {
-                "@type": "string",
-                "@value": ""
-              },
-              "data_table_limit": {
-                "@type": "integer",
-                "@value": 50
-              },
-              "field": {
-                "@type": "string",
-                "@value": "ClientRequestUserAgent"
-              },
-              "stream_id": {
-                "@type": "string",
-                "@value": "ad900120-a32f-4253-819d-86ed6c0e731f"
-              },
-              "show_data_table": {
-                "@type": "boolean",
-                "@value": true
-              },
-              "limit": {
-                "@type": "integer",
-                "@value": 5
-              }
-            },
-            "position": {
-              "width": {
-                "@type": "integer",
-                "@value": 7
-              },
-              "height": {
-                "@type": "integer",
-                "@value": 4
-              },
-              "row": {
-                "@type": "integer",
-                "@value": 9
-              },
-              "col": {
-                "@type": "integer",
-                "@value": 1
-              }
-            }
-          },
-          {
-            "id": {
-              "@type": "string",
-              "@value": "6e374edc-eda6-402d-9b16-76f4a8fe6ab4"
-            },
-            "description": {
-              "@type": "string",
-              "@value": "Top Bots by Country"
-            },
-            "type": {
-              "@type": "string",
-              "@value": "org.graylog.plugins.map.widget.strategy.MapWidgetStrategy"
-            },
-            "cache_time": {
-              "@type": "integer",
-              "@value": 10
-            },
-            "time_range": {
-              "type": {
-                "@type": "string",
-                "@value": "relative"
-              },
-              "range": {
-                "@type": "integer",
-                "@value": 3600
-              }
-            },
-            "configuration": {
-              "timerange": {
-                "type": {
-                  "@type": "string",
-                  "@value": "relative"
-                },
-                "range": {
-                  "@type": "integer",
-                  "@value": 3600
-                }
-              },
-              "field": {
-                "@type": "string",
-                "@value": "ClientIpGeolocation"
-              },
-              "stream_id": {
-                "@type": "string",
-                "@value": "ad900120-a32f-4253-819d-86ed6c0e731f"
-              },
-              "query": {
-                "@type": "string",
-                "@value": "Bot:false"
-              }
-            },
-            "position": {
-              "width": {
-                "@type": "integer",
-                "@value": 3
-              },
-              "height": {
-                "@type": "integer",
-                "@value": 3
-              },
-              "row": {
-                "@type": "integer",
-                "@value": 3
-              },
-              "col": {
-                "@type": "integer",
-                "@value": 1
-              }
-            }
-          },
-          {
-            "id": {
-              "@type": "string",
-              "@value": "63e8e90b-d138-4d5a-8097-f1dcd2fc60e3"
-            },
-            "description": {
-              "@type": "string",
-              "@value": "Top Bot Countries"
-            },
-            "type": {
-              "@type": "string",
-              "@value": "QUICKVALUES"
-            },
-            "cache_time": {
-              "@type": "integer",
-              "@value": 10
-            },
-            "time_range": {
-              "type": {
-                "@type": "string",
-                "@value": "relative"
-              },
-              "range": {
-                "@type": "integer",
-                "@value": 3600
-              }
-            },
-            "configuration": {
-              "query": {
-                "@type": "string",
-                "@value": "Bot:false"
-              },
-              "show_pie_chart": {
-                "@type": "boolean",
-                "@value": false
-              },
-              "sort_order": {
-                "@type": "string",
-                "@value": "desc"
-              },
-              "timerange": {
-                "type": {
-                  "@type": "string",
-                  "@value": "relative"
-                },
-                "range": {
-                  "@type": "integer",
-                  "@value": 3600
-                }
-              },
-              "stacked_fields": {
-                "@type": "string",
-                "@value": ""
-              },
-              "data_table_limit": {
-                "@type": "integer",
-                "@value": 50
-              },
-              "field": {
-                "@type": "string",
-                "@value": "ClientIpGeoCountry"
-              },
-              "stream_id": {
-                "@type": "string",
-                "@value": "ad900120-a32f-4253-819d-86ed6c0e731f"
-              },
-              "show_data_table": {
-                "@type": "boolean",
-                "@value": true
-              },
-              "limit": {
-                "@type": "integer",
-                "@value": 5
-              }
-            },
-            "position": {
-              "width": {
-                "@type": "integer",
-                "@value": 2
-              },
-              "height": {
-                "@type": "integer",
-                "@value": 3
-              },
-              "row": {
-                "@type": "integer",
-                "@value": 3
-              },
-              "col": {
-                "@type": "integer",
-                "@value": 4
-              }
-            }
-          },
-          {
-            "id": {
-              "@type": "string",
-              "@value": "0701f00c-5cb4-4b0f-9458-713e0deaf459"
-            },
-            "description": {
-              "@type": "string",
-              "@value": "Top Bot Cities"
-            },
-            "type": {
-              "@type": "string",
-              "@value": "QUICKVALUES"
-            },
-            "cache_time": {
-              "@type": "integer",
-              "@value": 10
-            },
-            "time_range": {
-              "type": {
-                "@type": "string",
-                "@value": "relative"
-              },
-              "range": {
-                "@type": "integer",
-                "@value": 3600
-              }
-            },
-            "configuration": {
-              "query": {
-                "@type": "string",
-                "@value": "Bot:false"
-              },
-              "show_pie_chart": {
-                "@type": "boolean",
-                "@value": false
-              },
-              "sort_order": {
-                "@type": "string",
-                "@value": "desc"
-              },
-              "timerange": {
-                "type": {
-                  "@type": "string",
-                  "@value": "relative"
-                },
-                "range": {
-                  "@type": "integer",
-                  "@value": 3600
-                }
-              },
-              "stacked_fields": {
-                "@type": "string",
-                "@value": ""
-              },
-              "data_table_limit": {
-                "@type": "integer",
-                "@value": 50
-              },
-              "field": {
-                "@type": "string",
-                "@value": "ClientIpGeoCityCode"
-              },
-              "stream_id": {
-                "@type": "string",
-                "@value": "ad900120-a32f-4253-819d-86ed6c0e731f"
-              },
-              "show_data_table": {
-                "@type": "boolean",
-                "@value": true
-              },
-              "limit": {
-                "@type": "integer",
-                "@value": 5
-              }
-            },
-            "position": {
-              "width": {
-                "@type": "integer",
-                "@value": 2
-              },
-              "height": {
-                "@type": "integer",
-                "@value": 3
-              },
-              "row": {
-                "@type": "integer",
-                "@value": 3
-              },
-              "col": {
-                "@type": "integer",
-                "@value": 6
               }
             }
           }
@@ -5020,10 +5110,44 @@
     {
       "v": "1",
       "type": {
+        "name": "pipeline",
+        "version": "1"
+      },
+      "id": "6f976dbf-4665-4d49-aa08-fbf5adebb9e2",
+      "data": {
+        "title": {
+          "@type": "string",
+          "@value": "Cloudflare"
+        },
+        "description": {
+          "@type": "string",
+          "@value": "Message enrichment for CloudFlare dashboards"
+        },
+        "source": {
+          "@type": "string",
+          "@value": "pipeline \"Cloudflare\"\nstage 0 match all\nrule \"ClientIP geoip lookup\"\nrule \"cloudflare-threat\"\nend"
+        },
+        "connected_streams": [
+          {
+            "@type": "string",
+            "@value": "3194a702-6856-484b-b77a-450be1cd7a67"
+          }
+        ]
+      },
+      "constraints": [
+        {
+          "type": "server-version",
+          "version": ">=3.1.2+9e96b08"
+        }
+      ]
+    },
+    {
+      "v": "1",
+      "type": {
         "name": "pipeline_rule",
         "version": "1"
       },
-      "id": "e5e4de91-0465-4d73-9464-31f2e647e3d4",
+      "id": "ead27cc1-4407-4576-abf8-500e7c77836c",
       "data": {
         "title": {
           "@type": "string",
@@ -5035,7 +5159,7 @@
         },
         "source": {
           "@type": "string",
-          "@value": "rule \"cloudflare-threat\"\nwhen\n  has_field(\"EdgePathingOp\")\nthen\n// Build  threat code for use in lookup later.\n// According to https://developers.cloudflare.com/logs/tutorials/parsing-json-log-data/\nlet threat_code = concat(concat( concat(to_string($message.EdgePathingSrc), \".\"),\n                                 concat(to_string($message.EdgePathingOp), \".\")),\n                                to_string($message.EdgePathingStatus));\n// Looks like \"user.ban.ipr16\"\nset_field(\"ThreatCode\", threat_code);\n\n// Look up the text description from a pipeline rule.\nlet threat_type = lookup_value(\"cloudflare-threat-lookup-table\", threat_code);\ndebug(threat_type);\nset_field(\"ThreatType\", threat_type);\ndebug(threat_type != \"No Threat\");\nset_field(\"Threat\", to_string(threat_type) != \"No Threat\");\nend"
+          "@value": "rule \"cloudflare-threat\"\nwhen\n  has_field(\"EdgePathingOp\")\nthen\n// Build  threat code for use in lookup later.\n// According to https://developers.cloudflare.com/logs/tutorials/parsing-json-log-data/\nlet threat_code = concat(concat( concat(to_string($message.EdgePathingSrc), \".\"),\n                                 concat(to_string($message.EdgePathingOp), \".\")),\n                                to_string($message.EdgePathingStatus));\n// Looks like \"user.ban.ipr16\"\nset_field(\"ThreatCode\", threat_code);\ndebug(threat_code);\n\n// Look up the text description from a pipeline rule.\nlet threat_type = lookup_value(\"cloudflare-threat-lookup-table\", threat_code);\n\nset_field(\"ThreatType\", threat_type);\nset_field(\"Threat\", to_string(threat_type) != \"No Threat\");\n\nset_field(\"Bot\", threat_code == \"macro.chl.jschlErr\");\n\nend"
         }
       },
       "constraints": [
@@ -5051,7 +5175,7 @@
         "name": "pipeline_rule",
         "version": "1"
       },
-      "id": "8e8d0b8b-ad6b-41a3-b0bf-9ce23d0d0b79",
+      "id": "d4de8e9a-9d12-4fd5-9df0-73ca8299ec51",
       "data": {
         "title": {
           "@type": "string",
@@ -5279,6 +5403,73 @@
         "version": "1"
       },
       "id": "ad900120-a32f-4253-819d-86ed6c0e731f",
+      "data": {
+        "alarm_callbacks": [],
+        "outputs": [],
+        "remove_matches": {
+          "@type": "boolean",
+          "@value": false
+        },
+        "title": {
+          "@type": "string",
+          "@value": "CloudFlare"
+        },
+        "stream_rules": [
+          {
+            "type": {
+              "@type": "string",
+              "@value": "PRESENCE"
+            },
+            "field": {
+              "@type": "string",
+              "@value": "EdgeServerIP"
+            },
+            "value": {
+              "@type": "string",
+              "@value": ""
+            },
+            "inverted": {
+              "@type": "boolean",
+              "@value": false
+            },
+            "description": {
+              "@type": "string",
+              "@value": ""
+            }
+          }
+        ],
+        "alert_conditions": [],
+        "matching_type": {
+          "@type": "string",
+          "@value": "AND"
+        },
+        "disabled": {
+          "@type": "boolean",
+          "@value": false
+        },
+        "description": {
+          "@type": "string",
+          "@value": "CloudFlare Logpush messages"
+        },
+        "default_stream": {
+          "@type": "boolean",
+          "@value": false
+        }
+      },
+      "constraints": [
+        {
+          "type": "server-version",
+          "version": ">=3.1.2+9e96b08"
+        }
+      ]
+    },
+    {
+      "v": "1",
+      "type": {
+        "name": "stream",
+        "version": "1"
+      },
+      "id": "3194a702-6856-484b-b77a-450be1cd7a67",
       "data": {
         "alarm_callbacks": [],
         "outputs": [],
