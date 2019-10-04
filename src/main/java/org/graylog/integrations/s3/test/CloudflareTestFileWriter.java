@@ -113,8 +113,8 @@ public class CloudflareTestFileWriter {
                                "  \"EdgeColoID\": 15," +
                                "  \"EdgeEndTimestamp\": " + Instant.now().getEpochSecond() + "," +
                                "  \"EdgePathingOp\": \" " + pickRandom("wl", "ban", "chl") + " \"," +
-                               "  \"EdgePathingSrc\": \" " + pickRandom("c", "hot", "macro", "user") + " \"," +
-                               "  \"EdgePathingStatus\": \" " + pickRandom("nr", "unknown", "ip", "ctry", "ipr16", "ipr24", "captchaErr", "captchaFail", "captchaNew", "jschlFail", "jschlNew", "jschlErr", "captchaNew") + " \"," +
+                               "  \"EdgePathingSrc\": \" " + pickRandom("c", "hot", "macro", "user", "filterBasedFirewall") + " \"," +
+                               "  \"EdgePathingStatus\": \" " + pickRandom("nr", "unknown", "ip", "ctry", "ipr16", "ipr24", "captchaErr", "captchaFail", "captchaNew", "jschlFail", "jschlNew", "jschlErr", "captchaNew", "captchaSucc") + " \"," +
                                "  \"EdgeRateLimitAction\": \"\"," +
                                "  \"EdgeRateLimitID\": 0," +
                                "  \"EdgeRequestHost\": \"test.com:80\"," +
