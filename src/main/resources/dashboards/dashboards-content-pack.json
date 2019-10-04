@@ -1,13 +1,21 @@
 {
   "v": "1",
   "id": "dd8a19a0-205f-4ef5-90d3-1eb810fec14b",
-  "rev": 3,
-  "name": "Cloudflare Logpush",
-  "summary": "Cloudflare Logpush",
+  "rev": 10,
+  "name": "Cloudflare Logpush Stream",
+  "summary": "Cloudflare Logpush Stream",
   "description": "",
   "vendor": "Graylog",
   "url": "",
-  "parameters": [],
+  "parameters": [
+    {
+      "name": "time_range",
+      "title": "Relative Time Rage",
+      "description": "The relative time range to use in all content pack widgets",
+      "type": "integer",
+      "default_value": 3600
+    }
+  ],
   "entities": [
     {
       "v": "1",
@@ -54,14 +62,18 @@
               }
             },
             "configuration": {
+              "stream_id": {
+                "@type": "string",
+                "@value": "3194a702-6856-484b-b77a-450be1cd7a67"
+              },
               "timerange": {
                 "type": {
                   "@type": "string",
                   "@value": "relative"
                 },
                 "range": {
-                  "@type": "integer",
-                  "@value": 1800
+                  "@value": "time_range",
+                  "@type": "parameter"
                 }
               },
               "lower_is_better": {
@@ -119,19 +131,23 @@
                 "@value": "relative"
               },
               "range": {
-                "@type": "integer",
-                "@value": 1800
+                "@value": "time_range",
+                "@type": "parameter"
               }
             },
             "configuration": {
+              "stream_id": {
+                "@type": "string",
+                "@value": "3194a702-6856-484b-b77a-450be1cd7a67"
+              },
               "timerange": {
                 "type": {
                   "@type": "string",
                   "@value": "relative"
                 },
                 "range": {
-                  "@type": "integer",
-                  "@value": 1800
+                  "@value": "time_range",
+                  "@type": "parameter"
                 }
               },
               "field": {
@@ -197,19 +213,23 @@
                 "@value": "relative"
               },
               "range": {
-                "@type": "integer",
-                "@value": 1800
+                "@value": "time_range",
+                "@type": "parameter"
               }
             },
             "configuration": {
+              "stream_id": {
+                "@type": "string",
+                "@value": "3194a702-6856-484b-b77a-450be1cd7a67"
+              },
               "timerange": {
                 "type": {
                   "@type": "string",
                   "@value": "relative"
                 },
                 "range": {
-                  "@type": "integer",
-                  "@value": 1800
+                  "@value": "time_range",
+                  "@type": "parameter"
                 }
               },
               "field": {
@@ -275,19 +295,23 @@
                 "@value": "relative"
               },
               "range": {
-                "@type": "integer",
-                "@value": 1800
+                "@value": "time_range",
+                "@type": "parameter"
               }
             },
             "configuration": {
+              "stream_id": {
+                "@type": "string",
+                "@value": "3194a702-6856-484b-b77a-450be1cd7a67"
+              },
               "timerange": {
                 "type": {
                   "@type": "string",
                   "@value": "relative"
                 },
                 "range": {
-                  "@type": "integer",
-                  "@value": 1800
+                  "@value": "time_range",
+                  "@type": "parameter"
                 }
               },
               "field": {
@@ -358,14 +382,18 @@
               }
             },
             "configuration": {
+              "stream_id": {
+                "@type": "string",
+                "@value": "3194a702-6856-484b-b77a-450be1cd7a67"
+              },
               "timerange": {
                 "type": {
                   "@type": "string",
                   "@value": "relative"
                 },
                 "range": {
-                  "@type": "integer",
-                  "@value": 3600
+                  "@value": "time_range",
+                  "@type": "parameter"
                 }
               },
               "field": {
@@ -436,14 +464,18 @@
               }
             },
             "configuration": {
+              "stream_id": {
+                "@type": "string",
+                "@value": "3194a702-6856-484b-b77a-450be1cd7a67"
+              },
               "timerange": {
                 "type": {
                   "@type": "string",
                   "@value": "relative"
                 },
                 "range": {
-                  "@type": "integer",
-                  "@value": 1800
+                  "@value": "time_range",
+                  "@type": "parameter"
                 }
               },
               "field": {
@@ -544,8 +576,8 @@
                   "@value": "relative"
                 },
                 "range": {
-                  "@type": "integer",
-                  "@value": 1800
+                  "@value": "time_range",
+                  "@type": "parameter"
                 }
               },
               "rangeType": {
@@ -555,6 +587,10 @@
               "field": {
                 "@type": "string",
                 "@value": "OriginResponseTimeMillis"
+              },
+              "stream_id": {
+                "@type": "string",
+                "@value": "3194a702-6856-484b-b77a-450be1cd7a67"
               }
             },
             "position": {
@@ -604,14 +640,18 @@
               }
             },
             "configuration": {
+              "stream_id": {
+                "@type": "string",
+                "@value": "3194a702-6856-484b-b77a-450be1cd7a67"
+              },
               "timerange": {
                 "type": {
                   "@type": "string",
                   "@value": "relative"
                 },
                 "range": {
-                  "@type": "integer",
-                  "@value": 1800
+                  "@value": "time_range",
+                  "@type": "parameter"
                 }
               },
               "field": {
@@ -716,6 +756,10 @@
                 "@type": "string",
                 "@value": "ClientRequestURI"
               },
+              "stream_id": {
+                "@type": "string",
+                "@value": "3194a702-6856-484b-b77a-450be1cd7a67"
+              },
               "show_data_table": {
                 "@type": "boolean",
                 "@value": true
@@ -772,14 +816,18 @@
               }
             },
             "configuration": {
+              "stream_id": {
+                "@type": "string",
+                "@value": "3194a702-6856-484b-b77a-450be1cd7a67"
+              },
               "timerange": {
                 "type": {
                   "@type": "string",
                   "@value": "relative"
                 },
                 "range": {
-                  "@type": "integer",
-                  "@value": 3600
+                  "@value": "time_range",
+                  "@type": "parameter"
                 }
               },
               "field": {
@@ -850,14 +898,18 @@
               }
             },
             "configuration": {
+              "stream_id": {
+                "@type": "string",
+                "@value": "3194a702-6856-484b-b77a-450be1cd7a67"
+              },
               "timerange": {
                 "type": {
                   "@type": "string",
                   "@value": "relative"
                 },
                 "range": {
-                  "@type": "integer",
-                  "@value": 1800
+                  "@value": "time_range",
+                  "@type": "parameter"
                 }
               },
               "field": {
@@ -928,14 +980,18 @@
               }
             },
             "configuration": {
+              "stream_id": {
+                "@type": "string",
+                "@value": "3194a702-6856-484b-b77a-450be1cd7a67"
+              },
               "timerange": {
                 "type": {
                   "@type": "string",
                   "@value": "relative"
                 },
                 "range": {
-                  "@type": "integer",
-                  "@value": 3600
+                  "@value": "time_range",
+                  "@type": "parameter"
                 }
               },
               "field": {
@@ -1006,14 +1062,18 @@
               }
             },
             "configuration": {
+              "stream_id": {
+                "@type": "string",
+                "@value": "3194a702-6856-484b-b77a-450be1cd7a67"
+              },
               "timerange": {
                 "type": {
                   "@type": "string",
                   "@value": "relative"
                 },
                 "range": {
-                  "@type": "integer",
-                  "@value": 1800
+                  "@value": "time_range",
+                  "@type": "parameter"
                 }
               },
               "field": {
@@ -1102,8 +1162,8 @@
                   "@value": "relative"
                 },
                 "range": {
-                  "@type": "integer",
-                  "@value": 300
+                  "@value": "time_range",
+                  "@type": "parameter"
                 }
               },
               "stacked_fields": {
@@ -1117,6 +1177,10 @@
               "field": {
                 "@type": "string",
                 "@value": "CacheCacheStatus"
+              },
+              "stream_id": {
+                "@type": "string",
+                "@value": "3194a702-6856-484b-b77a-450be1cd7a67"
               },
               "show_data_table": {
                 "@type": "boolean",
@@ -1174,14 +1238,18 @@
               }
             },
             "configuration": {
+              "stream_id": {
+                "@type": "string",
+                "@value": "3194a702-6856-484b-b77a-450be1cd7a67"
+              },
               "timerange": {
                 "type": {
                   "@type": "string",
                   "@value": "relative"
                 },
                 "range": {
-                  "@type": "integer",
-                  "@value": 1800
+                  "@value": "time_range",
+                  "@type": "parameter"
                 }
               },
               "field": {
@@ -1252,14 +1320,18 @@
               }
             },
             "configuration": {
+              "stream_id": {
+                "@type": "string",
+                "@value": "3194a702-6856-484b-b77a-450be1cd7a67"
+              },
               "timerange": {
                 "type": {
                   "@type": "string",
                   "@value": "relative"
                 },
                 "range": {
-                  "@type": "integer",
-                  "@value": 1800
+                  "@value": "time_range",
+                  "@type": "parameter"
                 }
               },
               "lower_is_better": {
@@ -1366,8 +1438,8 @@
                   "@value": "relative"
                 },
                 "range": {
-                  "@type": "integer",
-                  "@value": 3600
+                  "@value": "time_range",
+                  "@type": "parameter"
                 }
               },
               "stacked_fields": {
@@ -1381,6 +1453,10 @@
               "field": {
                 "@type": "string",
                 "@value": "ClientRequestProtocol"
+              },
+              "stream_id": {
+                "@type": "string",
+                "@value": "3194a702-6856-484b-b77a-450be1cd7a67"
               },
               "show_data_table": {
                 "@type": "boolean",
@@ -1438,14 +1514,18 @@
               }
             },
             "configuration": {
+              "stream_id": {
+                "@type": "string",
+                "@value": "3194a702-6856-484b-b77a-450be1cd7a67"
+              },
               "timerange": {
                 "type": {
                   "@type": "string",
                   "@value": "relative"
                 },
                 "range": {
-                  "@type": "integer",
-                  "@value": 3600
+                  "@value": "time_range",
+                  "@type": "parameter"
                 }
               },
               "field": {
@@ -1522,8 +1602,8 @@
                   "@value": "relative"
                 },
                 "range": {
-                  "@type": "integer",
-                  "@value": 3600
+                  "@value": "time_range",
+                  "@type": "parameter"
                 }
               },
               "field": {
@@ -1616,8 +1696,8 @@
                   "@value": "relative"
                 },
                 "range": {
-                  "@type": "integer",
-                  "@value": 3600
+                  "@value": "time_range",
+                  "@type": "parameter"
                 }
               },
               "rangeType": {
@@ -1627,6 +1707,10 @@
               "field": {
                 "@type": "string",
                 "@value": "EdgeResponseBytes"
+              },
+              "stream_id": {
+                "@type": "string",
+                "@value": "3194a702-6856-484b-b77a-450be1cd7a67"
               }
             },
             "position": {
@@ -1694,8 +1778,8 @@
                   "@value": "relative"
                 },
                 "range": {
-                  "@type": "integer",
-                  "@value": 3600
+                  "@value": "time_range",
+                  "@type": "parameter"
                 }
               },
               "stacked_fields": {
@@ -1709,6 +1793,10 @@
               "field": {
                 "@type": "string",
                 "@value": "ClientRequestMethod"
+              },
+              "stream_id": {
+                "@type": "string",
+                "@value": "3194a702-6856-484b-b77a-450be1cd7a67"
               },
               "show_data_table": {
                 "@type": "boolean",
@@ -1784,8 +1872,8 @@
                   "@value": "relative"
                 },
                 "range": {
-                  "@type": "integer",
-                  "@value": 3600
+                  "@value": "time_range",
+                  "@type": "parameter"
                 }
               },
               "stacked_fields": {
@@ -1799,6 +1887,10 @@
               "field": {
                 "@type": "string",
                 "@value": "EdgeResponseContentType"
+              },
+              "stream_id": {
+                "@type": "string",
+                "@value": "3194a702-6856-484b-b77a-450be1cd7a67"
               },
               "show_data_table": {
                 "@type": "boolean",
@@ -1874,8 +1966,8 @@
                   "@value": "relative"
                 },
                 "range": {
-                  "@type": "integer",
-                  "@value": 3600
+                  "@value": "time_range",
+                  "@type": "parameter"
                 }
               },
               "stacked_fields": {
@@ -1950,14 +2042,18 @@
               }
             },
             "configuration": {
+              "stream_id": {
+                "@type": "string",
+                "@value": "3194a702-6856-484b-b77a-450be1cd7a67"
+              },
               "timerange": {
                 "type": {
                   "@type": "string",
                   "@value": "relative"
                 },
                 "range": {
-                  "@type": "integer",
-                  "@value": 3600
+                  "@value": "time_range",
+                  "@type": "parameter"
                 }
               },
               "lower_is_better": {
@@ -2038,8 +2134,8 @@
                   "@value": "relative"
                 },
                 "range": {
-                  "@type": "integer",
-                  "@value": 3600
+                  "@value": "time_range",
+                  "@type": "parameter"
                 }
               },
               "stacked_fields": {
@@ -2053,6 +2149,10 @@
               "field": {
                 "@type": "string",
                 "@value": "ClientRequestURI"
+              },
+              "stream_id": {
+                "@type": "string",
+                "@value": "3194a702-6856-484b-b77a-450be1cd7a67"
               },
               "show_data_table": {
                 "@type": "boolean",
@@ -2128,8 +2228,8 @@
                   "@value": "relative"
                 },
                 "range": {
-                  "@type": "integer",
-                  "@value": 3600
+                  "@value": "time_range",
+                  "@type": "parameter"
                 }
               },
               "stacked_fields": {
@@ -2143,6 +2243,10 @@
               "field": {
                 "@type": "string",
                 "@value": "ClientRequestReferer"
+              },
+              "stream_id": {
+                "@type": "string",
+                "@value": "3194a702-6856-484b-b77a-450be1cd7a67"
               },
               "show_data_table": {
                 "@type": "boolean",
@@ -2200,14 +2304,18 @@
               }
             },
             "configuration": {
+              "stream_id": {
+                "@type": "string",
+                "@value": "3194a702-6856-484b-b77a-450be1cd7a67"
+              },
               "timerange": {
                 "type": {
                   "@type": "string",
                   "@value": "relative"
                 },
                 "range": {
-                  "@type": "integer",
-                  "@value": 3600
+                  "@value": "time_range",
+                  "@type": "parameter"
                 }
               },
               "field": {
@@ -2296,8 +2404,8 @@
                   "@value": "relative"
                 },
                 "range": {
-                  "@type": "integer",
-                  "@value": 3600
+                  "@value": "time_range",
+                  "@type": "parameter"
                 }
               },
               "stacked_fields": {
@@ -2311,6 +2419,10 @@
               "field": {
                 "@type": "string",
                 "@value": "ClientDeviceType"
+              },
+              "stream_id": {
+                "@type": "string",
+                "@value": "3194a702-6856-484b-b77a-450be1cd7a67"
               },
               "show_data_table": {
                 "@type": "boolean",
@@ -2368,14 +2480,18 @@
               }
             },
             "configuration": {
+              "stream_id": {
+                "@type": "string",
+                "@value": "3194a702-6856-484b-b77a-450be1cd7a67"
+              },
               "timerange": {
                 "type": {
                   "@type": "string",
                   "@value": "relative"
                 },
                 "range": {
-                  "@type": "integer",
-                  "@value": 3600
+                  "@value": "time_range",
+                  "@type": "parameter"
                 }
               },
               "lower_is_better": {
@@ -2456,8 +2572,8 @@
                   "@value": "relative"
                 },
                 "range": {
-                  "@type": "integer",
-                  "@value": 3600
+                  "@value": "time_range",
+                  "@type": "parameter"
                 }
               },
               "stacked_fields": {
@@ -2564,8 +2680,8 @@
                   "@value": "relative"
                 },
                 "range": {
-                  "@type": "integer",
-                  "@value": 3600
+                  "@value": "time_range",
+                  "@type": "parameter"
                 }
               },
               "field": {
@@ -2646,8 +2762,8 @@
                   "@value": "relative"
                 },
                 "range": {
-                  "@type": "integer",
-                  "@value": 3600
+                  "@value": "time_range",
+                  "@type": "parameter"
                 }
               },
               "stacked_fields": {
@@ -2740,8 +2856,8 @@
                   "@value": "relative"
                 },
                 "range": {
-                  "@type": "integer",
-                  "@value": 3600
+                  "@value": "time_range",
+                  "@type": "parameter"
                 }
               },
               "stacked_fields": {
@@ -2928,8 +3044,8 @@
                   "@value": "relative"
                 },
                 "range": {
-                  "@type": "integer",
-                  "@value": 3600
+                  "@value": "time_range",
+                  "@type": "parameter"
                 }
               },
               "stacked_fields": {
@@ -3022,8 +3138,8 @@
                   "@value": "relative"
                 },
                 "range": {
-                  "@type": "integer",
-                  "@value": 3600
+                  "@value": "time_range",
+                  "@type": "parameter"
                 }
               },
               "stacked_fields": {
@@ -3116,8 +3232,8 @@
                   "@value": "relative"
                 },
                 "range": {
-                  "@type": "integer",
-                  "@value": 3600
+                  "@value": "time_range",
+                  "@type": "parameter"
                 }
               },
               "stacked_fields": {
@@ -3198,8 +3314,8 @@
                   "@value": "relative"
                 },
                 "range": {
-                  "@type": "integer",
-                  "@value": 1800
+                  "@value": "time_range",
+                  "@type": "parameter"
                 }
               },
               "field": {
@@ -3274,14 +3390,18 @@
               }
             },
             "configuration": {
+              "stream_id": {
+                "@type": "string",
+                "@value": "3194a702-6856-484b-b77a-450be1cd7a67"
+              },
               "timerange": {
                 "type": {
                   "@type": "string",
                   "@value": "relative"
                 },
                 "range": {
-                  "@type": "integer",
-                  "@value": 3600
+                  "@value": "time_range",
+                  "@type": "parameter"
                 }
               },
               "lower_is_better": {
@@ -3350,8 +3470,8 @@
                   "@value": "relative"
                 },
                 "range": {
-                  "@type": "integer",
-                  "@value": 3600
+                  "@value": "time_range",
+                  "@type": "parameter"
                 }
               },
               "lower_is_better": {
@@ -3450,8 +3570,8 @@
                   "@value": "relative"
                 },
                 "range": {
-                  "@type": "integer",
-                  "@value": 3600
+                  "@value": "time_range",
+                  "@type": "parameter"
                 }
               },
               "field": {
@@ -3532,8 +3652,8 @@
                   "@value": "relative"
                 },
                 "range": {
-                  "@type": "integer",
-                  "@value": 3600
+                  "@value": "time_range",
+                  "@type": "parameter"
                 }
               },
               "lower_is_better": {
@@ -3618,8 +3738,8 @@
                   "@value": "relative"
                 },
                 "range": {
-                  "@type": "integer",
-                  "@value": 3600
+                  "@value": "time_range",
+                  "@type": "parameter"
                 }
               },
               "stacked_fields": {
@@ -3712,8 +3832,8 @@
                   "@value": "relative"
                 },
                 "range": {
-                  "@type": "integer",
-                  "@value": 3600
+                  "@value": "time_range",
+                  "@type": "parameter"
                 }
               },
               "stacked_fields": {
@@ -3794,8 +3914,8 @@
                   "@value": "relative"
                 },
                 "range": {
-                  "@type": "integer",
-                  "@value": 3600
+                  "@value": "time_range",
+                  "@type": "parameter"
                 }
               },
               "field": {
@@ -3876,8 +3996,8 @@
                   "@value": "relative"
                 },
                 "range": {
-                  "@type": "integer",
-                  "@value": 3600
+                  "@value": "time_range",
+                  "@type": "parameter"
                 }
               },
               "stacked_fields": {
@@ -3970,8 +4090,8 @@
                   "@value": "relative"
                 },
                 "range": {
-                  "@type": "integer",
-                  "@value": 3600
+                  "@value": "time_range",
+                  "@type": "parameter"
                 }
               },
               "stacked_fields": {
@@ -4072,14 +4192,18 @@
               }
             },
             "configuration": {
+              "stream_id": {
+                "@type": "string",
+                "@value": "3194a702-6856-484b-b77a-450be1cd7a67"
+              },
               "timerange": {
                 "type": {
                   "@type": "string",
                   "@value": "relative"
                 },
                 "range": {
-                  "@type": "integer",
-                  "@value": 1800
+                  "@value": "time_range",
+                  "@type": "parameter"
                 }
               },
               "field": {
@@ -4150,14 +4274,18 @@
               }
             },
             "configuration": {
+              "stream_id": {
+                "@type": "string",
+                "@value": "3194a702-6856-484b-b77a-450be1cd7a67"
+              },
               "timerange": {
                 "type": {
                   "@type": "string",
                   "@value": "relative"
                 },
                 "range": {
-                  "@type": "integer",
-                  "@value": 1800
+                  "@value": "time_range",
+                  "@type": "parameter"
                 }
               },
               "field": {
@@ -4246,8 +4374,8 @@
                   "@value": "relative"
                 },
                 "range": {
-                  "@type": "integer",
-                  "@value": 7200
+                  "@value": "time_range",
+                  "@type": "parameter"
                 }
               },
               "stacked_fields": {
@@ -4261,6 +4389,10 @@
               "field": {
                 "@type": "string",
                 "@value": "ClientRequestURI"
+              },
+              "stream_id": {
+                "@type": "string",
+                "@value": "3194a702-6856-484b-b77a-450be1cd7a67"
               },
               "show_data_table": {
                 "@type": "boolean",
@@ -4318,14 +4450,18 @@
               }
             },
             "configuration": {
+              "stream_id": {
+                "@type": "string",
+                "@value": "3194a702-6856-484b-b77a-450be1cd7a67"
+              },
               "timerange": {
                 "type": {
                   "@type": "string",
                   "@value": "relative"
                 },
                 "range": {
-                  "@type": "integer",
-                  "@value": 3600
+                  "@value": "time_range",
+                  "@type": "parameter"
                 }
               },
               "lower_is_better": {
@@ -4406,8 +4542,8 @@
                   "@value": "relative"
                 },
                 "range": {
-                  "@type": "integer",
-                  "@value": 172800
+                  "@value": "time_range",
+                  "@type": "parameter"
                 }
               },
               "stacked_fields": {
@@ -4421,6 +4557,10 @@
               "field": {
                 "@type": "string",
                 "@value": "OriginResponseStatusClass"
+              },
+              "stream_id": {
+                "@type": "string",
+                "@value": "3194a702-6856-484b-b77a-450be1cd7a67"
               },
               "show_data_table": {
                 "@type": "boolean",
@@ -4478,14 +4618,18 @@
               }
             },
             "configuration": {
+              "stream_id": {
+                "@type": "string",
+                "@value": "3194a702-6856-484b-b77a-450be1cd7a67"
+              },
               "timerange": {
                 "type": {
                   "@type": "string",
                   "@value": "relative"
                 },
                 "range": {
-                  "@type": "integer",
-                  "@value": 1800
+                  "@value": "time_range",
+                  "@type": "parameter"
                 }
               },
               "field": {
@@ -4556,14 +4700,18 @@
               }
             },
             "configuration": {
+              "stream_id": {
+                "@type": "string",
+                "@value": "3194a702-6856-484b-b77a-450be1cd7a67"
+              },
               "timerange": {
                 "type": {
                   "@type": "string",
                   "@value": "relative"
                 },
                 "range": {
-                  "@type": "integer",
-                  "@value": 1800
+                  "@value": "time_range",
+                  "@type": "parameter"
                 }
               },
               "field": {
@@ -4652,8 +4800,8 @@
                   "@value": "relative"
                 },
                 "range": {
-                  "@type": "integer",
-                  "@value": 7200
+                  "@value": "time_range",
+                  "@type": "parameter"
                 }
               },
               "stacked_fields": {
@@ -4667,6 +4815,10 @@
               "field": {
                 "@type": "string",
                 "@value": "ClientRequestURI"
+              },
+              "stream_id": {
+                "@type": "string",
+                "@value": "3194a702-6856-484b-b77a-450be1cd7a67"
               },
               "show_data_table": {
                 "@type": "boolean",
@@ -4724,14 +4876,18 @@
               }
             },
             "configuration": {
+              "stream_id": {
+                "@type": "string",
+                "@value": "3194a702-6856-484b-b77a-450be1cd7a67"
+              },
               "timerange": {
                 "type": {
                   "@type": "string",
                   "@value": "relative"
                 },
                 "range": {
-                  "@type": "integer",
-                  "@value": 1800
+                  "@value": "time_range",
+                  "@type": "parameter"
                 }
               },
               "field": {
@@ -4820,8 +4976,8 @@
                   "@value": "relative"
                 },
                 "range": {
-                  "@type": "integer",
-                  "@value": 172800
+                  "@value": "time_range",
+                  "@type": "parameter"
                 }
               },
               "stacked_fields": {
@@ -4835,6 +4991,10 @@
               "field": {
                 "@type": "string",
                 "@value": "EdgeResponseStatusClass"
+              },
+              "stream_id": {
+                "@type": "string",
+                "@value": "3194a702-6856-484b-b77a-450be1cd7a67"
               },
               "show_data_table": {
                 "@type": "boolean",
@@ -4934,6 +5094,10 @@
             "@type": "integer",
             "@value": 8388608
           },
+          "stream_id": {
+            "@type": "string",
+            "@value": "3194a702-6856-484b-b77a-450be1cd7a67"
+          },
           "number_worker_threads": {
             "@type": "integer",
             "@value": 2
@@ -4982,6 +5146,10 @@
           "@value": "Geo Lookup"
         },
         "configuration": {
+          "stream_id": {
+            "@type": "string",
+            "@value": "3194a702-6856-484b-b77a-450be1cd7a67"
+          },
           "type": {
             "@type": "string",
             "@value": "maxmind_geoip"
@@ -5032,9 +5200,9 @@
           "@value": "cloudflare-threat-lookup"
         },
         "configuration": {
-          "type": {
+          "value_column": {
             "@type": "string",
-            "@value": "csvfile"
+            "@value": "value"
           },
           "path": {
             "@type": "string",
@@ -5052,17 +5220,21 @@
             "@type": "string",
             "@value": "key"
           },
-          "value_column": {
+          "case_insensitive_lookup": {
+            "@type": "boolean",
+            "@value": false
+          },
+          "stream_id": {
             "@type": "string",
-            "@value": "value"
+            "@value": "3194a702-6856-484b-b77a-450be1cd7a67"
+          },
+          "type": {
+            "@type": "string",
+            "@value": "csvfile"
           },
           "check_interval": {
             "@type": "long",
             "@value": 60
-          },
-          "case_insensitive_lookup": {
-            "@type": "boolean",
-            "@value": false
           }
         }
       },
