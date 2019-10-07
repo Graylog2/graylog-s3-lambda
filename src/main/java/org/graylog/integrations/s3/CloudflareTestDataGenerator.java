@@ -1,4 +1,4 @@
-package org.graylog.integrations.s3.test;
+package org.graylog.integrations.s3;
 
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.AmazonS3Client;
@@ -30,7 +30,7 @@ import java.util.zip.GZIPOutputStream;
  *
  * You need to fill an S3 'bucket' environment variable to use this.
  */
-public class CloudflareTestFileWriter {
+public class CloudflareTestDataGenerator {
 
     private static final int FILES = Integer.MAX_VALUE;
 

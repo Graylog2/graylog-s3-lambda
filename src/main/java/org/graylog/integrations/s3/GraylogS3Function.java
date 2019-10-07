@@ -51,8 +51,7 @@ public class GraylogS3Function implements RequestHandler<S3Event, Object> {
      */
     private void processObject(Configuration config, AmazonS3 s3Client, String objectKey) {
 
-        LOG.debug(String.format("Graylog host: %s:%d", config.getGraylogHost(),
-                                config.getGraylogPort()));
+        LOG.debug("Graylog host: {}:{}", config.getGraylogHost(), config.getGraylogPort());
 
         LOG.debug("Attempting to read object [{}] from S3.", objectKey);
         S3Object object = s3Client.getObject(config.getS3BucketName(), objectKey);

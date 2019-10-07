@@ -1,10 +1,9 @@
 package org.graylog.integrations.s3.codec;
 
 import com.amazonaws.util.StringUtils;
-import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.graylog.integrations.s3.config.Configuration;
@@ -25,6 +24,7 @@ public class CloudFlareLogpushCodec extends AbstractS3Codec implements S3Codec {
     static final Logger LOG = LogManager.getLogger(CloudFlareLogpushCodec.class);
     private static final List<String> TIMESTAMP_FIELDS = Arrays.asList("EdgeEndTimestamp", "EdgeStartTimestamp");
     private static final List<String> HTTP_CODE_FIELDS = Arrays.asList("CacheResponseStatus", "EdgeResponseStatus", "OriginResponseStatus");
+    private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
 
     CloudFlareLogpushCodec(String stringMessage, Configuration config) {
         super(stringMessage, config);
@@ -32,13 +32,9 @@ public class CloudFlareLogpushCodec extends AbstractS3Codec implements S3Codec {
 
     public GelfMessage decode() throws IOException {
 
-        final ObjectMapper mapper = new ObjectMapper();
-        mapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS)
-              .disable(DeserializationFeature.ADJUST_DATES_TO_CONTEXT_TIME_ZONE);
-
         // The valueMap makes it easier to get access to each field.
-        HashMap<String, Object> valueMap = mapper.readValue(stringMessage, HashMap.class);
-        final JsonNode entireJsonNode = mapper.readTree(stringMessage);
+        HashMap<String, Object> valueMap = OBJECT_MAPPER.readValue(stringMessage, new TypeReference<Map<String, Object>>(){});
+        final JsonNode entireJsonNode = OBJECT_MAPPER.readTree(stringMessage);
 
         final Map<String, Object> messageMap = new LinkedHashMap<>();
 
@@ -85,21 +81,7 @@ public class CloudFlareLogpushCodec extends AbstractS3Codec implements S3Codec {
 
                 // Pick off and parse timestamp fields first.
                 if (TIMESTAMP_FIELDS.contains(key)) {
-
-                    // If textual, then Timestamp is in RFC 3339 format: 2019-09-13T20:23:09Z
-                    if (valueNode.isTextual()) {
-                        final long timestamp = Instant.parse(valueNode.textValue()).getEpochSecond();
-                        message.addAdditionalField(key, timestamp);
-                    } else if (valueNode.isInt()) {
-                        // Unix timestamp in seconds.
-                        // Int automatically casts to a double.
-                        message.addAdditionalField(key, valueNode.intValue());
-                    } else if (valueNode.isLong()) {
-                        // Unix nanos
-                        // Move the decimal place 9 places and cast to a double.
-                        final double timestampFractionalSeconds = (double) valueNode.longValue() / 1_000_000_000;
-                        message.addAdditionalField(key, timestampFractionalSeconds);
-                    }
+                    message.addAdditionalField(key, parseTimestamp(valueNode));
                     continue;
                 }
 
