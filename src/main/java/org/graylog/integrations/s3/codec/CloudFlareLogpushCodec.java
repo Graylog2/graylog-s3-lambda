@@ -24,16 +24,18 @@ public class CloudFlareLogpushCodec extends AbstractS3Codec implements S3Codec {
     static final Logger LOG = LogManager.getLogger(CloudFlareLogpushCodec.class);
     private static final List<String> TIMESTAMP_FIELDS = Arrays.asList("EdgeEndTimestamp", "EdgeStartTimestamp");
     private static final List<String> HTTP_CODE_FIELDS = Arrays.asList("CacheResponseStatus", "EdgeResponseStatus", "OriginResponseStatus");
-    private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
+
+    private final ObjectMapper objectMapper;
 
     CloudFlareLogpushCodec(Configuration config) {
         super(config);
+        this.objectMapper = new ObjectMapper();
     }
 
     public GelfMessage decode(String message) throws IOException {
 
         // The valueMap makes it easier to get access to each field.
-        final JsonNode rootNode = OBJECT_MAPPER.readTree(message);
+        final JsonNode rootNode = objectMapper.readTree(message);
 
         final List<String> fieldNames = Stream.generate(rootNode.fieldNames()::next)
                                               .limit(rootNode.size())
