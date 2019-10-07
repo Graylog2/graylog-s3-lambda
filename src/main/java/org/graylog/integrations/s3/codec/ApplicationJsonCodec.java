@@ -13,11 +13,13 @@ public class ApplicationJsonCodec extends AbstractS3Codec implements S3Codec {
         super(stringMessage, config);
     }
 
+    /**
+     * Flatten the JSON with an underscore separator and array [x] notation.
+     * An alternative is to use the text/plain content_type configuration entry and parse the JSON within
+     * Graylog directly.
+     */
     public GelfMessage decode() {
 
-        // TODO: Verify that this flatting follows logic in Graylog
-        // This library was used for quick flattening, but need to verify it's not different than is used in Graylog.
-        // https://github.com/Graylog2/graylog2-server/blob/master/graylog2-server/src/main/java/org/graylog2/inputs/extractors/JsonExtractor.java
         final Map<String, Object> stringObjectMap = new JsonFlattener(stringMessage).withSeparator("_".charAt(0))
                                                                                     .flattenAsMap();
         final GelfMessage gelfMessage = new GelfMessage(stringMessage);

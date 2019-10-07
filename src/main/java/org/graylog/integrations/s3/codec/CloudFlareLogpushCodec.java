@@ -110,17 +110,13 @@ public class CloudFlareLogpushCodec extends AbstractS3Codec implements S3Codec {
                         final int statusValue = (int) nodeValue;
                         if (statusValue >= 100 && statusValue < 200) {
                             message.addAdditionalField(key + "Class", "1xx");
-                        }
-                        else if (statusValue >= 200 && statusValue < 300) {
+                        } else if (statusValue >= 200 && statusValue < 300) {
                             message.addAdditionalField(key + "Class", "2xx");
-                        }
-                        else if (statusValue >= 300 && statusValue < 400) {
+                        } else if (statusValue >= 300 && statusValue < 400) {
                             message.addAdditionalField(key + "Class", "3xx");
-                        }
-                        else if (statusValue >= 400 && statusValue < 500) {
+                        } else if (statusValue >= 400 && statusValue < 500) {
                             message.addAdditionalField(key + "Class", "4xx");
-                        }
-                        else if (statusValue >= 500 && statusValue < 600) {
+                        } else if (statusValue >= 500 && statusValue < 600) {
                             message.addAdditionalField(key + "Class", "5xx");
                         }
                     }
@@ -137,8 +133,9 @@ public class CloudFlareLogpushCodec extends AbstractS3Codec implements S3Codec {
                 // Scalar values can be written directly to the GelfMessage.
                 message.addAdditionalField(key, getNodeValue(valueNode));
             } else {
-                // TODO: The Initial version can be shipped without support for lists.
-                //  Arrays can be comma-separated. See these examples:
+                // The Initial version will be shipped without support for lists.
+                // See https://github.com/Graylog2/graylog-s3-lambda/issues/5
+
                 // "FirewallMatchesActions": [
                 //    "allow"
                 // ],
