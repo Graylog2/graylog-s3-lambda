@@ -6,5 +6,5 @@ import java.io.IOException;
 
 interface S3Codec {
 
-    GelfMessage decode() throws IOException;
+    GelfMessage decode(String message) throws IOException;
 }

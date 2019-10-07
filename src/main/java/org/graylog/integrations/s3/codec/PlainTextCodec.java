@@ -6,13 +6,13 @@ import org.graylog2.gelfclient.GelfMessage;
 
 public class PlainTextCodec extends AbstractS3Codec implements S3Codec {
 
-    PlainTextCodec(String stringMessage, Configuration config) {
-        super(stringMessage, config);
+    PlainTextCodec(Configuration config) {
+        super(config);
     }
 
-    public GelfMessage decode() {
+    public GelfMessage decode(String message) {
 
         // Nothing to do here, just pass the message along.
-        return new GelfMessage(stringMessage);
+        return new GelfMessage(message);
     }
 }

@@ -30,10 +30,16 @@ import java.util.zip.GZIPInputStream;
 public class GraylogS3Function implements RequestHandler<S3Event, Object> {
 
     private static final Logger LOG = LogManager.getLogger(GraylogS3Function.class);
+    private CodecProcessor codecProcessor;
+    private Configuration config;
+
+    public GraylogS3Function() {
+        this.config = Configuration.newInstance();
+        this.codecProcessor = new CodecProcessor(config);
+    }
 
     public Object handleRequest(final S3Event s3Event, final Context context) {
 
-        Configuration config = Configuration.newInstance();
         LOG.debug(config);
         AmazonS3 s3Client = AmazonS3Client.builder().build();
 
@@ -93,7 +99,7 @@ public class GraylogS3Function implements RequestHandler<S3Event, Object> {
                 }
 
                 try {
-                    final GelfMessage message = new CodecProcessor(config, messageLine).decode();
+                    final GelfMessage message = codecProcessor.decode(messageLine);
                     gelfTransport.send(message);
                 } catch (InterruptedException e) {
                     LOG.error("Failed to send message [{}]", messageLine, e);

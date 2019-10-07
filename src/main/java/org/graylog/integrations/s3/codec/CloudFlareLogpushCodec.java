@@ -26,14 +26,14 @@ public class CloudFlareLogpushCodec extends AbstractS3Codec implements S3Codec {
     private static final List<String> HTTP_CODE_FIELDS = Arrays.asList("CacheResponseStatus", "EdgeResponseStatus", "OriginResponseStatus");
     private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
 
-    CloudFlareLogpushCodec(String stringMessage, Configuration config) {
-        super(stringMessage, config);
+    CloudFlareLogpushCodec(Configuration config) {
+        super(config);
     }
 
-    public GelfMessage decode() throws IOException {
+    public GelfMessage decode(String message) throws IOException {
 
         // The valueMap makes it easier to get access to each field.
-        final JsonNode rootNode = OBJECT_MAPPER.readTree(stringMessage);
+        final JsonNode rootNode = OBJECT_MAPPER.readTree(message);
 
         final List<String> fieldNames = Stream.generate(rootNode.fieldNames()::next)
                                               .limit(rootNode.size())
@@ -52,17 +52,17 @@ public class CloudFlareLogpushCodec extends AbstractS3Codec implements S3Codec {
         // ClientRequestHost: domain.com:8080 | ClientRequestPath: /api/cluster/metrics/multiple | OriginIP: 127.0.68.0 | ClientSrcPort: 54728 | EdgeServerIP: 127.0.68.0 | EdgeResponseBytes: 911
         final String messageSummary = messageMap.keySet().stream().map(key -> key + ": " + getNodeTextValue(key, rootNode)).collect(Collectors.joining(" | "));
 
-        final GelfMessage message = new GelfMessage(messageSummary, config.getGraylogHost());
+        final GelfMessage gelfMessage = new GelfMessage(messageSummary, config.getGraylogHost());
 
         // Set message timestamp. Timestamp defaults to now, so no need to set when the useNowTimestamp = false.
         if (!config.getLogpushConfiguration().getUseNowTimestamp()) {
             final JsonNode edgeStartTimestamp = rootNode.findValue("EdgeStartTimestamp");
             if (edgeStartTimestamp != null) {
                 final double timestamp = parseTimestamp(edgeStartTimestamp);
-                message.setTimestamp(timestamp);
+                gelfMessage.setTimestamp(timestamp);
             } else {
                 // Default to now.
-                message.setTimestamp(Instant.now().getEpochSecond());
+                gelfMessage.setTimestamp(Instant.now().getEpochSecond());
             }
         }
 
@@ -85,7 +85,7 @@ public class CloudFlareLogpushCodec extends AbstractS3Codec implements S3Codec {
 
                 // Pick off and parse timestamp fields first.
                 if (TIMESTAMP_FIELDS.contains(key)) {
-                    message.addAdditionalField(key, parseTimestamp(valueNode));
+                    gelfMessage.addAdditionalField(key, parseTimestamp(valueNode));
                     continue;
                 }
 
@@ -95,15 +95,15 @@ public class CloudFlareLogpushCodec extends AbstractS3Codec implements S3Codec {
                     if (nodeValue != null) {
                         final int statusValue = (int) nodeValue;
                         if (statusValue >= 100 && statusValue < 200) {
-                            message.addAdditionalField(key + "Class", "1xx");
+                            gelfMessage.addAdditionalField(key + "Class", "1xx");
                         } else if (statusValue >= 200 && statusValue < 300) {
-                            message.addAdditionalField(key + "Class", "2xx");
+                            gelfMessage.addAdditionalField(key + "Class", "2xx");
                         } else if (statusValue >= 300 && statusValue < 400) {
-                            message.addAdditionalField(key + "Class", "3xx");
+                            gelfMessage.addAdditionalField(key + "Class", "3xx");
                         } else if (statusValue >= 400 && statusValue < 500) {
-                            message.addAdditionalField(key + "Class", "4xx");
+                            gelfMessage.addAdditionalField(key + "Class", "4xx");
                         } else if (statusValue >= 500 && statusValue < 600) {
-                            message.addAdditionalField(key + "Class", "5xx");
+                            gelfMessage.addAdditionalField(key + "Class", "5xx");
                         }
                     }
                 }
@@ -112,12 +112,12 @@ public class CloudFlareLogpushCodec extends AbstractS3Codec implements S3Codec {
                 if ("OriginResponseTime".equals(key)) {
                     final Object nodeValue = getNodeValue(valueNode);
                     if (nodeValue != null) {
-                        message.addAdditionalField("OriginResponseTimeMillis", Double.valueOf((Integer) nodeValue) / 1_000_000);
+                        gelfMessage.addAdditionalField("OriginResponseTimeMillis", Double.valueOf((Integer) nodeValue) / 1_000_000);
                     }
                 }
 
                 // Scalar values can be written directly to the GelfMessage.
-                message.addAdditionalField(key, getNodeValue(valueNode));
+                gelfMessage.addAdditionalField(key, getNodeValue(valueNode));
             } else {
                 // The Initial version will be shipped without support for lists.
                 // See https://github.com/Graylog2/graylog-s3-lambda/issues/5
@@ -135,7 +135,7 @@ public class CloudFlareLogpushCodec extends AbstractS3Codec implements S3Codec {
             }
         }
 
-        return message;
+        return gelfMessage;
     }
 
     /**

@@ -1,7 +1,6 @@
 package org.graylog.integrations.s3.codec;
 
 import org.graylog.integrations.s3.ContentType;
-import org.graylog.integrations.s3.codec.CodecProcessor;
 import org.graylog.integrations.s3.config.Configuration;
 import org.graylog2.gelfclient.GelfMessage;
 import org.junit.Assert;
@@ -14,13 +13,14 @@ public class CodecProcessorTest {
     @Test
     public void testCodecSelection() throws IOException {
 
-        final CodecProcessor codecProcessor = new CodecProcessor(Configuration.newInstance(), "Test message");
-        final GelfMessage decodedMessage = codecProcessor.decode();
+        final CodecProcessor codecProcessor = new CodecProcessor(Configuration.newInstance());
+        final GelfMessage decodedMessage = codecProcessor.decode("Test message");
         Assert.assertEquals("Test message", decodedMessage.getMessage());
     }
 
     /**
      * Verify that JSON is flattened out.
+     *
      * @throws IOException
      */
     @Test
@@ -54,8 +54,8 @@ public class CodecProcessorTest {
 
         final Configuration config = Configuration.newInstance();
         config.setContentType(ContentType.APPLICATION_JSON);
-        CodecProcessor codecProcessor = new CodecProcessor(config, json);
-        GelfMessage decodedMessage = codecProcessor.decode();
+        CodecProcessor codecProcessor = new CodecProcessor(config);
+        GelfMessage decodedMessage = codecProcessor.decode(json);
         Assert.assertEquals("aws-cli/1.3.2 Python/2.7.5 Windows/7", decodedMessage.getAdditionalFields().get("userAgent"));
         Assert.assertEquals("Bob", decodedMessage.getAdditionalFields().get("responseElements_user_userName"));
 
@@ -82,8 +82,8 @@ public class CodecProcessorTest {
                                       "    }\n" +
                                       "  ]\n" +
                                       "}";
-         codecProcessor = new CodecProcessor(config, collectionJson);
-         decodedMessage = codecProcessor.decode();
+        codecProcessor = new CodecProcessor(config);
+        decodedMessage = codecProcessor.decode(collectionJson);
         Assert.assertEquals("4.0", decodedMessage.getAdditionalFields().get("Records[1]_eventVersion"));
         Assert.assertEquals("2.0", decodedMessage.getAdditionalFields().get("Records[2]_eventVersion"));
     }

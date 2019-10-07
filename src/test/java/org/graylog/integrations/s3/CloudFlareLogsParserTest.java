@@ -1,6 +1,5 @@
 package org.graylog.integrations.s3;
 
-import org.apache.http.HttpStatus;
 import org.graylog.integrations.s3.codec.CodecProcessor;
 import org.graylog.integrations.s3.config.Configuration;
 import org.graylog2.gelfclient.GelfMessage;
@@ -21,7 +20,7 @@ public class CloudFlareLogsParserTest {
 
         final Configuration config = Configuration.newInstance();
         config.setContentType(ContentType.CLOUD_FLARE_LOGPUSH);
-        GelfMessage gelfMessage = new CodecProcessor(config, RFC3339_TIMESTAMP_MESSAGE).decode();
+        GelfMessage gelfMessage = new CodecProcessor(config).decode(RFC3339_TIMESTAMP_MESSAGE);
         assertEquals(Double.valueOf(1568406189), Double.valueOf(gelfMessage.getTimestamp()));
         assertEquals(60, gelfMessage.getAdditionalFields().size());
         assertEquals("ClientRequestHost: sendafox.com:8080 | ClientRequestPath: /search | OriginIP: 34.229.66.141 | ClientSrcPort: 52039 | EdgeServerIP: 108.162.221.188 | EdgeResponseBytes: 705", gelfMessage.getMessage());
@@ -34,7 +33,7 @@ public class CloudFlareLogsParserTest {
         config.setContentType(ContentType.CLOUD_FLARE_LOGPUSH);
         config.getLogpushConfiguration().setMessageFields("ClientSrcPort,EdgeServerIP, EdgeResponseBytes");
         config.getLogpushConfiguration().setMessageSummaryFields("ClientRequestHost,ClientRequestPath");
-        GelfMessage gelfMessage = new CodecProcessor(config, RFC3339_TIMESTAMP_MESSAGE).decode();
+        GelfMessage gelfMessage = new CodecProcessor(config).decode(RFC3339_TIMESTAMP_MESSAGE);
         assertEquals(Double.valueOf(1568406189), Double.valueOf(gelfMessage.getTimestamp()));
         assertEquals(3, gelfMessage.getAdditionalFields().size());
         assertEquals("ClientRequestHost: sendafox.com:8080 | ClientRequestPath: /search", gelfMessage.getMessage());
@@ -45,7 +44,7 @@ public class CloudFlareLogsParserTest {
         final Configuration config = Configuration.newInstance();
         config.setContentType(ContentType.CLOUD_FLARE_LOGPUSH);
         config.getLogpushConfiguration().setMessageSummaryFields("ClientRequestHost,ClientRequestPath");
-        GelfMessage gelfMessage = new CodecProcessor(config, UNIX_TIMESTAMP_MESSAGE).decode();
+        GelfMessage gelfMessage = new CodecProcessor(config).decode(UNIX_TIMESTAMP_MESSAGE);
         assertEquals(Double.valueOf(1568923202), Double.valueOf(gelfMessage.getTimestamp()));
         assertEquals(60, gelfMessage.getAdditionalFields().size());
     }
@@ -55,7 +54,7 @@ public class CloudFlareLogsParserTest {
 
         final Configuration config = Configuration.newInstance();
         config.setContentType(ContentType.CLOUD_FLARE_LOGPUSH);
-        GelfMessage gelfMessage = new CodecProcessor(config, UNIX_NANO_TIMESTAMP_MESSAGE).decode();
+        GelfMessage gelfMessage = new CodecProcessor(config).decode(UNIX_NANO_TIMESTAMP_MESSAGE);
         assertEquals(Double.valueOf(1568924647.0300002), Double.valueOf(gelfMessage.getTimestamp()));
         assertEquals(60, gelfMessage.getAdditionalFields().size());
     }
@@ -65,7 +64,7 @@ public class CloudFlareLogsParserTest {
 
         final Configuration config = Configuration.newInstance();
         config.setContentType(ContentType.CLOUD_FLARE_LOGPUSH);
-        GelfMessage gelfMessage = new CodecProcessor(config, UNIX_NANO_TIMESTAMP_MESSAGE).decode();
+        GelfMessage gelfMessage = new CodecProcessor(config).decode(UNIX_NANO_TIMESTAMP_MESSAGE);
         assertEquals(Double.valueOf(125), gelfMessage.getAdditionalFields().get("OriginResponseTimeMillis"));
     }
 
@@ -74,7 +73,7 @@ public class CloudFlareLogsParserTest {
 
         final Configuration config = Configuration.newInstance();
         config.setContentType(ContentType.CLOUD_FLARE_LOGPUSH);
-        GelfMessage gelfMessage = new CodecProcessor(config, UNIX_NANO_TIMESTAMP_MESSAGE).decode();
+        GelfMessage gelfMessage = new CodecProcessor(config).decode(UNIX_NANO_TIMESTAMP_MESSAGE);
         assertEquals("4xx", gelfMessage.getAdditionalFields().get("CacheResponseStatusClass"));
         assertEquals("5xx", gelfMessage.getAdditionalFields().get("OriginResponseStatusClass"));
         assertEquals("2xx", gelfMessage.getAdditionalFields().get("EdgeResponseStatusClass"));
