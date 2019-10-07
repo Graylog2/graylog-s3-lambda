@@ -1,7 +1,6 @@
 package org.graylog.integrations.s3.codec;
 
 import com.amazonaws.util.StringUtils;
-import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.logging.log4j.LogManager;
@@ -12,12 +11,13 @@ import org.graylog2.gelfclient.GelfMessage;
 import java.io.IOException;
 import java.time.Instant;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
+import java.util.stream.StreamSupport;
 
 public class CloudFlareLogpushCodec extends AbstractS3Codec implements S3Codec {
 
@@ -33,8 +33,11 @@ public class CloudFlareLogpushCodec extends AbstractS3Codec implements S3Codec {
     public GelfMessage decode() throws IOException {
 
         // The valueMap makes it easier to get access to each field.
-        HashMap<String, Object> valueMap = OBJECT_MAPPER.readValue(stringMessage, new TypeReference<Map<String, Object>>(){});
-        final JsonNode entireJsonNode = OBJECT_MAPPER.readTree(stringMessage);
+        final JsonNode rootNode = OBJECT_MAPPER.readTree(stringMessage);
+
+        final List<String> fieldNames = Stream.generate(rootNode.fieldNames()::next)
+                                              .limit(rootNode.size())
+                                              .collect(Collectors.toList());
 
         final Map<String, Object> messageMap = new LinkedHashMap<>();
 
@@ -42,17 +45,18 @@ public class CloudFlareLogpushCodec extends AbstractS3Codec implements S3Codec {
         Arrays.stream(config.getLogpushConfiguration().getMessageSummaryFields().split(","))
               .map(String::trim)
               .filter(s -> !s.isEmpty())
-              .filter(valueMap::containsKey)
-              .forEach(s -> messageMap.put(s, valueMap.get(s)));
+              .filter(fieldNames::contains)
+              .forEach(s -> messageMap.put(s, getNodeTextValue(s, rootNode)));
+
         // The resulting message looks like:
         // ClientRequestHost: domain.com:8080 | ClientRequestPath: /api/cluster/metrics/multiple | OriginIP: 127.0.68.0 | ClientSrcPort: 54728 | EdgeServerIP: 127.0.68.0 | EdgeResponseBytes: 911
-        final String messageSummary = messageMap.keySet().stream().map(key -> key + ": " + valueMap.get(key)).collect(Collectors.joining(" | "));
+        final String messageSummary = messageMap.keySet().stream().map(key -> key + ": " + getNodeTextValue(key, rootNode)).collect(Collectors.joining(" | "));
 
         final GelfMessage message = new GelfMessage(messageSummary, config.getGraylogHost());
 
         // Set message timestamp. Timestamp defaults to now, so no need to set when the useNowTimestamp = false.
         if (!config.getLogpushConfiguration().getUseNowTimestamp()) {
-            final JsonNode edgeStartTimestamp = entireJsonNode.findValue("EdgeStartTimestamp");
+            final JsonNode edgeStartTimestamp = rootNode.findValue("EdgeStartTimestamp");
             if (edgeStartTimestamp != null) {
                 final double timestamp = parseTimestamp(edgeStartTimestamp);
                 message.setTimestamp(timestamp);
@@ -63,9 +67,9 @@ public class CloudFlareLogpushCodec extends AbstractS3Codec implements S3Codec {
         }
 
         // Get a list of parsed fields to include in the message.
-        List<String> fieldNamesToInclude = getFieldsToInclude(valueMap);
+        List<String> fieldNamesToInclude = getFieldsToInclude(fieldNames);
 
-        Iterator<Map.Entry<String, JsonNode>> fieldIterator = entireJsonNode.fields();
+        Iterator<Map.Entry<String, JsonNode>> fieldIterator = rootNode.fields();
         while (fieldIterator.hasNext()) {
             Map.Entry<String, JsonNode> fieldPair = fieldIterator.next();
             final String key = fieldPair.getKey();
@@ -134,13 +138,30 @@ public class CloudFlareLogpushCodec extends AbstractS3Codec implements S3Codec {
         return message;
     }
 
-    private List<String> getFieldsToInclude(HashMap<String, Object> valueMap) {
+    /**
+     * @return A node value from the node as text.
+     *
+     * Lists are not supported.
+     */
+    private String getNodeTextValue(String key, JsonNode entireJsonNode) {
+        final List<String> textValues = entireJsonNode.findValuesAsText(key);
+
+        // Only one value must be present for field.
+        if (textValues.size() != 1) {
+            throw new IllegalArgumentException("Expected 1 value for JSON key [" + key + "] but found ["
+                                               + textValues.size() + "].");
+        }
+
+        return textValues.get(0);
+    }
+
+    private List<String> getFieldsToInclude(List<String> fieldNames) {
         List<String> fieldNamesToInclude = null;
         if (!StringUtils.isNullOrEmpty(config.getLogpushConfiguration().getMessageFields())) {
             fieldNamesToInclude = Arrays.stream(config.getLogpushConfiguration().getMessageFields().split(","))
                                         .map(String::trim)
                                         .filter(s -> !s.isEmpty())
-                                        .filter(valueMap::containsKey)
+                                        .filter(fieldNames::contains)
                                         .collect(Collectors.toList());
         }
         return fieldNamesToInclude;
@@ -186,5 +207,9 @@ public class CloudFlareLogpushCodec extends AbstractS3Codec implements S3Codec {
 
         throw new IllegalArgumentException("Invalid Timestamp type [" + node.getNodeType() + "]. " +
                                            "Expected a string, an integer, or a long value.");
+    }
+
+    public static <T> Stream<T> stream(Iterable<T> it) {
+        return StreamSupport.stream(it.spliterator(), false);
     }
 }
