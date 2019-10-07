@@ -5,9 +5,9 @@ import org.graylog.integrations.s3.ContentType;
 import org.graylog.integrations.s3.ProtocolType;
 
 /**
- * This class reads the needed configuration values from environment variables defined on the S3 function.
+ * Reads configuration values from environment variables defined on the Lambda function.
  *
- * @see <a href="https://docs.aws.amazon.com/lambda/latest/dg/tutorial-env_cli.html">S3 Environment Variables</a>
+ * @see <a href="https://docs.aws.amazon.com/lambda/latest/dg/tutorial-env_cli.html">Lambda Environment Variables</a>
  */
 public class Configuration extends AbstractConfiguration {
 
@@ -21,7 +21,7 @@ public class Configuration extends AbstractConfiguration {
     private Configuration() {
     }
 
-    // Each of these environment variables need to be defined on the Lambda function.
+    // Environment variables with these names can be defined on the Lambda function to specify values.
     private static final String S3_BUCKET_NAME = "s3_bucket_name";
     private static final String GRAYLOG_HOST = "graylog_host";
     private static final String GRAYLOG_PORT = "graylog_port";
@@ -36,8 +36,6 @@ public class Configuration extends AbstractConfiguration {
     private static final String PROTOCOL_TYPE = "protocol_type";
 
     private String s3BucketName;
-
-    // Transport settings
     private String graylogHost;
     private Integer graylogPort;
     private Integer connectTimeout;

@@ -17,6 +17,7 @@ import java.io.Writer;
 import java.time.Instant;
 import java.util.HashMap;
 import java.util.Random;
+import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -42,18 +43,14 @@ public class CloudflareTestFileWriter {
             AmazonS3 s3Client = AmazonS3Client.builder().build();
             final ObjectMetadata metadata = new ObjectMetadata();
             metadata.setContentLength(bytes.length);
-            final String fileName = "file-name-" + randomInRange(1, Integer.MAX_VALUE);
+            final String fileName = "logs-" + UUID.randomUUID();
             System.out.println("Sending [" + batchSize + "] message [" + fileName + "]");
             s3Client.putObject(new PutObjectRequest(System.getenv("bucket"), fileName, new ByteArrayInputStream(bytes), metadata));
 
+            // Add some randomness to the sleep over time.
             // Add a fixed additional time within 10 minute span to get a more random message distribution over time.
-            TimeUnit.MILLISECONDS.sleep(randomInRange(1, 100) + DateTime.now().getMinuteOfHour() % 10 * 10);
+            TimeUnit.MILLISECONDS.sleep(randomInRange(1, 100) + (DateTime.now().getMinuteOfHour() % 10) * 10); // Multiply by 10 to amplify the deviation.
         }
-    }
-
-    private static int randomInRange(int min, int max) {
-        Random random = new Random();
-        return random.nextInt((max - min) + 1) + min;
     }
 
     private static byte[] generateMessageData(int batchSize) throws IOException {
@@ -87,6 +84,7 @@ public class CloudflareTestFileWriter {
                                         304, 307, 400, 401, 403, 404, 410, 500, 501, 503, 550);
         String method = pickRandom("GET", "GET", "GET", "GET", "GET", "POST", "DELETE", "PUT");
 
+        // Building JSON with string concatenation is not fun, but it's
         final String payload = "" +
                                "{" +
                                "  \"CacheCacheStatus\": \"" + pickRandom("hit", "unknown", "unknown", "unknown") + "\"," +
@@ -174,6 +172,11 @@ public class CloudflareTestFileWriter {
         Random random = new Random();
         int index = random.nextInt(integers.length);
         return integers[index];
+    }
+
+    private static int randomInRange(int min, int max) {
+        Random random = new Random();
+        return random.nextInt((max - min) + 1) + min;
     }
 
     private static String randomIp() {

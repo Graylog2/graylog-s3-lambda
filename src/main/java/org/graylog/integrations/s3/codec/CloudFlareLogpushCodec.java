@@ -47,13 +47,14 @@ public class CloudFlareLogpushCodec extends AbstractS3Codec implements S3Codec {
               .map(String::trim)
               .filter(s -> !s.isEmpty())
               .filter(valueMap::containsKey)
-              // TODO: This is pulling the .toString() value which might be an invalid or unexpected. format
               .forEach(s -> messageMap.put(s, valueMap.get(s)));
+        // The resulting message looks like:
+        // ClientRequestHost: domain.com:8080 | ClientRequestPath: /api/cluster/metrics/multiple | OriginIP: 127.0.68.0 | ClientSrcPort: 54728 | EdgeServerIP: 127.0.68.0 | EdgeResponseBytes: 911
         final String messageSummary = messageMap.keySet().stream().map(key -> key + ": " + valueMap.get(key)).collect(Collectors.joining(" | "));
 
         final GelfMessage message = new GelfMessage(messageSummary, config.getGraylogHost());
 
-        // Set message timestamp. Timestamp defaults to now, so no need to set when useNowTimestamp = false.
+        // Set message timestamp. Timestamp defaults to now, so no need to set when the useNowTimestamp = false.
         if (!config.getLogpushConfiguration().getUseNowTimestamp()) {
             final JsonNode edgeStartTimestamp = entireJsonNode.findValue("EdgeStartTimestamp");
             if (edgeStartTimestamp != null) {
@@ -181,6 +182,17 @@ public class CloudFlareLogpushCodec extends AbstractS3Codec implements S3Codec {
         throw new IllegalArgumentException("Invalid node type [" + node.getNodeType() + "].");
     }
 
+    /**
+     * The Cloudflare timestamp may arrive in one of the following formats based on the settings in Cloudflare.
+     * We support them all.
+     *
+     * - RFC3339 (2019-10-07T16:00:00Z)
+     * - Unix (1570464000)
+     * - UnixNano (1570465372184306580) Note that only millisecond precision will be stored in graylog. See http://graylog2.org/gelf#specs.
+     *
+     * @param node The JSONNode containing the timestamp.
+     * @return a
+     */
     private static double parseTimestamp(JsonNode node) {
         if (node.isTextual()) {
             // RFC3339 format
