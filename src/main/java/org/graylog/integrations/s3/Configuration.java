@@ -1,9 +1,6 @@
-package org.graylog.integrations.s3.config;
+package org.graylog.integrations.s3;
 
 import com.github.joschi.jadconfig.Parameter;
-import org.graylog.integrations.s3.CompressionType;
-import org.graylog.integrations.s3.ContentType;
-import org.graylog.integrations.s3.ProtocolType;
 
 /**
  * Reads configuration values from environment variables defined on the Lambda function.

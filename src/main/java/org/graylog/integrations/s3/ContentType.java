@@ -14,7 +14,7 @@ import java.util.Objects;
  *
  * See {@link org.graylog.integrations.s3.codec.CodecProcessor} for the log message codec selection.
  *
- * See {@link org.graylog.integrations.s3.config.Configuration}.
+ * See {@link Configuration}.
  */
 public enum ContentType {
 

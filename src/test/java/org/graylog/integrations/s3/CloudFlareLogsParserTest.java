@@ -1,7 +1,6 @@
 package org.graylog.integrations.s3;
 
 import org.graylog.integrations.s3.codec.CodecProcessor;
-import org.graylog.integrations.s3.config.Configuration;
 import org.graylog2.gelfclient.GelfMessage;
 import org.junit.Test;
 

@@ -8,7 +8,7 @@ import java.util.Objects;
 
 /**
  * Configurable compression type for the S3 Lambda function.
- * See {@link org.graylog.integrations.s3.config.Configuration}.
+ * See {@link Configuration}.
  */
 public enum CompressionType {
     GZIP("gzip"),

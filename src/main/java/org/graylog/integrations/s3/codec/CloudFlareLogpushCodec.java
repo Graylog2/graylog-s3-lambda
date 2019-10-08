@@ -3,7 +3,7 @@ package org.graylog.integrations.s3.codec;
 import com.amazonaws.util.StringUtils;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.graylog.integrations.s3.config.Configuration;
+import org.graylog.integrations.s3.Configuration;
 import org.graylog2.gelfclient.GelfMessage;
 
 import java.io.IOException;

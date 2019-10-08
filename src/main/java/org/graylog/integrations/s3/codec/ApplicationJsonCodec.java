@@ -2,7 +2,7 @@ package org.graylog.integrations.s3.codec;
 
 
 import com.github.wnameless.json.flattener.JsonFlattener;
-import org.graylog.integrations.s3.config.Configuration;
+import org.graylog.integrations.s3.Configuration;
 import org.graylog2.gelfclient.GelfMessage;
 
 import java.util.Map;
