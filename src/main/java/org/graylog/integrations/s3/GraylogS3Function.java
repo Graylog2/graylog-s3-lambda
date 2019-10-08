@@ -73,28 +73,41 @@ public class GraylogS3Function implements RequestHandler<S3Event, Object> {
         S3Object s3Object = s3Client.getObject(config.getS3BucketName(), objectKey);
         LOG.debug("Object read from S3 successfully.");
 
-        // Transmit the all lines in the file as messages to Graylog.
-        final GelfConfiguration gelfConfiguration = new GelfConfiguration(config.getGraylogHost(),
-                                                                          config.getGraylogPort())
-                .transport(config.getProtocolType().getGelfTransport())
-                .connectTimeout(config.getConnectTimeout())
-                .reconnectDelay(config.getReconnectDelay())
-                .tcpKeepAlive(config.getTcpKeepAlive())
-                .tcpNoDelay(config.getTcpNoDelay())
-                .queueSize(config.getQueueSize())
-                .maxInflightSends(config.getMaxInflightSends());
+        try {
+            // Transmit the all lines in the file as messages to Graylog.
+            final GelfConfiguration gelfConfiguration = new GelfConfiguration(config.getGraylogHost(),
+                                                                              config.getGraylogPort())
+                    .transport(config.getProtocolType().getGelfTransport())
+                    .connectTimeout(config.getConnectTimeout())
+                    .reconnectDelay(config.getReconnectDelay())
+                    .tcpKeepAlive(config.getTcpKeepAlive())
+                    .tcpNoDelay(config.getTcpNoDelay())
+                    .queueSize(config.getQueueSize())
+                    .maxInflightSends(config.getMaxInflightSends());
 
-        final GelfTransport gelfTransport = GelfTransports.create(gelfConfiguration);
+            final GelfTransport gelfTransport = GelfTransports.create(gelfConfiguration);
 
-        processObjectLines(config, s3Object, gelfTransport);
+            processObjectLines(config, s3Object, gelfTransport);
 
-        // Wait for all messages to send before shutting down the transport.
-        LOG.debug("Waiting up to [{}ms] with [{}] retries while waiting for transport shutdown to occur.",
-                  config.getShutdownFlushTimeoutMs(), config.getShutdownFlushReties());
-        gelfTransport.flushAndStopSynchronously(config.getShutdownFlushTimeoutMs(),
-                                                TimeUnit.MILLISECONDS,
-                                                config.getShutdownFlushReties());
-        LOG.debug("Transport shutdown complete.");
+            // Wait for all messages to send before shutting down the transport.
+            LOG.debug("Waiting up to [{}ms] with [{}] retries while waiting for transport shutdown to occur.",
+                      config.getShutdownFlushTimeoutMs(), config.getShutdownFlushReties());
+            gelfTransport.flushAndStopSynchronously(config.getShutdownFlushTimeoutMs(),
+                                                    TimeUnit.MILLISECONDS,
+                                                    config.getShutdownFlushReties());
+            LOG.debug("Transport shutdown complete.");
+        } catch (Exception e) {
+            LOG.error("An uncaught exception was thrown while processing file [{}]. Skipping file.", s3Object.getKey());
+        }
+        finally {
+            // Always try to close the S3 object.
+            try {
+                s3Object.close();
+            } catch (IOException e) {
+                // Suppress exception. Nothing can be done.
+                LOG.error("Failed to close S3 object [{}].", objectKey);
+            }
+        }
     }
 
     /**
