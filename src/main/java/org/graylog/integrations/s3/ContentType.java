@@ -29,6 +29,10 @@ public enum ContentType {
         this.type = type;
     }
 
+    public String getType() {
+        return type;
+    }
+
     /**
      * Get the ContentType enum for the specified type.
      *

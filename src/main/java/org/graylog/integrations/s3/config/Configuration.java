@@ -1,5 +1,6 @@
 package org.graylog.integrations.s3.config;
 
+import com.github.joschi.jadconfig.Parameter;
 import org.graylog.integrations.s3.CompressionType;
 import org.graylog.integrations.s3.ContentType;
 import org.graylog.integrations.s3.ProtocolType;
@@ -9,64 +10,84 @@ import org.graylog.integrations.s3.ProtocolType;
  *
  * @see <a href="https://docs.aws.amazon.com/lambda/latest/dg/tutorial-env_cli.html">Lambda Environment Variables</a>
  */
-public class Configuration extends AbstractConfiguration {
+public class Configuration {
 
     private static final int DEFAULT_CONNECT_TIMEOUT = 10000;
     private static final int DEFAULT_RECONNECT_DELAY = 10000;
     private static final int DEFAULT_TCP_QUEUE_SIZE = 512;
     private static final int DEFAULT_TCP_MAX_IN_FLIGHT_SENDS = 512;
-    private static final String DEFAULT_CONTENT_TYPE = "text/plain";
+    private static final String DEFAULT_MESSAGE_SUMMARY_FIELDS = "ClientRequestHost,ClientRequestPath,OriginIP,ClientSrcPort,EdgeServerIP,EdgeResponseBytes";
 
-    // Use newInstance() instead.
-    private Configuration() {
-    }
 
     // Environment variables with these names can be defined on the Lambda function to specify values.
-    private static final String S3_BUCKET_NAME = "s3_bucket_name";
-    private static final String GRAYLOG_HOST = "graylog_host";
-    private static final String GRAYLOG_PORT = "graylog_port";
-    private static final String CONNECT_TIMEOUT = "connect_timeout";
-    private static final String RECONNECT_DELAY = "reconnect_delay";
-    private static final String TCP_KEEP_ALIVE = "tcp_keep_alive";
-    private static final String TCP_NO_DELAY = "tcp_no_delay";
-    private static final String TCP_QUEUE_SIZE = "tcp_queue_size";
-    private static final String TCP_MAX_IN_FLIGHT_SENDS = "tcp_max_in_flight_sends";
-    private static final String CONTENT_TYPE = "content_type";
-    private static final String COMPRESSION_TYPE = "compression_type";
-    private static final String PROTOCOL_TYPE = "protocol_type";
+    private static final String S3_BUCKET_NAME = "S3_BUCKET_NAME";
+    private static final String GRAYLOG_HOST = "GRAYLOG_HOST";
+    private static final String GRAYLOG_PORT = "GRAYLOG_PORT";
+    private static final String CONNECT_TIMEOUT = "CONNECT_TIMEOUT";
+    private static final String RECONNECT_DELAY = "RECONNECT_DELAY";
+    private static final String TCP_KEEP_ALIVE = "TCP_KEEP_ALIVE";
+    private static final String TCP_NO_DELAY = "TCP_NO_DELAY";
+    private static final String TCP_QUEUE_SIZE = "TCP_QUEUE_SIZE";
+    private static final String TCP_MAX_IN_FLIGHT_SENDS = "TCP_MAX_IN_FLIGHT_SENDS";
+    private static final String CONTENT_TYPE = "CONTENT_TYPE";
+    private static final String COMPRESSION_TYPE = "COMPRESSION_TYPE";
+    private static final String PROTOCOL_TYPE = "PROTOCOL_TYPE";
 
+
+    // Logpush config
+    private static final String LOG_PUSH_PREFIX = "CLOUDFLARE_LOGPUSH_";
+
+    private static final String LOGPUSH_USE_NOW_TIMESTAMP = LOG_PUSH_PREFIX + "USE_NOW_TIMESTAMP";
+    private static final String LOGPUSH_MESSAGE_FIELDS = LOG_PUSH_PREFIX + "MESSAGE_FIELDS";
+    // Fields to store in the message field in the GELF message field.
+    private static final String LOGPUSH_MESSAGE_SUMMARY_FIELDS = LOG_PUSH_PREFIX + "MESSAGE_SUMMARY_FIELDS";
+
+    @Parameter(value = S3_BUCKET_NAME, required = true)
     private String s3BucketName;
+
+    @Parameter(value = GRAYLOG_HOST, required = true)
     private String graylogHost;
+
+    @Parameter(value = GRAYLOG_PORT, required = true)
     private Integer graylogPort;
+
+    @Parameter(CONNECT_TIMEOUT)
     private Integer connectTimeout;
+
+    @Parameter(RECONNECT_DELAY)
     private Integer reconnectDelay;
+
+    @Parameter(TCP_KEEP_ALIVE)
     private Boolean tcpKeepAlive;
+
+    @Parameter(TCP_NO_DELAY)
     private Boolean tcpNoDelay;
+
+    @Parameter(TCP_QUEUE_SIZE)
     private Integer queueSize;
+
+    @Parameter(TCP_MAX_IN_FLIGHT_SENDS)
     private Integer maxInflightSends;
-    private ContentType contentType;
-    private CompressionType compressionType;
-    private ProtocolType protocolType;
 
-    private LogpushConfiguration logPushConfiguration;
+    @Parameter(value = CONTENT_TYPE, required = true)
+    private String contentType;
 
-    public static Configuration newInstance() {
-        final Configuration config = new Configuration();
-        config.s3BucketName = System.getenv(S3_BUCKET_NAME);
-        config.graylogHost = System.getenv(GRAYLOG_HOST);
-        config.graylogPort = safeParseInteger(GRAYLOG_PORT);
-        config.connectTimeout = safeParseInteger(CONNECT_TIMEOUT) != null ? safeParseInteger(CONNECT_TIMEOUT) : DEFAULT_CONNECT_TIMEOUT;
-        config.reconnectDelay = safeParseInteger(RECONNECT_DELAY) != null ? safeParseInteger(RECONNECT_DELAY) : DEFAULT_RECONNECT_DELAY;
-        config.tcpKeepAlive = readBoolean(TCP_KEEP_ALIVE, true);
-        config.tcpNoDelay = readBoolean(TCP_NO_DELAY, true);
-        config.queueSize = safeParseInteger(TCP_QUEUE_SIZE) != null ? safeParseInteger(TCP_QUEUE_SIZE) : DEFAULT_TCP_QUEUE_SIZE;
-        config.maxInflightSends = safeParseInteger(TCP_MAX_IN_FLIGHT_SENDS) != null ? safeParseInteger(TCP_MAX_IN_FLIGHT_SENDS) : DEFAULT_TCP_MAX_IN_FLIGHT_SENDS;
-        config.contentType = ContentType.findByType(getStringEnvironmentVariable(CONTENT_TYPE, null));
-        config.compressionType = CompressionType.findByType(getStringEnvironmentVariable(COMPRESSION_TYPE, null));
-        config.protocolType = ProtocolType.findByType(getStringEnvironmentVariable(PROTOCOL_TYPE, null));
-        config.logPushConfiguration = LogpushConfiguration.newInstance();
-        return config;
-    }
+    @Parameter(COMPRESSION_TYPE)
+    private String compressionType;
+
+    @Parameter(PROTOCOL_TYPE)
+    private String protocolType;
+
+    // Overrides message timestamp with the current time.
+    @Parameter(LOGPUSH_USE_NOW_TIMESTAMP)
+    private Boolean useNowTimestamp;
+
+    // Fields to parse and store with the message in Graylog
+    @Parameter(LOGPUSH_MESSAGE_FIELDS)
+    private String messageFields;
+
+    @Parameter(LOGPUSH_MESSAGE_SUMMARY_FIELDS)
+    private String messageSummaryFields;
 
     public String getS3BucketName() {
         return s3BucketName;
@@ -81,47 +102,63 @@ public class Configuration extends AbstractConfiguration {
     }
 
     public Integer getConnectTimeout() {
-        return connectTimeout;
+        return connectTimeout != null ? connectTimeout : DEFAULT_CONNECT_TIMEOUT;
     }
 
     public Integer getReconnectDelay() {
-        return reconnectDelay;
+        return reconnectDelay != null ? reconnectDelay : DEFAULT_RECONNECT_DELAY;
     }
 
     public Boolean getTcpKeepAlive() {
-        return tcpKeepAlive;
+        return tcpKeepAlive != null ? tcpKeepAlive : true;
     }
 
     public Boolean getTcpNoDelay() {
-        return tcpNoDelay;
+        return tcpNoDelay != null ? tcpNoDelay : true;
     }
 
     public Integer getQueueSize() {
-        return queueSize;
+        return queueSize != null ? queueSize : DEFAULT_TCP_QUEUE_SIZE;
     }
 
     public Integer getMaxInflightSends() {
-        return maxInflightSends;
+        return maxInflightSends != null ? maxInflightSends : DEFAULT_TCP_MAX_IN_FLIGHT_SENDS;
     }
 
     public ContentType getContentType() {
-        return contentType;
+        return ContentType.findByType(contentType);
     }
 
     public void setContentType(ContentType contentType) {
-        this.contentType = contentType;
+        this.contentType = contentType.getType();
     }
 
     public CompressionType getCompressionType() {
-        return compressionType;
+        return CompressionType.findByType(compressionType);
     }
 
     public ProtocolType getProtocolType() {
-        return protocolType;
+        return ProtocolType.findByType(protocolType);
     }
 
-    public LogpushConfiguration getLogpushConfiguration() {
-        return logPushConfiguration;
+    public Boolean getUseNowTimestamp() {
+        return useNowTimestamp != null ? useNowTimestamp : false;
+    }
+
+    public String getMessageFields() {
+        return messageFields;
+    }
+
+    public void setMessageFields(String messageFields) {
+        this.messageFields = messageFields;
+    }
+
+    public String getMessageSummaryFields() {
+        return messageSummaryFields != null ? messageSummaryFields : DEFAULT_MESSAGE_SUMMARY_FIELDS;
+    }
+
+    public void setMessageSummaryFields(String messageSummaryFields) {
+        this.messageSummaryFields = messageSummaryFields;
     }
 
     @Override
@@ -136,9 +173,12 @@ public class Configuration extends AbstractConfiguration {
                ", tcpNoDelay=" + tcpNoDelay +
                ", queueSize=" + queueSize +
                ", maxInflightSends=" + maxInflightSends +
-               ", contentType=" + contentType +
-               ", compressionType=" + compressionType +
-               ", logpushConfiguration=" + logPushConfiguration +
+               ", contentType='" + contentType + '\'' +
+               ", compressionType='" + compressionType + '\'' +
+               ", protocolType='" + protocolType + '\'' +
+               ", useNowTimestamp=" + useNowTimestamp +
+               ", messageFields='" + messageFields + '\'' +
+               ", messageSummaryFields='" + messageSummaryFields + '\'' +
                '}';
     }
 }

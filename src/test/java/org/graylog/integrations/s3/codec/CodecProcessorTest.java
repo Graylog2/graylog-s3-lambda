@@ -13,7 +13,7 @@ public class CodecProcessorTest {
     @Test
     public void testCodecSelection() throws IOException {
 
-        final CodecProcessor codecProcessor = new CodecProcessor(Configuration.newInstance());
+        final CodecProcessor codecProcessor = new CodecProcessor(new Configuration());
         final GelfMessage decodedMessage = codecProcessor.decode("Test message");
         Assert.assertEquals("Test message", decodedMessage.getMessage());
     }
@@ -52,7 +52,7 @@ public class CodecProcessorTest {
                             "    }}\n" +
                             "}";
 
-        final Configuration config = Configuration.newInstance();
+        final Configuration config = new Configuration();
         config.setContentType(ContentType.APPLICATION_JSON);
         CodecProcessor codecProcessor = new CodecProcessor(config);
         GelfMessage decodedMessage = codecProcessor.decode(json);

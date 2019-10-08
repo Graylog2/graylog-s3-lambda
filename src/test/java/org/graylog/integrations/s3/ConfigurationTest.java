@@ -9,7 +9,7 @@ public class ConfigurationTest {
     @Test
     public void testDefaults() {
 
-        final Configuration config = Configuration.newInstance();
+        final Configuration config = new Configuration();
         Assert.assertEquals(ContentType.TEXT_PLAIN, config.getContentType());
     }
 }

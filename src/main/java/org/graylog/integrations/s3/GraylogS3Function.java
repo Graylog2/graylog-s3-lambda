@@ -7,6 +7,10 @@ import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.AmazonS3Client;
 import com.amazonaws.services.s3.model.S3Object;
 import com.amazonaws.util.IOUtils;
+import com.github.joschi.jadconfig.JadConfig;
+import com.github.joschi.jadconfig.RepositoryException;
+import com.github.joschi.jadconfig.ValidationException;
+import com.github.joschi.jadconfig.repositories.EnvironmentRepository;
 import com.google.common.io.ByteStreams;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -34,7 +38,16 @@ public class GraylogS3Function implements RequestHandler<S3Event, Object> {
     private Configuration config;
 
     public GraylogS3Function() {
-        this.config = Configuration.newInstance();
+
+        // Read configuration from environment variables (must be upper-case).
+        Configuration configuration = new Configuration();
+        try {
+            new JadConfig(new EnvironmentRepository(), configuration).process();
+        } catch (RepositoryException | ValidationException e) {
+            LOG.error("Error loading configuration.", e);
+        }
+
+        this.config = configuration;
         this.codecProcessor = new CodecProcessor(config);
     }
 

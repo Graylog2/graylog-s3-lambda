@@ -3,8 +3,6 @@ package org.graylog.integrations.s3.codec;
 import com.amazonaws.util.StringUtils;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.graylog.integrations.s3.config.Configuration;
 import org.graylog2.gelfclient.GelfMessage;
 
@@ -21,7 +19,6 @@ import java.util.stream.StreamSupport;
 
 public class CloudFlareLogpushCodec extends AbstractS3Codec implements S3Codec {
 
-    static final Logger LOG = LogManager.getLogger(CloudFlareLogpushCodec.class);
     private static final List<String> TIMESTAMP_FIELDS = Arrays.asList("EdgeEndTimestamp", "EdgeStartTimestamp");
     private static final List<String> HTTP_CODE_FIELDS = Arrays.asList("CacheResponseStatus", "EdgeResponseStatus", "OriginResponseStatus");
 
@@ -44,7 +41,7 @@ public class CloudFlareLogpushCodec extends AbstractS3Codec implements S3Codec {
         final Map<String, Object> messageMap = new LinkedHashMap<>();
 
         // Prepare message summary. Use fields indicated in the configuration.
-        Arrays.stream(config.getLogpushConfiguration().getMessageSummaryFields().split(","))
+        Arrays.stream(config.getMessageSummaryFields().split(","))
               .map(String::trim)
               .filter(s -> !s.isEmpty())
               .filter(fieldNames::contains)
@@ -57,7 +54,7 @@ public class CloudFlareLogpushCodec extends AbstractS3Codec implements S3Codec {
         final GelfMessage gelfMessage = new GelfMessage(messageSummary, config.getGraylogHost());
 
         // Set message timestamp. Timestamp defaults to now, so no need to set when the useNowTimestamp = false.
-        if (!config.getLogpushConfiguration().getUseNowTimestamp()) {
+        if (!config.getUseNowTimestamp()) {
             final JsonNode edgeStartTimestamp = rootNode.findValue("EdgeStartTimestamp");
             if (edgeStartTimestamp != null) {
                 final double timestamp = parseTimestamp(edgeStartTimestamp);
@@ -159,8 +156,8 @@ public class CloudFlareLogpushCodec extends AbstractS3Codec implements S3Codec {
 
     private List<String> getFieldsToInclude(List<String> fieldNames) {
         List<String> fieldNamesToInclude = null;
-        if (!StringUtils.isNullOrEmpty(config.getLogpushConfiguration().getMessageFields())) {
-            fieldNamesToInclude = Arrays.stream(config.getLogpushConfiguration().getMessageFields().split(","))
+        if (!StringUtils.isNullOrEmpty(config.getMessageFields())) {
+            fieldNamesToInclude = Arrays.stream(config.getMessageFields().split(","))
                                         .map(String::trim)
                                         .filter(s -> !s.isEmpty())
                                         .filter(fieldNames::contains)
