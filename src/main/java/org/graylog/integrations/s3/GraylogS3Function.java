@@ -122,8 +122,13 @@ public class GraylogS3Function implements RequestHandler<S3Event, Object> {
                 }
             }
 
-            // Wait up to 60 seconds for all messages to send before shutting down the transport.
-            gelfTransport.flushAndStopSynchronously(100, TimeUnit.MILLISECONDS, 6000);
+            // Wait for all messages to send before shutting down the transport.
+            LOG.debug("Waiting up to [{}ms] with [{}] retries while waiting for transport shutdown to occur.",
+                      config.getShutdownFlushTimeoutMs(), config.getShutdownFlushReties());
+            gelfTransport.flushAndStopSynchronously(config.getShutdownFlushTimeoutMs(),
+                                                    TimeUnit.MILLISECONDS,
+                                                    config.getShutdownFlushReties());
+            LOG.debug("Transport shutdown complete.");
         }
     }
 

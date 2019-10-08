@@ -39,7 +39,7 @@ public enum ProtocolType {
                      .filter(v -> v.type.equals(type))
                      .findAny()
                      .orElseGet(() -> {
-                         LOG.warn("Compression type [{}] not found. Defaulting to [{}].", type, TCP);
+                         LOG.warn("Protocol type [{}] not found. Defaulting to [{}].", type, TCP);
                          return TCP;
                      });
     }

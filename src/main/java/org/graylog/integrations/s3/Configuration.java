@@ -5,6 +5,8 @@ import com.github.joschi.jadconfig.Parameter;
 /**
  * Reads configuration values from environment variables defined on the Lambda function.
  *
+ * Defaults are specified in the getter methods.
+ *
  * @see <a href="https://docs.aws.amazon.com/lambda/latest/dg/tutorial-env_cli.html">Lambda Environment Variables</a>
  */
 public class Configuration {
@@ -13,6 +15,8 @@ public class Configuration {
     private static final int DEFAULT_RECONNECT_DELAY = 10000;
     private static final int DEFAULT_TCP_QUEUE_SIZE = 512;
     private static final int DEFAULT_TCP_MAX_IN_FLIGHT_SENDS = 512;
+    private static final int DEFAULT_SHUTDOWN_FLUSH_TIMEOUT_MS = 100;
+    private static final int DEFAULT_SHUTDOWN_FLUSH_RETRIES = 6000;
     private static final String DEFAULT_MESSAGE_SUMMARY_FIELDS = "ClientRequestHost,ClientRequestPath,OriginIP,ClientSrcPort,EdgeServerIP,EdgeResponseBytes";
 
 
@@ -29,6 +33,8 @@ public class Configuration {
     private static final String CONTENT_TYPE = "CONTENT_TYPE";
     private static final String COMPRESSION_TYPE = "COMPRESSION_TYPE";
     private static final String PROTOCOL_TYPE = "PROTOCOL_TYPE";
+    private static final String SHUTDOWN_FLUSH_TIMEOUT_MS = "SHUTDOWN_FLUSH_TIMEOUT_MS";
+    private static final String SHUTDOWN_FLUSH_RETRIES = "SHUTDOWN_FLUSH_RETRIES";
 
 
     // Logpush config
@@ -74,6 +80,15 @@ public class Configuration {
 
     @Parameter(PROTOCOL_TYPE)
     private String protocolType;
+
+    // The number of milliseconds to wait for messages to finish sending during shutdown.
+    @Parameter(SHUTDOWN_FLUSH_TIMEOUT_MS)
+    private Integer shutdownFlushTimeoutMs;
+
+    // How many times to retry the shutdownFlushTimeoutMs wait while waiting for messages to
+    // finish sending during shutdown.
+    @Parameter(SHUTDOWN_FLUSH_RETRIES)
+    private Integer shutdownFlushReties;
 
     // Overrides message timestamp with the current time.
     @Parameter(LOGPUSH_USE_NOW_TIMESTAMP)
@@ -136,6 +151,14 @@ public class Configuration {
 
     public ProtocolType getProtocolType() {
         return ProtocolType.findByType(protocolType);
+    }
+
+    public Integer getShutdownFlushTimeoutMs() {
+        return shutdownFlushTimeoutMs != null ? shutdownFlushTimeoutMs : DEFAULT_SHUTDOWN_FLUSH_TIMEOUT_MS;
+    }
+
+    public Integer getShutdownFlushReties() {
+        return shutdownFlushReties != null ? shutdownFlushReties : DEFAULT_SHUTDOWN_FLUSH_RETRIES;
     }
 
     public Boolean getUseNowTimestamp() {
