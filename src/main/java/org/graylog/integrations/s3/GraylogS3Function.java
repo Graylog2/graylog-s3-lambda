@@ -6,12 +6,11 @@ import com.amazonaws.services.lambda.runtime.events.S3Event;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.AmazonS3Client;
 import com.amazonaws.services.s3.model.S3Object;
-import com.amazonaws.util.IOUtils;
+import com.amazonaws.services.s3.model.S3ObjectInputStream;
 import com.github.joschi.jadconfig.JadConfig;
 import com.github.joschi.jadconfig.RepositoryException;
 import com.github.joschi.jadconfig.ValidationException;
 import com.github.joschi.jadconfig.repositories.EnvironmentRepository;
-import com.google.common.io.ByteStreams;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.graylog.integrations.s3.codec.CodecProcessor;
@@ -20,10 +19,9 @@ import org.graylog2.gelfclient.GelfMessage;
 import org.graylog2.gelfclient.GelfTransports;
 import org.graylog2.gelfclient.transport.GelfTransport;
 
-import java.io.ByteArrayInputStream;
+import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStream;
-import java.nio.charset.StandardCharsets;
+import java.io.InputStreamReader;
 import java.util.concurrent.TimeUnit;
 import java.util.zip.GZIPInputStream;
 
@@ -61,7 +59,7 @@ public class GraylogS3Function implements RequestHandler<S3Event, Object> {
     }
 
     /**
-     * Iterates through each line in the file and sends it as a message to Graylog over TCP.
+     * Streams and processes the of the indicated S3 object.
      *
      * @param config    The Lambda function configuration.
      * @param s3Client  The S3 client.
@@ -72,40 +70,63 @@ public class GraylogS3Function implements RequestHandler<S3Event, Object> {
         LOG.debug("Graylog host: {}:{}", config.getGraylogHost(), config.getGraylogPort());
 
         LOG.debug("Attempting to read object [{}] from S3.", objectKey);
-        S3Object object = s3Client.getObject(config.getS3BucketName(), objectKey);
+        S3Object s3Object = s3Client.getObject(config.getS3BucketName(), objectKey);
         LOG.debug("Object read from S3 successfully.");
 
-        final String stringLogContents;
+        // Transmit the all lines in the file as messages to Graylog.
+        final GelfConfiguration gelfConfiguration = new GelfConfiguration(config.getGraylogHost(),
+                                                                          config.getGraylogPort())
+                .transport(config.getProtocolType().getGelfTransport())
+                .connectTimeout(config.getConnectTimeout())
+                .reconnectDelay(config.getReconnectDelay())
+                .tcpKeepAlive(config.getTcpKeepAlive())
+                .tcpNoDelay(config.getTcpNoDelay())
+                .queueSize(config.getQueueSize())
+                .maxInflightSends(config.getMaxInflightSends());
+
+        final GelfTransport gelfTransport = GelfTransports.create(gelfConfiguration);
+
+        processObjectLines(config, s3Object, gelfTransport);
+
+        // Wait for all messages to send before shutting down the transport.
+        LOG.debug("Waiting up to [{}ms] with [{}] retries while waiting for transport shutdown to occur.",
+                  config.getShutdownFlushTimeoutMs(), config.getShutdownFlushReties());
+        gelfTransport.flushAndStopSynchronously(config.getShutdownFlushTimeoutMs(),
+                                                TimeUnit.MILLISECONDS,
+                                                config.getShutdownFlushReties());
+        LOG.debug("Transport shutdown complete.");
+    }
+
+    /**
+     * Streams the S3 object contents line by line. Each line is decoded to a message and sent to Graylog over TCP.
+     *
+     * @param config        The Lambda function configuration.
+     * @param s3Object      The S3 file object.
+     * @param gelfTransport The fully-initialized GELF Transport.
+     */
+    private void processObjectLines(Configuration config, S3Object s3Object, GelfTransport gelfTransport) {
+
+        final S3ObjectInputStream objectInputStream = s3Object.getObjectContent();
+        final BufferedReader reader;
+        if (config.getCompressionType() == CompressionType.GZIP) {
+            try {
+                reader = new BufferedReader(new InputStreamReader(new GZIPInputStream(objectInputStream)));
+            } catch (IOException e) {
+                LOG.error("Failed to decompress stream for file [{}]", s3Object.getKey(), e);
+                return;
+            }
+        } else if (config.getCompressionType() == CompressionType.NONE) {
+            reader = new BufferedReader(new InputStreamReader(objectInputStream));
+        } else {
+            throw new IllegalArgumentException("The CompressionType [" + config.getCompressionType() + "] has not been implemented. This is a bug.");
+        }
+
         try {
-            stringLogContents = handleCompression(config, object);
-            LOG.trace("Full log file [{}]", stringLogContents);
-        } catch (IOException e) {
-            LOG.error("Failed to decompress file [{}]", objectKey, e);
-            return;
-        }
+            String messageLine;
+            while ((messageLine = reader.readLine()) != null) {
 
-        if (stringLogContents.trim().equals("")) {
-            LOG.warn("File is empty. Skipping.");
-        }
-
-        // Split all messages by line breaks.
-        String[] lines = stringLogContents.split("\\r?\\n");
-        if (lines.length != 0) {
-
-            // Transmit the message to Graylog.
-            final GelfConfiguration gelfConfiguration = new GelfConfiguration(config.getGraylogHost(),
-                                                                              config.getGraylogPort())
-                    .transport(config.getProtocolType().getGelfTransport())
-                    .connectTimeout(config.getConnectTimeout())
-                    .reconnectDelay(config.getReconnectDelay())
-                    .tcpKeepAlive(config.getTcpKeepAlive())
-                    .tcpNoDelay(config.getTcpNoDelay())
-                    .queueSize(config.getQueueSize())
-                    .maxInflightSends(config.getMaxInflightSends());
-
-            final GelfTransport gelfTransport = GelfTransports.create(gelfConfiguration);
-            for (String messageLine : lines) {
-                if (messageLine.trim().equals("")) {
+                // Decode each line and send the message.
+                if (messageLine.trim().isEmpty()) {
                     LOG.warn("Line is empty. Skipping.");
                     continue;
                 }
@@ -121,47 +142,16 @@ public class GraylogS3Function implements RequestHandler<S3Event, Object> {
                     return;
                 }
             }
-
-            // Wait for all messages to send before shutting down the transport.
-            LOG.debug("Waiting up to [{}ms] with [{}] retries while waiting for transport shutdown to occur.",
-                      config.getShutdownFlushTimeoutMs(), config.getShutdownFlushReties());
-            gelfTransport.flushAndStopSynchronously(config.getShutdownFlushTimeoutMs(),
-                                                    TimeUnit.MILLISECONDS,
-                                                    config.getShutdownFlushReties());
-            LOG.debug("Transport shutdown complete.");
-        }
-    }
-
-    /**
-     * Decompress the message if compressed.
-     */
-    private String handleCompression(Configuration config, S3Object object) throws IOException {
-        String stringLogContents;
-        final byte[] logData = IOUtils.toByteArray(object.getObjectContent());
-        LOG.debug("Compressed data length [{}].", logData.length);
-
-        if (config.getCompressionType() == CompressionType.GZIP) {
-            stringLogContents = decompressGzip(logData, Long.MAX_VALUE);
-        } else if (config.getCompressionType() == CompressionType.NONE) {
-            stringLogContents = new String(logData);
-        } else {
-            throw new IllegalArgumentException("The ContentType [" + config.getContentType() + "] has not been implemented. This is a bug.");
-        }
-        return stringLogContents;
-    }
-
-    /**
-     * Decompress GZIP (RFC 1952) compressed data
-     *
-     * @param compressedData A byte array containing the GZIP-compressed data.
-     * @param maxBytes       The maximum number of uncompressed bytes to read.
-     * @return A string containing the decompressed data
-     */
-    private static String decompressGzip(byte[] compressedData, long maxBytes) throws IOException {
-        try (final ByteArrayInputStream dataStream = new ByteArrayInputStream(compressedData);
-             final GZIPInputStream in = new GZIPInputStream(dataStream);
-             final InputStream limited = ByteStreams.limit(in, maxBytes)) {
-            return new String(ByteStreams.toByteArray(limited), StandardCharsets.UTF_8);
+        } catch (Exception e) {
+            LOG.error("An uncaught exception was thrown while processing file [{}]. Skipping file.", s3Object.getKey());
+        } finally {
+            // Always attempt to close the stream.
+            try {
+                reader.close();
+            } catch (IOException e) {
+                // Suppress exception. Nothing can be done.
+                LOG.error("Failed to close stream for object [{}].", s3Object.getKey());
+            }
         }
     }
 }
