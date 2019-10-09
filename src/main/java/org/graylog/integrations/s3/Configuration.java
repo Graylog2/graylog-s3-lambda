@@ -1,6 +1,8 @@
 package org.graylog.integrations.s3;
 
 import com.github.joschi.jadconfig.Parameter;
+import com.github.joschi.jadconfig.validators.PositiveIntegerValidator;
+import com.github.joschi.jadconfig.validators.StringNotBlankValidator;
 
 /**
  * Reads configuration values from environment variables defined on the Lambda function.
@@ -10,14 +12,6 @@ import com.github.joschi.jadconfig.Parameter;
  * @see <a href="https://docs.aws.amazon.com/lambda/latest/dg/tutorial-env_cli.html">Lambda Environment Variables</a>
  */
 public class Configuration {
-
-    private static final int DEFAULT_CONNECT_TIMEOUT = 10000;
-    private static final int DEFAULT_RECONNECT_DELAY = 10000;
-    private static final int DEFAULT_TCP_QUEUE_SIZE = 512;
-    private static final int DEFAULT_TCP_MAX_IN_FLIGHT_SENDS = 512;
-    private static final int DEFAULT_SHUTDOWN_FLUSH_TIMEOUT_MS = 100;
-    private static final int DEFAULT_SHUTDOWN_FLUSH_RETRIES = 6000;
-    private static final String DEFAULT_MESSAGE_SUMMARY_FIELDS = "ClientRequestHost,ClientRequestPath,OriginIP,ClientSrcPort,EdgeServerIP,EdgeResponseBytes";
 
     // Environment variables with these names can be defined on the Lambda function to specify values.
     private static final String S3_BUCKET_NAME = "S3_BUCKET_NAME";
@@ -43,61 +37,63 @@ public class Configuration {
     // Fields to store in the message field in the GELF message field.
     private static final String LOGPUSH_MESSAGE_SUMMARY_FIELDS = LOG_PUSH_PREFIX + "MESSAGE_SUMMARY_FIELDS";
 
-    @Parameter(value = S3_BUCKET_NAME, required = true)
+    @Parameter(value = S3_BUCKET_NAME, required = true, validators = StringNotBlankValidator.class)
     private String s3BucketName;
 
-    @Parameter(value = GRAYLOG_HOST, required = true)
+    @Parameter(value = GRAYLOG_HOST, required = true, validators = StringNotBlankValidator.class)
     private String graylogHost;
 
-    @Parameter(value = GRAYLOG_PORT, required = true)
-    private Integer graylogPort;
+    @Parameter(value = GRAYLOG_PORT, required = true, validators = PositiveIntegerValidator.class)
+    private int graylogPort = 12201;
 
-    @Parameter(CONNECT_TIMEOUT)
-    private Integer connectTimeout = DEFAULT_CONNECT_TIMEOUT;
+    @Parameter(value = CONNECT_TIMEOUT, required = true, validators = PositiveIntegerValidator.class)
+    private int connectTimeout = 10000;
 
-    @Parameter(RECONNECT_DELAY)
-    private Integer reconnectDelay = DEFAULT_RECONNECT_DELAY;
+    @Parameter(value = RECONNECT_DELAY, required = true, validators = PositiveIntegerValidator.class)
+    private int reconnectDelay = 10000;
 
-    @Parameter(TCP_KEEP_ALIVE)
-    private Boolean tcpKeepAlive = true;
+    @Parameter(value = TCP_KEEP_ALIVE, required = true)
+    private boolean tcpKeepAlive = true;
 
-    @Parameter(TCP_NO_DELAY)
-    private Boolean tcpNoDelay = true;
+    @Parameter(value = TCP_NO_DELAY, required = true)
+    private boolean tcpNoDelay = true;
 
-    @Parameter(TCP_QUEUE_SIZE)
-    private Integer queueSize = DEFAULT_TCP_QUEUE_SIZE;
+    @Parameter(value = TCP_QUEUE_SIZE, required = true, validators = PositiveIntegerValidator.class)
+    private int queueSize = 512;
 
-    @Parameter(TCP_MAX_IN_FLIGHT_SENDS)
-    private Integer maxInflightSends = DEFAULT_TCP_MAX_IN_FLIGHT_SENDS;
+    @Parameter(value = TCP_MAX_IN_FLIGHT_SENDS, required = true, validators = PositiveIntegerValidator.class)
+    private int maxInflightSends = 512;
 
-    @Parameter(value = CONTENT_TYPE, required = true)
-    private String contentType;
+    @Parameter(value = CONTENT_TYPE, required = true, validators = StringNotBlankValidator.class)
+    private String contentType = ContentType.TEXT_PLAIN.toString();
 
-    @Parameter(COMPRESSION_TYPE)
-    private String compressionType;
+    @Parameter(value = COMPRESSION_TYPE, required = true, validators = StringNotBlankValidator.class)
+    private String compressionType = CompressionType.NONE.toString();
 
-    @Parameter(PROTOCOL_TYPE)
-    private String protocolType;
+    @Parameter(value = PROTOCOL_TYPE, required = true, validators = StringNotBlankValidator.class)
+    private String protocolType = ProtocolType.TCP.toString();
 
     // The number of milliseconds to wait for messages to finish sending during shutdown.
-    @Parameter(SHUTDOWN_FLUSH_TIMEOUT_MS)
-    private Integer shutdownFlushTimeoutMs = DEFAULT_SHUTDOWN_FLUSH_TIMEOUT_MS;
+    @Parameter(value = SHUTDOWN_FLUSH_TIMEOUT_MS, required = true, validators = PositiveIntegerValidator.class)
+    private int shutdownFlushTimeoutMs = 100;
 
     // How many times to retry the shutdownFlushTimeoutMs wait while waiting for messages to
     // finish sending during shutdown.
-    @Parameter(SHUTDOWN_FLUSH_RETRIES)
-    private Integer shutdownFlushReties = DEFAULT_SHUTDOWN_FLUSH_RETRIES;
+    @Parameter(value = SHUTDOWN_FLUSH_RETRIES, required = true, validators = PositiveIntegerValidator.class)
+    private int shutdownFlushReties = 600;
+
+    // ** Logpush specific fields.
 
     // Overrides message timestamp with the current time.
-    @Parameter(LOGPUSH_USE_NOW_TIMESTAMP)
-    private Boolean useNowTimestamp = false;
+    @Parameter(value = LOGPUSH_USE_NOW_TIMESTAMP, required = true)
+    private boolean useNowTimestamp = false;
 
-    // Fields to parse and store with the message in Graylog
+    // Fields to parse and store with the message in Graylog. This defaults to all. No need for validator.
     @Parameter(LOGPUSH_MESSAGE_FIELDS)
     private String messageFields;
 
-    @Parameter(LOGPUSH_MESSAGE_SUMMARY_FIELDS)
-    private String messageSummaryFields = DEFAULT_MESSAGE_SUMMARY_FIELDS;
+    @Parameter(value = LOGPUSH_MESSAGE_SUMMARY_FIELDS, required = true, validators = StringNotBlankValidator.class)
+    private String messageSummaryFields = "ClientRequestHost,ClientRequestPath,OriginIP,ClientSrcPort,EdgeServerIP,EdgeResponseBytes";
 
     public String getS3BucketName() {
         return s3BucketName;
@@ -107,31 +103,31 @@ public class Configuration {
         return graylogHost;
     }
 
-    public Integer getGraylogPort() {
+    public int getGraylogPort() {
         return graylogPort;
     }
 
-    public Integer getConnectTimeout() {
+    public int getConnectTimeout() {
         return connectTimeout;
     }
 
-    public Integer getReconnectDelay() {
+    public int getReconnectDelay() {
         return reconnectDelay;
     }
 
-    public Boolean getTcpKeepAlive() {
+    public boolean getTcpKeepAlive() {
         return tcpKeepAlive;
     }
 
-    public Boolean getTcpNoDelay() {
+    public boolean getTcpNoDelay() {
         return tcpNoDelay;
     }
 
-    public Integer getQueueSize() {
+    public int getQueueSize() {
         return queueSize;
     }
 
-    public Integer getMaxInflightSends() {
+    public int getMaxInflightSends() {
         return maxInflightSends;
     }
 
@@ -151,15 +147,15 @@ public class Configuration {
         return ProtocolType.findByType(protocolType);
     }
 
-    public Integer getShutdownFlushTimeoutMs() {
+    public int getShutdownFlushTimeoutMs() {
         return shutdownFlushTimeoutMs;
     }
 
-    public Integer getShutdownFlushReties() {
+    public int getShutdownFlushReties() {
         return shutdownFlushReties;
     }
 
-    public Boolean getUseNowTimestamp() {
+    public boolean getUseNowTimestamp() {
         return useNowTimestamp;
     }
 
