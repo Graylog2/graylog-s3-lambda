@@ -35,4 +35,8 @@ Detailed documentation coming soon.
                       Notifies Lambda                                                     Sent as GELF                          |___/         |___/
                       automatically                                                       over TCP
                       with new files
+
+
+
+Arrow credit: http://ascii.co.uk/art/arrow
 ```
