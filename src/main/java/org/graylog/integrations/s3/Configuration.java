@@ -19,7 +19,6 @@ public class Configuration {
     private static final int DEFAULT_SHUTDOWN_FLUSH_RETRIES = 6000;
     private static final String DEFAULT_MESSAGE_SUMMARY_FIELDS = "ClientRequestHost,ClientRequestPath,OriginIP,ClientSrcPort,EdgeServerIP,EdgeResponseBytes";
 
-
     // Environment variables with these names can be defined on the Lambda function to specify values.
     private static final String S3_BUCKET_NAME = "S3_BUCKET_NAME";
     private static final String GRAYLOG_HOST = "GRAYLOG_HOST";
@@ -35,7 +34,6 @@ public class Configuration {
     private static final String PROTOCOL_TYPE = "PROTOCOL_TYPE";
     private static final String SHUTDOWN_FLUSH_TIMEOUT_MS = "SHUTDOWN_FLUSH_TIMEOUT_MS";
     private static final String SHUTDOWN_FLUSH_RETRIES = "SHUTDOWN_FLUSH_RETRIES";
-
 
     // Logpush config
     private static final String LOG_PUSH_PREFIX = "CLOUDFLARE_LOGPUSH_";
@@ -55,22 +53,22 @@ public class Configuration {
     private Integer graylogPort;
 
     @Parameter(CONNECT_TIMEOUT)
-    private Integer connectTimeout;
+    private Integer connectTimeout = DEFAULT_CONNECT_TIMEOUT;
 
     @Parameter(RECONNECT_DELAY)
-    private Integer reconnectDelay;
+    private Integer reconnectDelay = DEFAULT_RECONNECT_DELAY;
 
     @Parameter(TCP_KEEP_ALIVE)
-    private Boolean tcpKeepAlive;
+    private Boolean tcpKeepAlive = true;
 
     @Parameter(TCP_NO_DELAY)
-    private Boolean tcpNoDelay;
+    private Boolean tcpNoDelay = true;
 
     @Parameter(TCP_QUEUE_SIZE)
-    private Integer queueSize;
+    private Integer queueSize = DEFAULT_TCP_QUEUE_SIZE;
 
     @Parameter(TCP_MAX_IN_FLIGHT_SENDS)
-    private Integer maxInflightSends;
+    private Integer maxInflightSends = DEFAULT_TCP_MAX_IN_FLIGHT_SENDS;
 
     @Parameter(value = CONTENT_TYPE, required = true)
     private String contentType;
@@ -83,23 +81,23 @@ public class Configuration {
 
     // The number of milliseconds to wait for messages to finish sending during shutdown.
     @Parameter(SHUTDOWN_FLUSH_TIMEOUT_MS)
-    private Integer shutdownFlushTimeoutMs;
+    private Integer shutdownFlushTimeoutMs = DEFAULT_SHUTDOWN_FLUSH_TIMEOUT_MS;
 
     // How many times to retry the shutdownFlushTimeoutMs wait while waiting for messages to
     // finish sending during shutdown.
     @Parameter(SHUTDOWN_FLUSH_RETRIES)
-    private Integer shutdownFlushReties;
+    private Integer shutdownFlushReties = DEFAULT_SHUTDOWN_FLUSH_RETRIES;
 
     // Overrides message timestamp with the current time.
     @Parameter(LOGPUSH_USE_NOW_TIMESTAMP)
-    private Boolean useNowTimestamp;
+    private Boolean useNowTimestamp = false;
 
     // Fields to parse and store with the message in Graylog
     @Parameter(LOGPUSH_MESSAGE_FIELDS)
     private String messageFields;
 
     @Parameter(LOGPUSH_MESSAGE_SUMMARY_FIELDS)
-    private String messageSummaryFields;
+    private String messageSummaryFields = DEFAULT_MESSAGE_SUMMARY_FIELDS;
 
     public String getS3BucketName() {
         return s3BucketName;
@@ -114,27 +112,27 @@ public class Configuration {
     }
 
     public Integer getConnectTimeout() {
-        return connectTimeout != null ? connectTimeout : DEFAULT_CONNECT_TIMEOUT;
+        return connectTimeout;
     }
 
     public Integer getReconnectDelay() {
-        return reconnectDelay != null ? reconnectDelay : DEFAULT_RECONNECT_DELAY;
+        return reconnectDelay;
     }
 
     public Boolean getTcpKeepAlive() {
-        return tcpKeepAlive != null ? tcpKeepAlive : true;
+        return tcpKeepAlive;
     }
 
     public Boolean getTcpNoDelay() {
-        return tcpNoDelay != null ? tcpNoDelay : true;
+        return tcpNoDelay;
     }
 
     public Integer getQueueSize() {
-        return queueSize != null ? queueSize : DEFAULT_TCP_QUEUE_SIZE;
+        return queueSize;
     }
 
     public Integer getMaxInflightSends() {
-        return maxInflightSends != null ? maxInflightSends : DEFAULT_TCP_MAX_IN_FLIGHT_SENDS;
+        return maxInflightSends;
     }
 
     public ContentType getContentType() {
@@ -154,15 +152,15 @@ public class Configuration {
     }
 
     public Integer getShutdownFlushTimeoutMs() {
-        return shutdownFlushTimeoutMs != null ? shutdownFlushTimeoutMs : DEFAULT_SHUTDOWN_FLUSH_TIMEOUT_MS;
+        return shutdownFlushTimeoutMs;
     }
 
     public Integer getShutdownFlushReties() {
-        return shutdownFlushReties != null ? shutdownFlushReties : DEFAULT_SHUTDOWN_FLUSH_RETRIES;
+        return shutdownFlushReties;
     }
 
     public Boolean getUseNowTimestamp() {
-        return useNowTimestamp != null ? useNowTimestamp : false;
+        return useNowTimestamp;
     }
 
     public String getMessageFields() {
@@ -174,7 +172,7 @@ public class Configuration {
     }
 
     public String getMessageSummaryFields() {
-        return messageSummaryFields != null ? messageSummaryFields : DEFAULT_MESSAGE_SUMMARY_FIELDS;
+        return messageSummaryFields;
     }
 
     public void setMessageSummaryFields(String messageSummaryFields) {
