@@ -1,6 +1,5 @@
 package org.graylog.integrations.s3.codec;
 
-import com.amazonaws.util.StringUtils;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.graylog.integrations.s3.Configuration;
@@ -34,17 +33,17 @@ public class CloudFlareLogpushCodec extends AbstractS3Codec implements S3Codec {
         // The valueMap makes it easier to get access to each field.
         final JsonNode rootNode = objectMapper.readTree(message);
 
-        final List<String> fieldNames = Stream.generate(rootNode.fieldNames()::next)
+        final List<String> messageFieldNames = Stream.generate(rootNode.fieldNames()::next)
                                               .limit(rootNode.size())
                                               .collect(Collectors.toList());
 
         final Map<String, Object> messageMap = new LinkedHashMap<>();
 
         // Prepare message summary. Use fields indicated in the configuration.
-        Arrays.stream(config.getMessageSummaryFields().split(","))
+        config.getMessageSummaryFields().stream()
               .map(String::trim)
               .filter(s -> !s.isEmpty())
-              .filter(fieldNames::contains)
+              .filter(messageFieldNames::contains)
               .forEach(s -> messageMap.put(s, getNodeTextValue(s, rootNode)));
 
         // The resulting message looks like:
@@ -66,7 +65,7 @@ public class CloudFlareLogpushCodec extends AbstractS3Codec implements S3Codec {
         }
 
         // Get a list of parsed fields to include in the message.
-        List<String> fieldNamesToInclude = getFieldsToInclude(fieldNames);
+        List<String> fieldNamesToInclude = removeMessageFieldsNotInConfig(messageFieldNames);
 
         Iterator<Map.Entry<String, JsonNode>> fieldIterator = rootNode.fields();
         while (fieldIterator.hasNext()) {
@@ -154,16 +153,22 @@ public class CloudFlareLogpushCodec extends AbstractS3Codec implements S3Codec {
         return textValues.get(0);
     }
 
-    private List<String> getFieldsToInclude(List<String> fieldNames) {
-        List<String> fieldNamesToInclude = null;
-        if (!StringUtils.isNullOrEmpty(config.getMessageFields())) {
-            fieldNamesToInclude = Arrays.stream(config.getMessageFields().split(","))
-                                        .map(String::trim)
-                                        .filter(s -> !s.isEmpty())
-                                        .filter(fieldNames::contains)
-                                        .collect(Collectors.toList());
+    /**
+     * @param messageFields Fields that were present in the message.
+     * @return the union of the fields included in the message and those included in the configuration.
+     * All fields are returned if none are specified in the configuration.
+     */
+    private List<String> removeMessageFieldsNotInConfig(List<String> messageFields) {
+
+        // Include all fields if none are specified in the configuration.
+        if (config.getMessageFields().isEmpty()) {
+            return messageFields;
         }
-        return fieldNamesToInclude;
+
+        return config.getMessageFields()
+                     .stream()
+                     .filter(field -> messageFields.contains(field))
+                     .collect(Collectors.toList());
     }
 
     /**

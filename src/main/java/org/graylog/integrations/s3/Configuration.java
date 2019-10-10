@@ -1,8 +1,13 @@
 package org.graylog.integrations.s3;
 
 import com.github.joschi.jadconfig.Parameter;
+import com.github.joschi.jadconfig.converters.TrimmedStringListConverter;
 import com.github.joschi.jadconfig.validators.PositiveIntegerValidator;
 import com.github.joschi.jadconfig.validators.StringNotBlankValidator;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * Reads configuration values from environment variables defined on the Lambda function.
@@ -88,12 +93,12 @@ public class Configuration {
     @Parameter(value = LOGPUSH_USE_NOW_TIMESTAMP, required = true)
     private boolean useNowTimestamp = false;
 
-    // Fields to parse and store with the message in Graylog. This defaults to all. No need for validator.
-    @Parameter(LOGPUSH_MESSAGE_FIELDS)
-    private String messageFields;
+    // Fields to parse and store with the message in Graylog. This defaults to all.
+    @Parameter(value = LOGPUSH_MESSAGE_FIELDS, converter = TrimmedStringListConverter.class)
+    private List<String> messageFields = new ArrayList<>();
 
-    @Parameter(value = LOGPUSH_MESSAGE_SUMMARY_FIELDS, required = true, validators = StringNotBlankValidator.class)
-    private String messageSummaryFields = "ClientRequestHost,ClientRequestPath,OriginIP,ClientSrcPort,EdgeServerIP,EdgeResponseBytes";
+    @Parameter(value = LOGPUSH_MESSAGE_SUMMARY_FIELDS, required = true, converter = TrimmedStringListConverter.class)
+    private List<String> messageSummaryFields =  Arrays.asList("ClientRequestHost", "ClientRequestPath", "OriginIP", "ClientSrcPort", "EdgeServerIP", "EdgeResponseBytes");
 
     public String getS3BucketName() {
         return s3BucketName;
@@ -159,19 +164,19 @@ public class Configuration {
         return useNowTimestamp;
     }
 
-    public String getMessageFields() {
+    public List<String> getMessageFields() {
         return messageFields;
     }
 
-    public void setMessageFields(String messageFields) {
+    public void setMessageFields(List<String> messageFields) {
         this.messageFields = messageFields;
     }
 
-    public String getMessageSummaryFields() {
+    public List<String> getMessageSummaryFields() {
         return messageSummaryFields;
     }
 
-    public void setMessageSummaryFields(String messageSummaryFields) {
+    public void setMessageSummaryFields(List<String> messageSummaryFields) {
         this.messageSummaryFields = messageSummaryFields;
     }
 
