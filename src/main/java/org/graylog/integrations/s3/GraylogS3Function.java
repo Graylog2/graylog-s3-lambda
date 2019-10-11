@@ -5,6 +5,7 @@ import com.amazonaws.services.lambda.runtime.RequestHandler;
 import com.amazonaws.services.lambda.runtime.events.S3Event;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.AmazonS3Client;
+import com.amazonaws.services.s3.event.S3EventNotification;
 import com.amazonaws.services.s3.model.S3Object;
 import com.amazonaws.services.s3.model.S3ObjectInputStream;
 import com.github.joschi.jadconfig.JadConfig;
@@ -52,9 +53,8 @@ public class GraylogS3Function implements RequestHandler<S3Event, Object> {
 
         LOG.debug(config);
         AmazonS3 s3Client = AmazonS3Client.builder().build();
-
         // Multiple messages could be provided with the S3 event callback.
-        s3Event.getRecords().forEach(record -> processObject(config, s3Client, record.getS3().getObject().getKey()));
+        s3Event.getRecords().forEach(record -> processObject(config, s3Client, record.getS3()));
         return String.format("Processed %d S3 records.", s3Event.getRecords().size());
     }
 
@@ -63,14 +63,15 @@ public class GraylogS3Function implements RequestHandler<S3Event, Object> {
      *
      * @param config    The Lambda function configuration.
      * @param s3Client  The S3 client.
-     * @param objectKey The key for the S3 object/file. This will be used to retrieve the object.
+     * @param s3Entity The key for the S3 object/file. This will be used to retrieve the object.
      */
-    private void processObject(Configuration config, AmazonS3 s3Client, String objectKey) {
+    private void processObject(Configuration config, AmazonS3 s3Client, S3EventNotification.S3Entity s3Entity) {
 
         LOG.debug("Graylog host: {}:{}", config.getGraylogHost(), config.getGraylogPort());
 
-        LOG.debug("Attempting to read object [{}] from S3.", objectKey);
-        S3Object s3Object = s3Client.getObject(config.getS3BucketName(), objectKey);
+        LOG.debug("Attempting to read object [{}] from S3.", s3Entity);
+        S3Object s3Object = s3Client.getObject(s3Entity.getBucket().getName(),
+                                               s3Entity.getObject().getKey());
         LOG.debug("Object read from S3 successfully.");
 
         try {
@@ -105,7 +106,7 @@ public class GraylogS3Function implements RequestHandler<S3Event, Object> {
                 s3Object.close();
             } catch (IOException e) {
                 // Suppress exception. Nothing can be done.
-                LOG.error("Failed to close S3 object [{}].", objectKey);
+                LOG.error("Failed to close S3 object [{}].", s3Entity.getObject().getKey());
             }
         }
     }

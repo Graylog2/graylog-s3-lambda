@@ -19,7 +19,6 @@ import java.util.List;
 public class Configuration {
 
     // Environment variables with these names can be defined on the Lambda function to specify values.
-    private static final String S3_BUCKET_NAME = "S3_BUCKET_NAME";
     private static final String GRAYLOG_HOST = "GRAYLOG_HOST";
     private static final String GRAYLOG_PORT = "GRAYLOG_PORT";
     private static final String CONNECT_TIMEOUT = "CONNECT_TIMEOUT";
@@ -41,9 +40,6 @@ public class Configuration {
     private static final String LOGPUSH_MESSAGE_FIELDS = LOG_PUSH_PREFIX + "MESSAGE_FIELDS";
     // Fields to store in the message field in the GELF message field.
     private static final String LOGPUSH_MESSAGE_SUMMARY_FIELDS = LOG_PUSH_PREFIX + "MESSAGE_SUMMARY_FIELDS";
-
-    @Parameter(value = S3_BUCKET_NAME, required = true, validators = StringNotBlankValidator.class)
-    private String s3BucketName;
 
     @Parameter(value = GRAYLOG_HOST, required = true, validators = StringNotBlankValidator.class)
     private String graylogHost;
@@ -99,10 +95,6 @@ public class Configuration {
 
     @Parameter(value = LOGPUSH_MESSAGE_SUMMARY_FIELDS, required = true, converter = TrimmedStringListConverter.class)
     private List<String> messageSummaryFields =  Arrays.asList("ClientRequestHost", "ClientRequestPath", "OriginIP", "ClientSrcPort", "EdgeServerIP", "EdgeResponseBytes");
-
-    public String getS3BucketName() {
-        return s3BucketName;
-    }
 
     public String getGraylogHost() {
         return graylogHost;
@@ -183,7 +175,6 @@ public class Configuration {
     @Override
     public String toString() {
         return "Configuration{" +
-               "s3BucketName='" + s3BucketName + '\'' +
                ", graylogHost='" + graylogHost + '\'' +
                ", graylogPort=" + graylogPort +
                ", connectTimeout=" + connectTimeout +
