@@ -45,7 +45,7 @@ public class CloudflareTestDataGenerator {
             metadata.setContentLength(bytes.length);
             final String fileName = "logs-" + UUID.randomUUID();
             System.out.println("Sending [" + batchSize + "] message [" + fileName + "]");
-            s3Client.putObject(new PutObjectRequest(System.getenv("bucket"), fileName, new ByteArrayInputStream(bytes), metadata));
+            s3Client.putObject(new PutObjectRequest(System.getenv("S3_BUCKET_NAME"), fileName, new ByteArrayInputStream(bytes), metadata));
 
             // Add some randomness to the sleep over time.
             // Add a fixed additional time within 10 minute span to get a more random message distribution over time.

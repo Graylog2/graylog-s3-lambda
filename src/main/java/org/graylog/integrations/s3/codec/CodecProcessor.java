@@ -1,12 +1,17 @@
 package org.graylog.integrations.s3.codec;
 
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.graylog.integrations.s3.Configuration;
+import org.graylog.integrations.s3.GraylogS3Function;
 import org.graylog2.gelfclient.GelfMessage;
 
 import java.io.IOException;
 
 public class CodecProcessor {
+
+    private static final Logger LOG = LogManager.getLogger(CodecProcessor.class);
 
     private final Configuration config;
     private ApplicationJsonCodec applicationJsonCodec;
@@ -27,6 +32,16 @@ public class CodecProcessor {
      */
     public GelfMessage decode(String message) throws IOException {
 
+        final GelfMessage gelfMessage = performDecoding(message);
+
+        if (LOG.isTraceEnabled()) {
+            LOG.trace("Message contains [{}] fields.", gelfMessage.getAdditionalFields().size());
+        }
+
+        return gelfMessage;
+    }
+
+    private GelfMessage performDecoding(String message) throws IOException {
         switch (config.getContentType()) {
             case APPLICATION_JSON:
                 return applicationJsonCodec.decode(message);
