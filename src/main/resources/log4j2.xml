@@ -8,8 +8,13 @@
         </Lambda>
     </Appenders>
     <Loggers>
-        <Root level="info">
+
+        <!-- Root logger level applies to all classes compiled in this project (no dependencies).  -->
+        <Root level="INFO">
             <AppenderRef ref="Lambda"/>
         </Root>
+
+        <!-- Set the GELF client logger levels explicitly. -->
+                <Logger name="org.graylog2.gelfclient.transport.GelfTcpTransport" level="OFF" additivity="false" />
     </Loggers>
 </Configuration>

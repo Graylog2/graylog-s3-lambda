@@ -34,8 +34,8 @@ public class CloudFlareLogpushCodec extends AbstractS3Codec implements S3Codec {
         final JsonNode rootNode = objectMapper.readTree(message);
 
         final List<String> messageFieldNames = Stream.generate(rootNode.fieldNames()::next)
-                                              .limit(rootNode.size())
-                                              .collect(Collectors.toList());
+                                                     .limit(rootNode.size())
+                                                     .collect(Collectors.toList());
 
         final Map<String, Object> messageMap = new LinkedHashMap<>();
 

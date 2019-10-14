@@ -19,6 +19,7 @@ import java.util.List;
 public class Configuration {
 
     // Environment variables with these names can be defined on the Lambda function to specify values.
+    private static final String LOG_LEVEL = "LOG_LEVEL";
     private static final String GRAYLOG_HOST = "GRAYLOG_HOST";
     private static final String GRAYLOG_PORT = "GRAYLOG_PORT";
     private static final String CONNECT_TIMEOUT = "CONNECT_TIMEOUT";
@@ -40,6 +41,10 @@ public class Configuration {
     private static final String LOGPUSH_MESSAGE_FIELDS = LOG_PUSH_PREFIX + "MESSAGE_FIELDS";
     // Fields to store in the message field in the GELF message field.
     private static final String LOGPUSH_MESSAGE_SUMMARY_FIELDS = LOG_PUSH_PREFIX + "MESSAGE_SUMMARY_FIELDS";
+
+    // Allows user-defined log level. Null by default to avoid setting logger level in default scenario.
+    @Parameter(value = LOG_LEVEL)
+    private String logLevel;
 
     @Parameter(value = GRAYLOG_HOST, required = true, validators = StringNotBlankValidator.class)
     private String graylogHost;
@@ -94,7 +99,11 @@ public class Configuration {
     private List<String> messageFields = new ArrayList<>();
 
     @Parameter(value = LOGPUSH_MESSAGE_SUMMARY_FIELDS, required = true, converter = TrimmedStringListConverter.class)
-    private List<String> messageSummaryFields =  Arrays.asList("ClientRequestHost", "ClientRequestPath", "OriginIP", "ClientSrcPort", "EdgeServerIP", "EdgeResponseBytes");
+    private List<String> messageSummaryFields = Arrays.asList("ClientRequestHost", "ClientRequestPath", "OriginIP", "ClientSrcPort", "EdgeServerIP", "EdgeResponseBytes");
+
+    public String getLogLevel() {
+        return logLevel;
+    }
 
     public String getGraylogHost() {
         return graylogHost;

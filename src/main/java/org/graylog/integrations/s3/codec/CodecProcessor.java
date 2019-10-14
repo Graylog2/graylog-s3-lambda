@@ -4,7 +4,6 @@ package org.graylog.integrations.s3.codec;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.graylog.integrations.s3.Configuration;
-import org.graylog.integrations.s3.GraylogS3Function;
 import org.graylog2.gelfclient.GelfMessage;
 
 import java.io.IOException;

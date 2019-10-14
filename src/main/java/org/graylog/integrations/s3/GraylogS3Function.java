@@ -12,8 +12,11 @@ import com.github.joschi.jadconfig.JadConfig;
 import com.github.joschi.jadconfig.RepositoryException;
 import com.github.joschi.jadconfig.ValidationException;
 import com.github.joschi.jadconfig.repositories.EnvironmentRepository;
+import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.core.LoggerContext;
+import org.apache.logging.log4j.core.config.Configurator;
 import org.graylog.integrations.s3.codec.CodecProcessor;
 import org.graylog2.gelfclient.GelfConfiguration;
 import org.graylog2.gelfclient.GelfMessage;
@@ -51,18 +54,51 @@ public class GraylogS3Function implements RequestHandler<S3Event, Object> {
 
     public Object handleRequest(final S3Event s3Event, final Context context) {
 
+        setLoggerLevel();
+
         LOG.debug(config);
         AmazonS3 s3Client = AmazonS3Client.builder().build();
         // Multiple messages could be provided with the S3 event callback.
         s3Event.getRecords().forEach(record -> processObject(config, s3Client, record.getS3()));
+
+        LOG.info("Processed [{}] S3 records.", s3Event.getRecords().size());
         return String.format("Processed %d S3 records.", s3Event.getRecords().size());
+    }
+
+    /**
+     * Sets a user-defined logger level if specified in the configuration.
+     *
+     * If the user-defined logger level is null, then the logging level is not set. This avoids unnecessary log sets
+     * in a normal runtime scenario.
+     *
+     * {@see resources/log4j2.xml} for the default logger configuration.
+     */
+    private void setLoggerLevel() {
+        if (config.getLogLevel() != null) {
+            final Level level;
+            try {
+                // Attempt to parse the user-supplied logging level.
+                level = Level.valueOf(config.getLogLevel());
+            } catch (IllegalArgumentException e) {
+                LOG.error("The LOG_LEVEL [{}] is not supported. Please use OFF, ERROR, WARN, INFO , DEBUG, TRACE, or ALL.",
+                          config.getLogLevel());
+                return;
+            }
+            LOG.info("Log level is now set to [{}].", level);
+
+            // Set the new logging level in all loggers.
+            final LoggerContext loggerContext = (LoggerContext) LogManager.getContext(false);
+            for (Logger logger : loggerContext.getLoggers()) {
+                Configurator.setLevel(logger.getName(), level);
+            }
+        }
     }
 
     /**
      * Streams and processes the of the indicated S3 object.
      *
-     * @param config    The Lambda function configuration.
-     * @param s3Client  The S3 client.
+     * @param config   The Lambda function configuration.
+     * @param s3Client The S3 client.
      * @param s3Entity The key for the S3 object/file. This will be used to retrieve the object.
      */
     private void processObject(Configuration config, AmazonS3 s3Client, S3EventNotification.S3Entity s3Entity) {
@@ -99,8 +135,7 @@ public class GraylogS3Function implements RequestHandler<S3Event, Object> {
             LOG.debug("Transport shutdown complete.");
         } catch (Exception e) {
             LOG.error("An uncaught exception was thrown while processing file [{}]. Skipping file.", s3Object.getKey());
-        }
-        finally {
+        } finally {
             // Always try to close the S3 object.
             try {
                 s3Object.close();
@@ -137,6 +172,7 @@ public class GraylogS3Function implements RequestHandler<S3Event, Object> {
 
         try {
             String messageLine;
+            int lineNumber = 0;
             while ((messageLine = reader.readLine()) != null) {
 
                 // Decode each line and send the message.
@@ -146,6 +182,9 @@ public class GraylogS3Function implements RequestHandler<S3Event, Object> {
                 }
 
                 try {
+                    if (LOG.isTraceEnabled() && lineNumber % 100 == 0) { // Only log once per 100 messages.
+                        LOG.trace("Sent [{}] messages.", lineNumber);
+                    }
                     final GelfMessage message = codecProcessor.decode(messageLine);
                     gelfTransport.send(message);
                 } catch (InterruptedException e) {
@@ -155,7 +194,9 @@ public class GraylogS3Function implements RequestHandler<S3Event, Object> {
                     LOG.error("Failed to decode message [{}]", messageLine, e);
                     return;
                 }
+                lineNumber++;
             }
+            LOG.trace("Finished sending [{}] messages.", lineNumber);
         } catch (Exception e) {
             LOG.error("An uncaught exception was thrown while processing file [{}]. Skipping file.", s3Object.getKey());
         } finally {
