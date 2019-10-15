@@ -80,7 +80,7 @@ public class GraylogS3Function implements RequestHandler<S3Event, Object> {
                 // Attempt to parse the user-supplied logging level.
                 level = Level.valueOf(config.getLogLevel());
             } catch (IllegalArgumentException e) {
-                LOG.error("The LOG_LEVEL [{}] is not supported. Please use OFF, ERROR, WARN, INFO , DEBUG, TRACE, or ALL.",
+                LOG.error("The LOG_LEVEL [{}] is not supported. Please use OFF, ERROR, WARN, INFO, DEBUG, TRACE, or ALL.",
                           config.getLogLevel());
                 return;
             }
@@ -183,8 +183,8 @@ public class GraylogS3Function implements RequestHandler<S3Event, Object> {
                 }
 
                 try {
-                    if (LOG.isTraceEnabled() && lineNumber % 100 == 0) { // Only log once per 100 messages.
-                        LOG.trace("Sent [{}] messages.", lineNumber);
+                    if (LOG.isDebugEnabled() && lineNumber != 0 && lineNumber % 100 == 0) { // Only log once per 100 messages.
+                        LOG.debug("Sent [{}] messages.", lineNumber);
                     }
                     final GelfMessage message = codecProcessor.decode(messageLine);
                     gelfTransport.send(message);
@@ -197,7 +197,7 @@ public class GraylogS3Function implements RequestHandler<S3Event, Object> {
                 }
                 lineNumber++;
             }
-            LOG.trace("Finished sending [{}] messages.", lineNumber);
+            LOG.debug("Finished sending [{}] messages.", lineNumber);
         } catch (Exception e) {
             LOG.error("An uncaught exception was thrown while processing file [{}]. Skipping file.", s3Object.getKey());
         } finally {

@@ -2,6 +2,8 @@ package org.graylog.integrations.s3.codec;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.graylog.integrations.s3.Configuration;
 import org.graylog2.gelfclient.GelfMessage;
 
@@ -18,6 +20,7 @@ import java.util.stream.StreamSupport;
 
 public class CloudflareLogCodec extends AbstractS3Codec implements S3Codec {
 
+    private static final Logger LOG = LogManager.getLogger(CodecProcessor.class);
     private static final List<String> TIMESTAMP_FIELDS = Arrays.asList("EdgeEndTimestamp", "EdgeStartTimestamp");
     private static final List<String> HTTP_CODE_FIELDS = Arrays.asList("CacheResponseStatus", "EdgeResponseStatus", "OriginResponseStatus");
 
@@ -29,7 +32,6 @@ public class CloudflareLogCodec extends AbstractS3Codec implements S3Codec {
     }
 
     public GelfMessage decode(String message) throws IOException {
-
         // The valueMap makes it easier to get access to each field.
         final JsonNode rootNode = objectMapper.readTree(message);
 
@@ -52,16 +54,16 @@ public class CloudflareLogCodec extends AbstractS3Codec implements S3Codec {
 
         final GelfMessage gelfMessage = new GelfMessage(messageSummary, config.getGraylogHost());
 
-        // Set message timestamp. Timestamp defaults to now, so no need to set when the useNowTimestamp = false.
-        if (!config.getUseNowTimestamp()) {
-            final JsonNode edgeStartTimestamp = rootNode.findValue("EdgeStartTimestamp");
-            if (edgeStartTimestamp != null) {
-                final double timestamp = parseTimestamp(edgeStartTimestamp);
-                gelfMessage.setTimestamp(timestamp);
-            } else {
-                // Default to now.
-                gelfMessage.setTimestamp(Instant.now().getEpochSecond());
-            }
+        // Set message timestamp.
+        final JsonNode edgeStartTimestamp = rootNode.findValue("EdgeStartTimestamp");
+        if (edgeStartTimestamp != null) {
+            final double timestamp = parseTimestamp(edgeStartTimestamp);
+            LOG.trace("Setting EdgeStartTimestamp timestamp [{}].", timestamp);
+            gelfMessage.setTimestamp(timestamp);
+        } else {
+            // Default to now.
+            LOG.trace("Setting Now timestamp.");
+            gelfMessage.setTimestamp(Instant.now().getEpochSecond());
         }
 
         // Get a list of parsed fields to include in the message.

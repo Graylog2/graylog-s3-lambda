@@ -37,7 +37,6 @@ public class Configuration {
     // Logpush config
     private static final String LOG_PUSH_PREFIX = "CLOUDFLARE_LOGPUSH_";
 
-    private static final String LOGPUSH_USE_NOW_TIMESTAMP = LOG_PUSH_PREFIX + "USE_NOW_TIMESTAMP";
     private static final String LOGPUSH_MESSAGE_FIELDS = LOG_PUSH_PREFIX + "MESSAGE_FIELDS";
     // Fields to store in the message field in the GELF message field.
     private static final String LOGPUSH_MESSAGE_SUMMARY_FIELDS = LOG_PUSH_PREFIX + "MESSAGE_SUMMARY_FIELDS";
@@ -89,10 +88,6 @@ public class Configuration {
     private int shutdownFlushReties = 600;
 
     // ** Logpush specific fields.
-
-    // Overrides message timestamp with the current time.
-    @Parameter(value = LOGPUSH_USE_NOW_TIMESTAMP, required = true)
-    private boolean useNowTimestamp = false;
 
     // Fields to parse and store with the message in Graylog. This defaults to all.
     @Parameter(value = LOGPUSH_MESSAGE_FIELDS, converter = TrimmedStringListConverter.class)
@@ -161,10 +156,6 @@ public class Configuration {
         return shutdownFlushReties;
     }
 
-    public boolean getUseNowTimestamp() {
-        return useNowTimestamp;
-    }
-
     public List<String> getMessageFields() {
         return messageFields;
     }
@@ -195,7 +186,6 @@ public class Configuration {
                ", contentType='" + contentType + '\'' +
                ", compressionType='" + compressionType + '\'' +
                ", protocolType='" + protocolType + '\'' +
-               ", useNowTimestamp=" + useNowTimestamp +
                ", messageFields='" + messageFields + '\'' +
                ", messageSummaryFields='" + messageSummaryFields + '\'' +
                '}';

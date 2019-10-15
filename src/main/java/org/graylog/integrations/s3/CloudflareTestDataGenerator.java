@@ -24,7 +24,7 @@ import java.util.stream.IntStream;
 import java.util.zip.GZIPOutputStream;
 
 /**
- * Writes a compressed test Cloudflare Logpush file file to S3 for testing.
+ * Writes a compressed test Cloudflare Logopen file file to S3 for testing.
  *
  * Use this to generate a bunch of test Cloudflare Logpush data to test the dashboards.
  *
