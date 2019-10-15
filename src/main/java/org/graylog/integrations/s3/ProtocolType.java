@@ -28,6 +28,10 @@ public enum ProtocolType {
         return gelfTransport;
     }
 
+    public String getType() {
+        return type;
+    }
+
     /**
      * Get the ProtocolType enum for the specified type.
      * Default to TCP.

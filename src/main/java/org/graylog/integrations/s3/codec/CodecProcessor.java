@@ -14,13 +14,13 @@ public class CodecProcessor {
 
     private final Configuration config;
     private ApplicationJsonCodec applicationJsonCodec;
-    private CloudFlareLogpushCodec cloudFlareLogpushCodec;
+    private CloudflareLogCodec cloudflareLogCodec;
     private PlainTextCodec plainTextCodec;
 
     public CodecProcessor(Configuration config) {
         this.config = config;
         this.applicationJsonCodec = new ApplicationJsonCodec(config);
-        this.cloudFlareLogpushCodec = new CloudFlareLogpushCodec(config);
+        this.cloudflareLogCodec = new CloudflareLogCodec(config);
         this.plainTextCodec = new PlainTextCodec(config);
     }
 
@@ -44,8 +44,8 @@ public class CodecProcessor {
         switch (config.getContentType()) {
             case APPLICATION_JSON:
                 return applicationJsonCodec.decode(message);
-            case CLOUD_FLARE_LOGPUSH:
-                return cloudFlareLogpushCodec.decode(message);
+            case CLOUD_FLARE_LOG:
+                return cloudflareLogCodec.decode(message);
             case TEXT_PLAIN:
                 return plainTextCodec.decode(message);
         }

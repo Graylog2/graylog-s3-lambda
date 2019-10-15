@@ -71,13 +71,13 @@ public class Configuration {
     private int maxInflightSends = 512;
 
     @Parameter(value = CONTENT_TYPE, required = true, validators = StringNotBlankValidator.class)
-    private String contentType = ContentType.TEXT_PLAIN.toString();
+    private String contentType = ContentType.TEXT_PLAIN.getType();
 
     @Parameter(value = COMPRESSION_TYPE, required = true, validators = StringNotBlankValidator.class)
-    private String compressionType = CompressionType.NONE.toString();
+    private String compressionType = CompressionType.NONE.getType();
 
     @Parameter(value = PROTOCOL_TYPE, required = true, validators = StringNotBlankValidator.class)
-    private String protocolType = ProtocolType.TCP.toString();
+    private String protocolType = ProtocolType.TCP.getType();
 
     // The number of milliseconds to wait for messages to finish sending during shutdown.
     @Parameter(value = SHUTDOWN_FLUSH_TIMEOUT_MS, required = true, validators = PositiveIntegerValidator.class)

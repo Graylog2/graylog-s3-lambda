@@ -21,6 +21,10 @@ public enum CompressionType {
         this.type = type;
     }
 
+    public String getType() {
+        return type;
+    }
+
     /**
      * Get the CompressionType enum for the specified type.
      * Default to NONE.

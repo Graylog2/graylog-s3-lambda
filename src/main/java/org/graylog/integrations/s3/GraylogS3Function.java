@@ -89,6 +89,7 @@ public class GraylogS3Function implements RequestHandler<S3Event, Object> {
             // Set the new logging level in all loggers.
             final LoggerContext loggerContext = (LoggerContext) LogManager.getContext(false);
             for (Logger logger : loggerContext.getLoggers()) {
+                System.out.println(logger.getName());
                 Configurator.setLevel(logger.getName(), level);
             }
         }

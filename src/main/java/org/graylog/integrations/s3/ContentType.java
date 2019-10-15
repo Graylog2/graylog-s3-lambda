@@ -19,7 +19,7 @@ import java.util.Objects;
 public enum ContentType {
 
     APPLICATION_JSON("application/json"),
-    CLOUD_FLARE_LOGPUSH("application/x.cloudflare.logpush"), // "x." indicates a custom mime type.
+    CLOUD_FLARE_LOG("application/x.cloudflare.log"), // "x." indicates a custom mime type.
     TEXT_PLAIN("text/plain");
 
     private static final Logger LOG = LogManager.getLogger(ContentType.class);

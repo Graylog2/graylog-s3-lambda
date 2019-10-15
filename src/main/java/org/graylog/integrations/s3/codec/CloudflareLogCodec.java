@@ -16,14 +16,14 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
-public class CloudFlareLogpushCodec extends AbstractS3Codec implements S3Codec {
+public class CloudflareLogCodec extends AbstractS3Codec implements S3Codec {
 
     private static final List<String> TIMESTAMP_FIELDS = Arrays.asList("EdgeEndTimestamp", "EdgeStartTimestamp");
     private static final List<String> HTTP_CODE_FIELDS = Arrays.asList("CacheResponseStatus", "EdgeResponseStatus", "OriginResponseStatus");
 
     private final ObjectMapper objectMapper;
 
-    CloudFlareLogpushCodec(Configuration config) {
+    CloudflareLogCodec(Configuration config) {
         super(config);
         this.objectMapper = new ObjectMapper();
     }
