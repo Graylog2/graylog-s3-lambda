@@ -44,12 +44,12 @@ Once the function is created, upload the function code graylog-s3-lambda.jar loc
 
 Specify the following environment variables to configure the Lambda function for your Graylog cluster:
 
-* GRAYLOG_HOST: (required) The hostname or IP address of the Graylog host or load balancer.
-* GRAYLOG_PORT: (optional - defaults to 12201): The Graylog service port.
-* CONTENT_TYPE: (optional - defaults to `text/plain`) The type of log messages to read. Messages will be parsed according to their content type. Supported values: `application/json`, `text/plain`, and `application/x.cloudflare.log`
-* COMPRESSION_TYPE: (optional - defaults to `none`) The compression type. Supported values: `none`, `gzip`
-* CONNECT_TIMEOUT (optional - defaults to 10000ms) The number of milliseconds to wait for the connection to be established.
-* LOG_LEVEL (optional - defaults to INFO) The level of detail to include in the CloudWatch logs generated from the Lambda function. Supported values are OFF, ERROR, WARN, INFO, DEBUG, TRACE, and ALL. Increase the logging level to help with troubleshooting. See this page for more information. 
+* `GRAYLOG_HOST`: (required) The hostname or IP address of the Graylog host or load balancer.
+* `GRAYLOG_PORT`: (optional - defaults to 12201): The Graylog service port.
+* `CONTENT_TYPE`: (optional - defaults to `text/plain`) The type of log messages to read. Messages will be parsed according to their content type. Supported values: `application/json`, `text/plain`, and `application/x.cloudflare.log`
+* `COMPRESSION_TYPE`: (optional - defaults to `none`) The compression type. Supported values: `none`, `gzip`
+* `CONNECT_TIMEOUT` (optional - defaults to 10000ms) The number of milliseconds to wait for the connection to be established.
+* `LOG_LEVEL` (optional - defaults to INFO) The level of detail to include in the CloudWatch logs generated from the Lambda function. Supported values are OFF, ERROR, WARN, INFO, DEBUG, TRACE, and ALL. Increase the logging level to help with troubleshooting. See this page for more information. 
 
 More configuration options will be documented soon.
 
