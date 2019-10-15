@@ -1,0 +1,5725 @@
+{
+  "v": 1,
+  "id": "c3ca8b7e-0e5d-46af-aa67-a3ff551f3abf",
+  "rev": 1,
+  "name": "Cloudflare Logpush",
+  "summary": "All necessary Graylog configuration to receive Cloudflare logs in Graylog, and to view and use the view the Cloudflare dashboards",
+  "description": "This content pack loads all necessary Graylog configuration to receive Cloudflare logs in Graylog, and to view and use the view the Cloudflare dashboards. \n\nThe following components will be installed on\nCloudflare dashboards.\nA Cloudflare GELF (TCP) input that allows Graylog to receive Cloudflare Logs.\nA Cloudflare message stream.\nPipeline rules that help to process and parse Cloudflare Log fields.",
+  "vendor": "Graylog, Inc.",
+  "url": "https://github.com/Graylog2/graylog-s3-lambda/releases",
+  "parameters": [
+    {
+      "name": "time_range",
+      "title": "Dashboard Time Range",
+      "description": "The relative time range in seconds for all Dashboard widgets.",
+      "type": "integer",
+      "default_value": 3600
+    },
+    {
+      "name": "network_bind_address",
+      "title": "Cloudflare input network bind address",
+      "description": "The network bind IP address for the Cloudflare TCP GELF input.",
+      "type": "string",
+      "default_value": "127.0.0.1"
+    },
+    {
+      "name": "threat_lookup_file_path",
+      "title": "Threat Lookup CSV Location",
+      "description": "The full path the the location of threat-lookup.csv, which will be used to look up Cloudflare threat values. You can obtain the file from the release download.",
+      "type": "string",
+      "default_value": "/etc/graylog/threat-lookup.csv"
+    },
+    {
+      "name": "geo_ip_db_path",
+      "title": "The path to the Maxmind™ database file",
+      "description": "The path to the Maxmind™ database file. You can download this from https://dev.maxmind.com/geoip/",
+      "type": "string",
+      "default_value": "/etc/graylog/server/GeoLite2-City.mmdb"
+    }
+  ],
+  "entities": [
+    {
+      "v": "1",
+      "type": {
+        "name": "lookup_table",
+        "version": "1"
+      },
+      "id": "d72e08b5-9663-43fc-adf7-a605d1728ba9",
+      "data": {
+        "default_single_value_type": {
+          "@type": "string",
+          "@value": "NULL"
+        },
+        "cache_name": {
+          "@type": "string",
+          "@value": "d52fbc6d-9701-4307-86c4-d905f1f6db1a"
+        },
+        "name": {
+          "@type": "string",
+          "@value": "cloudflare-geo-lookup-table"
+        },
+        "default_multi_value_type": {
+          "@type": "string",
+          "@value": "NULL"
+        },
+        "default_multi_value": {
+          "@type": "string",
+          "@value": ""
+        },
+        "data_adapter_name": {
+          "@type": "string",
+          "@value": "f0b6f0fa-74e8-4f22-b5a8-23f15d9f0118"
+        },
+        "title": {
+          "@type": "string",
+          "@value": "cloudflare-geo-lookup-table"
+        },
+        "default_single_value": {
+          "@type": "string",
+          "@value": ""
+        },
+        "description": {
+          "@type": "string",
+          "@value": "A geo IP lookup table for Cloudflare logs."
+        }
+      },
+      "constraints": [
+        {
+          "type": "server-version",
+          "version": ">=3.1.2+9e96b08"
+        }
+      ]
+    },
+    {
+      "v": "1",
+      "type": {
+        "name": "lookup_adapter",
+        "version": "1"
+      },
+      "id": "f0b6f0fa-74e8-4f22-b5a8-23f15d9f0118",
+      "data": {
+        "name": {
+          "@type": "string",
+          "@value": "cloudflare-geo-lookup-table"
+        },
+        "title": {
+          "@type": "string",
+          "@value": "cloudflare-geo-lookup-adaptor"
+        },
+        "description": {
+          "@type": "string",
+          "@value": "Geo Lookup adaptor for Cloudflare"
+        },
+        "configuration": {
+          "type": {
+            "@type": "string",
+            "@value": "maxmind_geoip"
+          },
+          "path": {
+            "@value": "geo_ip_db_path",
+            "@type": "parameter"
+          },
+          "database_type": {
+            "@type": "string",
+            "@value": "MAXMIND_CITY"
+          },
+          "check_interval": {
+            "@type": "long",
+            "@value": 1
+          },
+          "check_interval_unit": {
+            "@type": "string",
+            "@value": "MINUTES"
+          }
+        }
+      },
+      "constraints": [
+        {
+          "type": "server-version",
+          "version": ">=3.1.2+9e96b08"
+        }
+      ]
+    },
+    {
+      "v": "1",
+      "type": {
+        "name": "dashboard",
+        "version": "1"
+      },
+      "id": "11154e79-d464-4a61-994f-44f253342de9",
+      "data": {
+        "title": {
+          "@type": "string",
+          "@value": "Cloudflare - Security"
+        },
+        "description": {
+          "@type": "string",
+          "@value": "This dashboard provides an analysis of Cloudflare threat traffic including the total number of requests and threats stopped. More detailed metrics by country, city, IP, threat type, and user agent are also provided."
+        },
+        "widgets": [
+          {
+            "id": {
+              "@type": "string",
+              "@value": "d6b62a42-1cf4-4f30-aa91-95dd30ea6183"
+            },
+            "description": {
+              "@type": "string",
+              "@value": "Top Threat User Agents"
+            },
+            "type": {
+              "@type": "string",
+              "@value": "QUICKVALUES"
+            },
+            "cache_time": {
+              "@type": "integer",
+              "@value": 10
+            },
+            "time_range": {
+              "type": {
+                "@type": "string",
+                "@value": "relative"
+              },
+              "range": {
+                "@type": "integer",
+                "@value": 1800
+              }
+            },
+            "configuration": {
+              "query": {
+                "@type": "string",
+                "@value": "Threat:true"
+              },
+              "show_pie_chart": {
+                "@type": "boolean",
+                "@value": false
+              },
+              "sort_order": {
+                "@type": "string",
+                "@value": "desc"
+              },
+              "timerange": {
+                "type": {
+                  "@type": "string",
+                  "@value": "relative"
+                },
+                "range": {
+                  "@value": "time_range",
+                  "@type": "parameter"
+                }
+              },
+              "stacked_fields": {
+                "@type": "string",
+                "@value": ""
+              },
+              "data_table_limit": {
+                "@type": "integer",
+                "@value": 50
+              },
+              "field": {
+                "@type": "string",
+                "@value": "ClientRequestUserAgent"
+              },
+              "stream_id": {
+                "@type": "string",
+                "@value": "58b3d55a-51ad-4b3e-865c-85776016a151"
+              },
+              "show_data_table": {
+                "@type": "boolean",
+                "@value": true
+              },
+              "limit": {
+                "@type": "integer",
+                "@value": 5
+              }
+            },
+            "position": {
+              "width": {
+                "@type": "integer",
+                "@value": 8
+              },
+              "height": {
+                "@type": "integer",
+                "@value": 3
+              },
+              "row": {
+                "@type": "integer",
+                "@value": 13
+              },
+              "col": {
+                "@type": "integer",
+                "@value": 1
+              }
+            }
+          },
+          {
+            "id": {
+              "@type": "string",
+              "@value": "6b767c54-716e-4a75-818b-cbb7e890b87c"
+            },
+            "description": {
+              "@type": "string",
+              "@value": "Threats Country Map"
+            },
+            "type": {
+              "@type": "string",
+              "@value": "org.graylog.plugins.map.widget.strategy.MapWidgetStrategy"
+            },
+            "cache_time": {
+              "@type": "integer",
+              "@value": 10
+            },
+            "time_range": {
+              "type": {
+                "@type": "string",
+                "@value": "relative"
+              },
+              "range": {
+                "@type": "integer",
+                "@value": 1800
+              }
+            },
+            "configuration": {
+              "timerange": {
+                "type": {
+                  "@type": "string",
+                  "@value": "relative"
+                },
+                "range": {
+                  "@value": "time_range",
+                  "@type": "parameter"
+                }
+              },
+              "field": {
+                "@type": "string",
+                "@value": "ClientIpGeolocation"
+              },
+              "stream_id": {
+                "@type": "string",
+                "@value": "58b3d55a-51ad-4b3e-865c-85776016a151"
+              },
+              "query": {
+                "@type": "string",
+                "@value": "EdgePathingOp:ban OR EdgePathingOp:wl"
+              }
+            },
+            "position": {
+              "width": {
+                "@type": "integer",
+                "@value": 4
+              },
+              "height": {
+                "@type": "integer",
+                "@value": 3
+              },
+              "row": {
+                "@type": "integer",
+                "@value": 2
+              },
+              "col": {
+                "@type": "integer",
+                "@value": 1
+              }
+            }
+          },
+          {
+            "id": {
+              "@type": "string",
+              "@value": "9cb7fb30-76b4-4fc5-83df-bed94cb2fc78"
+            },
+            "description": {
+              "@type": "string",
+              "@value": "Top Threat Types"
+            },
+            "type": {
+              "@type": "string",
+              "@value": "QUICKVALUES"
+            },
+            "cache_time": {
+              "@type": "integer",
+              "@value": 10
+            },
+            "time_range": {
+              "type": {
+                "@type": "string",
+                "@value": "relative"
+              },
+              "range": {
+                "@type": "integer",
+                "@value": 1800
+              }
+            },
+            "configuration": {
+              "query": {
+                "@type": "string",
+                "@value": "Threat:true"
+              },
+              "show_pie_chart": {
+                "@type": "boolean",
+                "@value": false
+              },
+              "sort_order": {
+                "@type": "string",
+                "@value": "desc"
+              },
+              "timerange": {
+                "type": {
+                  "@type": "string",
+                  "@value": "relative"
+                },
+                "range": {
+                  "@value": "time_range",
+                  "@type": "parameter"
+                }
+              },
+              "stacked_fields": {
+                "@type": "string",
+                "@value": ""
+              },
+              "data_table_limit": {
+                "@type": "integer",
+                "@value": 50
+              },
+              "field": {
+                "@type": "string",
+                "@value": "ThreatType"
+              },
+              "stream_id": {
+                "@type": "string",
+                "@value": "58b3d55a-51ad-4b3e-865c-85776016a151"
+              },
+              "show_data_table": {
+                "@type": "boolean",
+                "@value": true
+              },
+              "limit": {
+                "@type": "integer",
+                "@value": 5
+              }
+            },
+            "position": {
+              "width": {
+                "@type": "integer",
+                "@value": 4
+              },
+              "height": {
+                "@type": "integer",
+                "@value": 3
+              },
+              "row": {
+                "@type": "integer",
+                "@value": 7
+              },
+              "col": {
+                "@type": "integer",
+                "@value": 1
+              }
+            }
+          },
+          {
+            "id": {
+              "@type": "string",
+              "@value": "3263e8ab-5301-45bc-bca1-459df5089e78"
+            },
+            "description": {
+              "@type": "string",
+              "@value": "Threat Types by IP"
+            },
+            "type": {
+              "@type": "string",
+              "@value": "QUICKVALUES"
+            },
+            "cache_time": {
+              "@type": "integer",
+              "@value": 10
+            },
+            "time_range": {
+              "type": {
+                "@type": "string",
+                "@value": "relative"
+              },
+              "range": {
+                "@type": "integer",
+                "@value": 300
+              }
+            },
+            "configuration": {
+              "query": {
+                "@type": "string",
+                "@value": "Threat:true"
+              },
+              "show_pie_chart": {
+                "@type": "boolean",
+                "@value": false
+              },
+              "sort_order": {
+                "@type": "string",
+                "@value": "desc"
+              },
+              "timerange": {
+                "type": {
+                  "@type": "string",
+                  "@value": "relative"
+                },
+                "range": {
+                  "@value": "time_range",
+                  "@type": "parameter"
+                }
+              },
+              "stacked_fields": {
+                "@type": "string",
+                "@value": "ClientIP"
+              },
+              "data_table_limit": {
+                "@type": "integer",
+                "@value": 50
+              },
+              "field": {
+                "@type": "string",
+                "@value": "ThreatType"
+              },
+              "show_data_table": {
+                "@type": "boolean",
+                "@value": true
+              },
+              "limit": {
+                "@type": "integer",
+                "@value": 5
+              }
+            },
+            "position": {
+              "width": {
+                "@type": "integer",
+                "@value": 8
+              },
+              "height": {
+                "@type": "integer",
+                "@value": 3
+              },
+              "row": {
+                "@type": "integer",
+                "@value": 10
+              },
+              "col": {
+                "@type": "integer",
+                "@value": 1
+              }
+            }
+          },
+          {
+            "id": {
+              "@type": "string",
+              "@value": "3bb143c5-5043-42b8-bea7-1f4bd6809dba"
+            },
+            "description": {
+              "@type": "string",
+              "@value": "Top Threats by City"
+            },
+            "type": {
+              "@type": "string",
+              "@value": "QUICKVALUES"
+            },
+            "cache_time": {
+              "@type": "integer",
+              "@value": 10
+            },
+            "time_range": {
+              "type": {
+                "@type": "string",
+                "@value": "relative"
+              },
+              "range": {
+                "@type": "integer",
+                "@value": 1800
+              }
+            },
+            "configuration": {
+              "query": {
+                "@type": "string",
+                "@value": "Threat:true"
+              },
+              "show_pie_chart": {
+                "@type": "boolean",
+                "@value": false
+              },
+              "sort_order": {
+                "@type": "string",
+                "@value": "desc"
+              },
+              "timerange": {
+                "type": {
+                  "@type": "string",
+                  "@value": "relative"
+                },
+                "range": {
+                  "@value": "time_range",
+                  "@type": "parameter"
+                }
+              },
+              "stacked_fields": {
+                "@type": "string",
+                "@value": ""
+              },
+              "data_table_limit": {
+                "@type": "integer",
+                "@value": 50
+              },
+              "field": {
+                "@type": "string",
+                "@value": "ClientIpGeoCityCode"
+              },
+              "stream_id": {
+                "@type": "string",
+                "@value": "58b3d55a-51ad-4b3e-865c-85776016a151"
+              },
+              "show_data_table": {
+                "@type": "boolean",
+                "@value": true
+              },
+              "limit": {
+                "@type": "integer",
+                "@value": 5
+              }
+            },
+            "position": {
+              "width": {
+                "@type": "integer",
+                "@value": 2
+              },
+              "height": {
+                "@type": "integer",
+                "@value": 3
+              },
+              "row": {
+                "@type": "integer",
+                "@value": 2
+              },
+              "col": {
+                "@type": "integer",
+                "@value": 7
+              }
+            }
+          },
+          {
+            "id": {
+              "@type": "string",
+              "@value": "fdb29c49-03f6-44a6-a397-75ff4fc77549"
+            },
+            "description": {
+              "@type": "string",
+              "@value": "Top Threat IPs"
+            },
+            "type": {
+              "@type": "string",
+              "@value": "QUICKVALUES"
+            },
+            "cache_time": {
+              "@type": "integer",
+              "@value": 10
+            },
+            "time_range": {
+              "type": {
+                "@type": "string",
+                "@value": "relative"
+              },
+              "range": {
+                "@type": "integer",
+                "@value": 1800
+              }
+            },
+            "configuration": {
+              "query": {
+                "@type": "string",
+                "@value": "Threat:true"
+              },
+              "show_pie_chart": {
+                "@type": "boolean",
+                "@value": false
+              },
+              "sort_order": {
+                "@type": "string",
+                "@value": "desc"
+              },
+              "timerange": {
+                "type": {
+                  "@type": "string",
+                  "@value": "relative"
+                },
+                "range": {
+                  "@value": "time_range",
+                  "@type": "parameter"
+                }
+              },
+              "stacked_fields": {
+                "@type": "string",
+                "@value": ""
+              },
+              "data_table_limit": {
+                "@type": "integer",
+                "@value": 50
+              },
+              "field": {
+                "@type": "string",
+                "@value": "ClientIP"
+              },
+              "stream_id": {
+                "@type": "string",
+                "@value": "58b3d55a-51ad-4b3e-865c-85776016a151"
+              },
+              "show_data_table": {
+                "@type": "boolean",
+                "@value": true
+              },
+              "limit": {
+                "@type": "integer",
+                "@value": 5
+              }
+            },
+            "position": {
+              "width": {
+                "@type": "integer",
+                "@value": 4
+              },
+              "height": {
+                "@type": "integer",
+                "@value": 3
+              },
+              "row": {
+                "@type": "integer",
+                "@value": 7
+              },
+              "col": {
+                "@type": "integer",
+                "@value": 5
+              }
+            }
+          },
+          {
+            "id": {
+              "@type": "string",
+              "@value": "a534c2c8-9ae8-41d9-a318-5f4995ef416f"
+            },
+            "description": {
+              "@type": "string",
+              "@value": "Threats by Country"
+            },
+            "type": {
+              "@type": "string",
+              "@value": "QUICKVALUES"
+            },
+            "cache_time": {
+              "@type": "integer",
+              "@value": 10
+            },
+            "time_range": {
+              "type": {
+                "@type": "string",
+                "@value": "relative"
+              },
+              "range": {
+                "@type": "integer",
+                "@value": 1800
+              }
+            },
+            "configuration": {
+              "query": {
+                "@type": "string",
+                "@value": "Threat:true"
+              },
+              "show_pie_chart": {
+                "@type": "boolean",
+                "@value": false
+              },
+              "sort_order": {
+                "@type": "string",
+                "@value": "desc"
+              },
+              "timerange": {
+                "type": {
+                  "@type": "string",
+                  "@value": "relative"
+                },
+                "range": {
+                  "@value": "time_range",
+                  "@type": "parameter"
+                }
+              },
+              "stacked_fields": {
+                "@type": "string",
+                "@value": ""
+              },
+              "data_table_limit": {
+                "@type": "integer",
+                "@value": 50
+              },
+              "field": {
+                "@type": "string",
+                "@value": "ClientIpGeoCountry"
+              },
+              "stream_id": {
+                "@type": "string",
+                "@value": "58b3d55a-51ad-4b3e-865c-85776016a151"
+              },
+              "show_data_table": {
+                "@type": "boolean",
+                "@value": true
+              },
+              "limit": {
+                "@type": "integer",
+                "@value": 5
+              }
+            },
+            "position": {
+              "width": {
+                "@type": "integer",
+                "@value": 2
+              },
+              "height": {
+                "@type": "integer",
+                "@value": 3
+              },
+              "row": {
+                "@type": "integer",
+                "@value": 2
+              },
+              "col": {
+                "@type": "integer",
+                "@value": 5
+              }
+            }
+          },
+          {
+            "id": {
+              "@type": "string",
+              "@value": "c27cfc8a-4820-4984-bb9b-7d2c3496811d"
+            },
+            "description": {
+              "@type": "string",
+              "@value": "Top Threats Over Time"
+            },
+            "type": {
+              "@type": "string",
+              "@value": "QUICKVALUES_HISTOGRAM"
+            },
+            "cache_time": {
+              "@type": "integer",
+              "@value": 10
+            },
+            "time_range": {
+              "type": {
+                "@type": "string",
+                "@value": "relative"
+              },
+              "range": {
+                "@type": "integer",
+                "@value": 1800
+              }
+            },
+            "configuration": {
+              "timerange": {
+                "type": {
+                  "@type": "string",
+                  "@value": "relative"
+                },
+                "range": {
+                  "@value": "time_range",
+                  "@type": "parameter"
+                }
+              },
+              "field": {
+                "@type": "string",
+                "@value": "ThreatType"
+              },
+              "stream_id": {
+                "@type": "string",
+                "@value": "58b3d55a-51ad-4b3e-865c-85776016a151"
+              },
+              "query": {
+                "@type": "string",
+                "@value": "Threat:true"
+              },
+              "limit": {
+                "@type": "integer",
+                "@value": 5
+              },
+              "interval": {
+                "@type": "string",
+                "@value": "minute"
+              },
+              "sort_order": {
+                "@type": "string",
+                "@value": "desc"
+              },
+              "stacked_fields": {
+                "@type": "string",
+                "@value": ""
+              }
+            },
+            "position": {
+              "width": {
+                "@type": "integer",
+                "@value": 8
+              },
+              "height": {
+                "@type": "integer",
+                "@value": 2
+              },
+              "row": {
+                "@type": "integer",
+                "@value": 5
+              },
+              "col": {
+                "@type": "integer",
+                "@value": 1
+              }
+            }
+          },
+          {
+            "id": {
+              "@type": "string",
+              "@value": "b1a60eb8-4d55-4763-9780-6e53ba6e58a4"
+            },
+            "description": {
+              "@type": "string",
+              "@value": "Total Threats Stopped"
+            },
+            "type": {
+              "@type": "string",
+              "@value": "SEARCH_RESULT_COUNT"
+            },
+            "cache_time": {
+              "@type": "integer",
+              "@value": 10
+            },
+            "time_range": {
+              "type": {
+                "@type": "string",
+                "@value": "relative"
+              },
+              "range": {
+                "@type": "integer",
+                "@value": 1800
+              }
+            },
+            "configuration": {
+              "timerange": {
+                "type": {
+                  "@type": "string",
+                  "@value": "relative"
+                },
+                "range": {
+                  "@value": "time_range",
+                  "@type": "parameter"
+                }
+              },
+              "lower_is_better": {
+                "@type": "boolean",
+                "@value": false
+              },
+              "stream_id": {
+                "@type": "string",
+                "@value": "58b3d55a-51ad-4b3e-865c-85776016a151"
+              },
+              "trend": {
+                "@type": "boolean",
+                "@value": false
+              },
+              "query": {
+                "@type": "string",
+                "@value": "Threat:true"
+              }
+            },
+            "position": {
+              "width": {
+                "@type": "integer",
+                "@value": 4
+              },
+              "height": {
+                "@type": "integer",
+                "@value": 1
+              },
+              "row": {
+                "@type": "integer",
+                "@value": 1
+              },
+              "col": {
+                "@type": "integer",
+                "@value": 5
+              }
+            }
+          },
+          {
+            "id": {
+              "@type": "string",
+              "@value": "4e9e93d4-7dde-41ff-98b4-728adca090dd"
+            },
+            "description": {
+              "@type": "string",
+              "@value": "Total Requests"
+            },
+            "type": {
+              "@type": "string",
+              "@value": "STREAM_SEARCH_RESULT_COUNT"
+            },
+            "cache_time": {
+              "@type": "integer",
+              "@value": 10
+            },
+            "time_range": {
+              "type": {
+                "@type": "string",
+                "@value": "relative"
+              },
+              "range": {
+                "@type": "integer",
+                "@value": 1800
+              }
+            },
+            "configuration": {
+              "timerange": {
+                "type": {
+                  "@type": "string",
+                  "@value": "relative"
+                },
+                "range": {
+                  "@value": "time_range",
+                  "@type": "parameter"
+                }
+              },
+              "lower_is_better": {
+                "@type": "boolean",
+                "@value": false
+              },
+              "stream_id": {
+                "@type": "string",
+                "@value": "58b3d55a-51ad-4b3e-865c-85776016a151"
+              },
+              "trend": {
+                "@type": "boolean",
+                "@value": false
+              },
+              "query": {
+                "@type": "string",
+                "@value": ""
+              }
+            },
+            "position": {
+              "width": {
+                "@type": "integer",
+                "@value": 4
+              },
+              "height": {
+                "@type": "integer",
+                "@value": 1
+              },
+              "row": {
+                "@type": "integer",
+                "@value": 1
+              },
+              "col": {
+                "@type": "integer",
+                "@value": 1
+              }
+            }
+          }
+        ]
+      },
+      "constraints": [
+        {
+          "type": "server-version",
+          "version": ">=3.1.2+9e96b08"
+        }
+      ]
+    },
+    {
+      "v": "1",
+      "type": {
+        "name": "input",
+        "version": "1"
+      },
+      "id": "6a9b2a53-48a9-48ed-918b-e59c9380f869",
+      "data": {
+        "title": {
+          "@type": "string",
+          "@value": "Cloudflare"
+        },
+        "configuration": {
+          "tls_key_file": {
+            "@type": "string",
+            "@value": ""
+          },
+          "port": {
+            "@type": "integer",
+            "@value": 12201
+          },
+          "tls_enable": {
+            "@type": "boolean",
+            "@value": false
+          },
+          "use_null_delimiter": {
+            "@type": "boolean",
+            "@value": true
+          },
+          "recv_buffer_size": {
+            "@type": "integer",
+            "@value": 1048576
+          },
+          "tcp_keepalive": {
+            "@type": "boolean",
+            "@value": false
+          },
+          "tls_client_auth_cert_file": {
+            "@type": "string",
+            "@value": ""
+          },
+          "bind_address": {
+            "@value": "network_bind_address",
+            "@type": "parameter"
+          },
+          "tls_cert_file": {
+            "@type": "string",
+            "@value": ""
+          },
+          "max_message_size": {
+            "@type": "integer",
+            "@value": 2097152
+          },
+          "tls_client_auth": {
+            "@type": "string",
+            "@value": "disabled"
+          },
+          "decompress_size_limit": {
+            "@type": "integer",
+            "@value": 8388608
+          },
+          "number_worker_threads": {
+            "@type": "integer",
+            "@value": 2
+          },
+          "tls_key_password": {
+            "@type": "string",
+            "@value": ""
+          }
+        },
+        "static_fields": {},
+        "type": {
+          "@type": "string",
+          "@value": "org.graylog2.inputs.gelf.tcp.GELFTCPInput"
+        },
+        "global": {
+          "@type": "boolean",
+          "@value": false
+        },
+        "extractors": []
+      },
+      "constraints": [
+        {
+          "type": "server-version",
+          "version": ">=3.1.2+9e96b08"
+        }
+      ]
+    },
+    {
+      "v": "1",
+      "type": {
+        "name": "lookup_table",
+        "version": "1"
+      },
+      "id": "59734188-31c3-4d4a-af74-a7d313d362cb",
+      "data": {
+        "default_single_value_type": {
+          "@type": "string",
+          "@value": "NULL"
+        },
+        "cache_name": {
+          "@type": "string",
+          "@value": "301656f9-c23e-467f-a2ec-0c970839eeee"
+        },
+        "name": {
+          "@type": "string",
+          "@value": "cloudflare-threat-lookup-table"
+        },
+        "default_multi_value_type": {
+          "@type": "string",
+          "@value": "NULL"
+        },
+        "default_multi_value": {
+          "@type": "string",
+          "@value": ""
+        },
+        "data_adapter_name": {
+          "@type": "string",
+          "@value": "5d655ae3-bf80-49a4-a4e4-fcd3696499fa"
+        },
+        "title": {
+          "@type": "string",
+          "@value": "cloudflare-threat-lookup-table"
+        },
+        "default_single_value": {
+          "@type": "string",
+          "@value": ""
+        },
+        "description": {
+          "@type": "string",
+          "@value": "A threat lookup table for Cloudflare."
+        }
+      },
+      "constraints": [
+        {
+          "type": "server-version",
+          "version": ">=3.1.2+9e96b08"
+        }
+      ]
+    },
+    {
+      "v": "1",
+      "type": {
+        "name": "pipeline_rule",
+        "version": "1"
+      },
+      "id": "f2b1620a-f8fa-451a-95ed-4da451990bad",
+      "data": {
+        "title": {
+          "@type": "string",
+          "@value": "cloudflare-bot-detection"
+        },
+        "description": {
+          "@type": "string",
+          "@value": "Detects Cloudflare bots."
+        },
+        "source": {
+          "@type": "string",
+          "@value": "rule \"cloudflare-bot-detection\"\nwhen\n  has_field(\"EdgePathingSrc\")\nthen\n set_field(\"Bot\", $message.EdgePathingSrc == \"filterBasedFirewall\" && $message.EdgePathingStatus == \"captchaNew\");\nend\n\n\n\n\n"
+        }
+      },
+      "constraints": [
+        {
+          "type": "server-version",
+          "version": ">=3.1.2+9e96b08"
+        }
+      ]
+    },
+    {
+      "v": "1",
+      "type": {
+        "name": "pipeline_rule",
+        "version": "1"
+      },
+      "id": "5f80c458-110b-40ef-b951-8819d80f814c",
+      "data": {
+        "title": {
+          "@type": "string",
+          "@value": "cloudflare-threat-lookup"
+        },
+        "description": {
+          "@type": "string",
+          "@value": "Lookup that fills the Cloudflare Threat-related fields."
+        },
+        "source": {
+          "@type": "string",
+          "@value": "rule \"cloudflare-threat-lookup\"\nwhen\n  has_field(\"EdgePathingOp\")\nthen\n// Build  threat code for use in lookup later.\n// According to https://developers.cloudflare.com/logs/tutorials/parsing-json-log-data/\nlet threat_code = concat(concat( concat(to_string($message.EdgePathingSrc), \".\"),\n                                 concat(to_string($message.EdgePathingOp), \".\")),\n                                to_string($message.EdgePathingStatus));\n// Looks like \"user.ban.ipr16\"\nset_field(\"ThreatCode\", threat_code);\n\n// Look up the text description from a pipeline rule.\nlet threat_type = lookup_value(\"cloudflare-threat-lookup-table\", threat_code);\n\nset_field(\"ThreatType\", threat_type);\nset_field(\"Threat\", to_string(threat_type) != \"No Threat\");\n\nend"
+        }
+      },
+      "constraints": [
+        {
+          "type": "server-version",
+          "version": ">=3.1.2+9e96b08"
+        }
+      ]
+    },
+    {
+      "v": "1",
+      "type": {
+        "name": "dashboard",
+        "version": "1"
+      },
+      "id": "291f5fd1-9e40-4587-a6b2-547a5f3751bb",
+      "data": {
+        "title": {
+          "@type": "string",
+          "@value": "Cloudflare - Performance"
+        },
+        "description": {
+          "@type": "string",
+          "@value": "This dashboard provides an analysis to help identify and resolve performance-related issues. Detailed breakdowns by response time, caching status, content type, host name, request method, protocol, and request URIs are also provided."
+        },
+        "widgets": [
+          {
+            "id": {
+              "@type": "string",
+              "@value": "5a34d186-2823-4acc-8f1c-f66332865ff4"
+            },
+            "description": {
+              "@type": "string",
+              "@value": "Uncached Requests"
+            },
+            "type": {
+              "@type": "string",
+              "@value": "SEARCH_RESULT_COUNT"
+            },
+            "cache_time": {
+              "@type": "integer",
+              "@value": 10
+            },
+            "time_range": {
+              "type": {
+                "@type": "string",
+                "@value": "relative"
+              },
+              "range": {
+                "@type": "integer",
+                "@value": 1800
+              }
+            },
+            "configuration": {
+              "timerange": {
+                "type": {
+                  "@type": "string",
+                  "@value": "relative"
+                },
+                "range": {
+                  "@value": "time_range",
+                  "@type": "parameter"
+                }
+              },
+              "lower_is_better": {
+                "@type": "boolean",
+                "@value": false
+              },
+              "stream_id": {
+                "@type": "string",
+                "@value": "58b3d55a-51ad-4b3e-865c-85776016a151"
+              },
+              "trend": {
+                "@type": "boolean",
+                "@value": false
+              },
+              "query": {
+                "@type": "string",
+                "@value": "NOT CacheCacheStatus:hit"
+              }
+            },
+            "position": {
+              "width": {
+                "@type": "integer",
+                "@value": 2
+              },
+              "height": {
+                "@type": "integer",
+                "@value": 1
+              },
+              "row": {
+                "@type": "integer",
+                "@value": 1
+              },
+              "col": {
+                "@type": "integer",
+                "@value": 5
+              }
+            }
+          },
+          {
+            "id": {
+              "@type": "string",
+              "@value": "fc9c5600-a771-4e86-974d-2f6e25a7bfa8"
+            },
+            "description": {
+              "@type": "string",
+              "@value": "Uncached Bandwidth (bytes)"
+            },
+            "type": {
+              "@type": "string",
+              "@value": "STATS_COUNT"
+            },
+            "cache_time": {
+              "@type": "integer",
+              "@value": 10
+            },
+            "time_range": {
+              "type": {
+                "@type": "string",
+                "@value": "relative"
+              },
+              "range": {
+                "@type": "integer",
+                "@value": 1800
+              }
+            },
+            "configuration": {
+              "timerange": {
+                "type": {
+                  "@type": "string",
+                  "@value": "relative"
+                },
+                "range": {
+                  "@value": "time_range",
+                  "@type": "parameter"
+                }
+              },
+              "field": {
+                "@type": "string",
+                "@value": "EdgeResponseBytes"
+              },
+              "stream_id": {
+                "@type": "string",
+                "@value": "58b3d55a-51ad-4b3e-865c-85776016a151"
+              },
+              "trend": {
+                "@type": "boolean",
+                "@value": false
+              },
+              "query": {
+                "@type": "string",
+                "@value": "NOT CacheCacheStatus:hit"
+              },
+              "stats_function": {
+                "@type": "string",
+                "@value": "count"
+              },
+              "lower_is_better": {
+                "@type": "boolean",
+                "@value": false
+              }
+            },
+            "position": {
+              "width": {
+                "@type": "integer",
+                "@value": 2
+              },
+              "height": {
+                "@type": "integer",
+                "@value": 1
+              },
+              "row": {
+                "@type": "integer",
+                "@value": 5
+              },
+              "col": {
+                "@type": "integer",
+                "@value": 5
+              }
+            }
+          },
+          {
+            "id": {
+              "@type": "string",
+              "@value": "7146f193-a481-4a99-bbea-4a8d74be43d2"
+            },
+            "description": {
+              "@type": "string",
+              "@value": "Cached Requests by Hostname"
+            },
+            "type": {
+              "@type": "string",
+              "@value": "QUICKVALUES_HISTOGRAM"
+            },
+            "cache_time": {
+              "@type": "integer",
+              "@value": 10
+            },
+            "time_range": {
+              "type": {
+                "@type": "string",
+                "@value": "relative"
+              },
+              "range": {
+                "@type": "integer",
+                "@value": 1800
+              }
+            },
+            "configuration": {
+              "timerange": {
+                "type": {
+                  "@type": "string",
+                  "@value": "relative"
+                },
+                "range": {
+                  "@value": "time_range",
+                  "@type": "parameter"
+                }
+              },
+              "field": {
+                "@type": "string",
+                "@value": "EdgeRequestHost"
+              },
+              "stream_id": {
+                "@type": "string",
+                "@value": "58b3d55a-51ad-4b3e-865c-85776016a151"
+              },
+              "query": {
+                "@type": "string",
+                "@value": "CacheCacheStatus:hit"
+              },
+              "limit": {
+                "@type": "integer",
+                "@value": 5
+              },
+              "sort_order": {
+                "@type": "string",
+                "@value": "desc"
+              },
+              "stacked_fields": {
+                "@type": "string",
+                "@value": ""
+              }
+            },
+            "position": {
+              "width": {
+                "@type": "integer",
+                "@value": 4
+              },
+              "height": {
+                "@type": "integer",
+                "@value": 2
+              },
+              "row": {
+                "@type": "integer",
+                "@value": 6
+              },
+              "col": {
+                "@type": "integer",
+                "@value": 1
+              }
+            }
+          },
+          {
+            "id": {
+              "@type": "string",
+              "@value": "9dfcf2a5-c6b8-480f-b35b-ee2c12126c95"
+            },
+            "description": {
+              "@type": "string",
+              "@value": "Cached Requests by Protocol"
+            },
+            "type": {
+              "@type": "string",
+              "@value": "QUICKVALUES_HISTOGRAM"
+            },
+            "cache_time": {
+              "@type": "integer",
+              "@value": 10
+            },
+            "time_range": {
+              "type": {
+                "@type": "string",
+                "@value": "relative"
+              },
+              "range": {
+                "@type": "integer",
+                "@value": 1800
+              }
+            },
+            "configuration": {
+              "timerange": {
+                "type": {
+                  "@type": "string",
+                  "@value": "relative"
+                },
+                "range": {
+                  "@value": "time_range",
+                  "@type": "parameter"
+                }
+              },
+              "field": {
+                "@type": "string",
+                "@value": "ClientRequestProtocol"
+              },
+              "stream_id": {
+                "@type": "string",
+                "@value": "58b3d55a-51ad-4b3e-865c-85776016a151"
+              },
+              "query": {
+                "@type": "string",
+                "@value": "CacheCacheStatus:hit"
+              },
+              "limit": {
+                "@type": "integer",
+                "@value": 5
+              },
+              "sort_order": {
+                "@type": "string",
+                "@value": "desc"
+              },
+              "stacked_fields": {
+                "@type": "string",
+                "@value": ""
+              }
+            },
+            "position": {
+              "width": {
+                "@type": "integer",
+                "@value": 4
+              },
+              "height": {
+                "@type": "integer",
+                "@value": 2
+              },
+              "row": {
+                "@type": "integer",
+                "@value": 8
+              },
+              "col": {
+                "@type": "integer",
+                "@value": 1
+              }
+            }
+          },
+          {
+            "id": {
+              "@type": "string",
+              "@value": "b898e3e6-5fc4-4bbd-abb2-91237c47d300"
+            },
+            "description": {
+              "@type": "string",
+              "@value": "Response Time - Deviation (ms)"
+            },
+            "type": {
+              "@type": "string",
+              "@value": "STATS_COUNT"
+            },
+            "cache_time": {
+              "@type": "integer",
+              "@value": 10
+            },
+            "time_range": {
+              "type": {
+                "@type": "string",
+                "@value": "relative"
+              },
+              "range": {
+                "@type": "integer",
+                "@value": 1800
+              }
+            },
+            "configuration": {
+              "timerange": {
+                "type": {
+                  "@type": "string",
+                  "@value": "relative"
+                },
+                "range": {
+                  "@value": "time_range",
+                  "@type": "parameter"
+                }
+              },
+              "field": {
+                "@type": "string",
+                "@value": "OriginResponseTimeMillis"
+              },
+              "stream_id": {
+                "@type": "string",
+                "@value": "58b3d55a-51ad-4b3e-865c-85776016a151"
+              },
+              "trend": {
+                "@type": "boolean",
+                "@value": false
+              },
+              "query": {
+                "@type": "string",
+                "@value": ""
+              },
+              "stats_function": {
+                "@type": "string",
+                "@value": "std_deviation"
+              },
+              "lower_is_better": {
+                "@type": "boolean",
+                "@value": false
+              }
+            },
+            "position": {
+              "width": {
+                "@type": "integer",
+                "@value": 2
+              },
+              "height": {
+                "@type": "integer",
+                "@value": 1
+              },
+              "row": {
+                "@type": "integer",
+                "@value": 2
+              },
+              "col": {
+                "@type": "integer",
+                "@value": 5
+              }
+            }
+          },
+          {
+            "id": {
+              "@type": "string",
+              "@value": "1482035e-4bb7-4064-b313-ba184d8b3cca"
+            },
+            "description": {
+              "@type": "string",
+              "@value": "Cached Request by Method"
+            },
+            "type": {
+              "@type": "string",
+              "@value": "QUICKVALUES_HISTOGRAM"
+            },
+            "cache_time": {
+              "@type": "integer",
+              "@value": 10
+            },
+            "time_range": {
+              "type": {
+                "@type": "string",
+                "@value": "relative"
+              },
+              "range": {
+                "@type": "integer",
+                "@value": 1800
+              }
+            },
+            "configuration": {
+              "timerange": {
+                "type": {
+                  "@type": "string",
+                  "@value": "relative"
+                },
+                "range": {
+                  "@value": "time_range",
+                  "@type": "parameter"
+                }
+              },
+              "field": {
+                "@type": "string",
+                "@value": "ClientRequestMethod"
+              },
+              "stream_id": {
+                "@type": "string",
+                "@value": "58b3d55a-51ad-4b3e-865c-85776016a151"
+              },
+              "query": {
+                "@type": "string",
+                "@value": "CacheCacheStatus:hit"
+              },
+              "limit": {
+                "@type": "integer",
+                "@value": 5
+              },
+              "sort_order": {
+                "@type": "string",
+                "@value": "desc"
+              },
+              "stacked_fields": {
+                "@type": "string",
+                "@value": ""
+              }
+            },
+            "position": {
+              "width": {
+                "@type": "integer",
+                "@value": 4
+              },
+              "height": {
+                "@type": "integer",
+                "@value": 2
+              },
+              "row": {
+                "@type": "integer",
+                "@value": 8
+              },
+              "col": {
+                "@type": "integer",
+                "@value": 5
+              }
+            }
+          },
+          {
+            "id": {
+              "@type": "string",
+              "@value": "bbd3a980-8547-48fb-b61f-2cb09486120a"
+            },
+            "description": {
+              "@type": "string",
+              "@value": "Response Time (ms)"
+            },
+            "type": {
+              "@type": "string",
+              "@value": "FIELD_CHART"
+            },
+            "cache_time": {
+              "@type": "integer",
+              "@value": 10
+            },
+            "time_range": {
+              "type": {
+                "@type": "string",
+                "@value": "relative"
+              },
+              "range": {
+                "@type": "integer",
+                "@value": 1800
+              }
+            },
+            "configuration": {
+              "renderer": {
+                "@type": "string",
+                "@value": "area"
+              },
+              "interpolation": {
+                "@type": "string",
+                "@value": "linear"
+              },
+              "interval": {
+                "@type": "string",
+                "@value": "minute"
+              },
+              "query": {
+                "@type": "string",
+                "@value": ""
+              },
+              "valuetype": {
+                "@type": "string",
+                "@value": "count"
+              },
+              "relative": {
+                "@type": "integer",
+                "@value": 900
+              },
+              "timerange": {
+                "type": {
+                  "@type": "string",
+                  "@value": "relative"
+                },
+                "range": {
+                  "@value": "time_range",
+                  "@type": "parameter"
+                }
+              },
+              "rangeType": {
+                "@type": "string",
+                "@value": "relative"
+              },
+              "field": {
+                "@type": "string",
+                "@value": "OriginResponseTimeMillis"
+              },
+              "stream_id": {
+                "@type": "string",
+                "@value": "58b3d55a-51ad-4b3e-865c-85776016a151"
+              }
+            },
+            "position": {
+              "width": {
+                "@type": "integer",
+                "@value": 8
+              },
+              "height": {
+                "@type": "integer",
+                "@value": 2
+              },
+              "row": {
+                "@type": "integer",
+                "@value": 3
+              },
+              "col": {
+                "@type": "integer",
+                "@value": 1
+              }
+            }
+          },
+          {
+            "id": {
+              "@type": "string",
+              "@value": "704deed7-07ad-46fd-8b5e-67b041582eb7"
+            },
+            "description": {
+              "@type": "string",
+              "@value": "Cached Requests"
+            },
+            "type": {
+              "@type": "string",
+              "@value": "STATS_COUNT"
+            },
+            "cache_time": {
+              "@type": "integer",
+              "@value": 10
+            },
+            "time_range": {
+              "type": {
+                "@type": "string",
+                "@value": "relative"
+              },
+              "range": {
+                "@type": "integer",
+                "@value": 1800
+              }
+            },
+            "configuration": {
+              "timerange": {
+                "type": {
+                  "@type": "string",
+                  "@value": "relative"
+                },
+                "range": {
+                  "@value": "time_range",
+                  "@type": "parameter"
+                }
+              },
+              "field": {
+                "@type": "string",
+                "@value": "CacheCacheStatus"
+              },
+              "stream_id": {
+                "@type": "string",
+                "@value": "58b3d55a-51ad-4b3e-865c-85776016a151"
+              },
+              "trend": {
+                "@type": "boolean",
+                "@value": false
+              },
+              "query": {
+                "@type": "string",
+                "@value": "CacheCacheStatus:hit"
+              },
+              "stats_function": {
+                "@type": "string",
+                "@value": "cardinality"
+              },
+              "lower_is_better": {
+                "@type": "boolean",
+                "@value": false
+              }
+            },
+            "position": {
+              "width": {
+                "@type": "integer",
+                "@value": 2
+              },
+              "height": {
+                "@type": "integer",
+                "@value": 1
+              },
+              "row": {
+                "@type": "integer",
+                "@value": 1
+              },
+              "col": {
+                "@type": "integer",
+                "@value": 3
+              }
+            }
+          },
+          {
+            "id": {
+              "@type": "string",
+              "@value": "4ce93e89-4771-4ce2-8b59-6dc058cbfd3b"
+            },
+            "description": {
+              "@type": "string",
+              "@value": "Top Cached URIs"
+            },
+            "type": {
+              "@type": "string",
+              "@value": "QUICKVALUES"
+            },
+            "cache_time": {
+              "@type": "integer",
+              "@value": 10
+            },
+            "time_range": {
+              "type": {
+                "@type": "string",
+                "@value": "relative"
+              },
+              "range": {
+                "@type": "integer",
+                "@value": 1800
+              }
+            },
+            "configuration": {
+              "query": {
+                "@type": "string",
+                "@value": "CacheCacheStatus:hit"
+              },
+              "show_pie_chart": {
+                "@type": "boolean",
+                "@value": false
+              },
+              "sort_order": {
+                "@type": "string",
+                "@value": "desc"
+              },
+              "timerange": {
+                "type": {
+                  "@type": "string",
+                  "@value": "relative"
+                },
+                "range": {
+                  "@value": "time_range",
+                  "@type": "parameter"
+                }
+              },
+              "stacked_fields": {
+                "@type": "string",
+                "@value": ""
+              },
+              "data_table_limit": {
+                "@type": "integer",
+                "@value": 50
+              },
+              "field": {
+                "@type": "string",
+                "@value": "ClientRequestURI"
+              },
+              "stream_id": {
+                "@type": "string",
+                "@value": "58b3d55a-51ad-4b3e-865c-85776016a151"
+              },
+              "show_data_table": {
+                "@type": "boolean",
+                "@value": true
+              },
+              "limit": {
+                "@type": "integer",
+                "@value": 5
+              }
+            },
+            "position": {
+              "width": {
+                "@type": "integer",
+                "@value": 8
+              },
+              "height": {
+                "@type": "integer",
+                "@value": 3
+              },
+              "row": {
+                "@type": "integer",
+                "@value": 10
+              },
+              "col": {
+                "@type": "integer",
+                "@value": 1
+              }
+            }
+          },
+          {
+            "id": {
+              "@type": "string",
+              "@value": "5f2d78cb-8b5a-43a7-ae60-2f88f1572c50"
+            },
+            "description": {
+              "@type": "string",
+              "@value": "Response Time - Average (ms)"
+            },
+            "type": {
+              "@type": "string",
+              "@value": "STATS_COUNT"
+            },
+            "cache_time": {
+              "@type": "integer",
+              "@value": 10
+            },
+            "time_range": {
+              "type": {
+                "@type": "string",
+                "@value": "relative"
+              },
+              "range": {
+                "@type": "integer",
+                "@value": 1800
+              }
+            },
+            "configuration": {
+              "timerange": {
+                "type": {
+                  "@type": "string",
+                  "@value": "relative"
+                },
+                "range": {
+                  "@value": "time_range",
+                  "@type": "parameter"
+                }
+              },
+              "field": {
+                "@type": "string",
+                "@value": "OriginResponseTimeMillis"
+              },
+              "stream_id": {
+                "@type": "string",
+                "@value": "58b3d55a-51ad-4b3e-865c-85776016a151"
+              },
+              "trend": {
+                "@type": "boolean",
+                "@value": false
+              },
+              "query": {
+                "@type": "string",
+                "@value": ""
+              },
+              "stats_function": {
+                "@type": "string",
+                "@value": "mean"
+              },
+              "lower_is_better": {
+                "@type": "boolean",
+                "@value": false
+              }
+            },
+            "position": {
+              "width": {
+                "@type": "integer",
+                "@value": 2
+              },
+              "height": {
+                "@type": "integer",
+                "@value": 1
+              },
+              "row": {
+                "@type": "integer",
+                "@value": 2
+              },
+              "col": {
+                "@type": "integer",
+                "@value": 1
+              }
+            }
+          },
+          {
+            "id": {
+              "@type": "string",
+              "@value": "e7f07f85-689a-4ef3-8c6f-cd297af3973f"
+            },
+            "description": {
+              "@type": "string",
+              "@value": "Cached Bandwidth (bytes)"
+            },
+            "type": {
+              "@type": "string",
+              "@value": "STATS_COUNT"
+            },
+            "cache_time": {
+              "@type": "integer",
+              "@value": 10
+            },
+            "time_range": {
+              "type": {
+                "@type": "string",
+                "@value": "relative"
+              },
+              "range": {
+                "@type": "integer",
+                "@value": 1800
+              }
+            },
+            "configuration": {
+              "timerange": {
+                "type": {
+                  "@type": "string",
+                  "@value": "relative"
+                },
+                "range": {
+                  "@value": "time_range",
+                  "@type": "parameter"
+                }
+              },
+              "field": {
+                "@type": "string",
+                "@value": "CacheResponseBytes"
+              },
+              "stream_id": {
+                "@type": "string",
+                "@value": "58b3d55a-51ad-4b3e-865c-85776016a151"
+              },
+              "trend": {
+                "@type": "boolean",
+                "@value": false
+              },
+              "query": {
+                "@type": "string",
+                "@value": "CacheCacheStatus:hit"
+              },
+              "stats_function": {
+                "@type": "string",
+                "@value": "count"
+              },
+              "lower_is_better": {
+                "@type": "boolean",
+                "@value": false
+              }
+            },
+            "position": {
+              "width": {
+                "@type": "integer",
+                "@value": 2
+              },
+              "height": {
+                "@type": "integer",
+                "@value": 1
+              },
+              "row": {
+                "@type": "integer",
+                "@value": 5
+              },
+              "col": {
+                "@type": "integer",
+                "@value": 3
+              }
+            }
+          },
+          {
+            "id": {
+              "@type": "string",
+              "@value": "0f349fbb-04c9-4303-bdc3-137e39d3af8c"
+            },
+            "description": {
+              "@type": "string",
+              "@value": "Response Time - Max (ms)"
+            },
+            "type": {
+              "@type": "string",
+              "@value": "STATS_COUNT"
+            },
+            "cache_time": {
+              "@type": "integer",
+              "@value": 10
+            },
+            "time_range": {
+              "type": {
+                "@type": "string",
+                "@value": "relative"
+              },
+              "range": {
+                "@type": "integer",
+                "@value": 1800
+              }
+            },
+            "configuration": {
+              "timerange": {
+                "type": {
+                  "@type": "string",
+                  "@value": "relative"
+                },
+                "range": {
+                  "@value": "time_range",
+                  "@type": "parameter"
+                }
+              },
+              "field": {
+                "@type": "string",
+                "@value": "OriginResponseTimeMillis"
+              },
+              "stream_id": {
+                "@type": "string",
+                "@value": "58b3d55a-51ad-4b3e-865c-85776016a151"
+              },
+              "trend": {
+                "@type": "boolean",
+                "@value": false
+              },
+              "query": {
+                "@type": "string",
+                "@value": ""
+              },
+              "stats_function": {
+                "@type": "string",
+                "@value": "max"
+              },
+              "lower_is_better": {
+                "@type": "boolean",
+                "@value": false
+              }
+            },
+            "position": {
+              "width": {
+                "@type": "integer",
+                "@value": 2
+              },
+              "height": {
+                "@type": "integer",
+                "@value": 1
+              },
+              "row": {
+                "@type": "integer",
+                "@value": 2
+              },
+              "col": {
+                "@type": "integer",
+                "@value": 3
+              }
+            }
+          },
+          {
+            "id": {
+              "@type": "string",
+              "@value": "cdf3de92-7c0c-4ef1-a533-67ded72eaf15"
+            },
+            "description": {
+              "@type": "string",
+              "@value": "Total Request Bandwidth (bytes)"
+            },
+            "type": {
+              "@type": "string",
+              "@value": "STATS_COUNT"
+            },
+            "cache_time": {
+              "@type": "integer",
+              "@value": 10
+            },
+            "time_range": {
+              "type": {
+                "@type": "string",
+                "@value": "relative"
+              },
+              "range": {
+                "@type": "integer",
+                "@value": 1800
+              }
+            },
+            "configuration": {
+              "timerange": {
+                "type": {
+                  "@type": "string",
+                  "@value": "relative"
+                },
+                "range": {
+                  "@value": "time_range",
+                  "@type": "parameter"
+                }
+              },
+              "field": {
+                "@type": "string",
+                "@value": "EdgeResponseBytes"
+              },
+              "stream_id": {
+                "@type": "string",
+                "@value": "58b3d55a-51ad-4b3e-865c-85776016a151"
+              },
+              "trend": {
+                "@type": "boolean",
+                "@value": false
+              },
+              "query": {
+                "@type": "string",
+                "@value": ""
+              },
+              "stats_function": {
+                "@type": "string",
+                "@value": "count"
+              },
+              "lower_is_better": {
+                "@type": "boolean",
+                "@value": false
+              }
+            },
+            "position": {
+              "width": {
+                "@type": "integer",
+                "@value": 2
+              },
+              "height": {
+                "@type": "integer",
+                "@value": 1
+              },
+              "row": {
+                "@type": "integer",
+                "@value": 5
+              },
+              "col": {
+                "@type": "integer",
+                "@value": 1
+              }
+            }
+          },
+          {
+            "id": {
+              "@type": "string",
+              "@value": "568c005a-11ec-4be9-acd7-b2aa509c07e0"
+            },
+            "description": {
+              "@type": "string",
+              "@value": "Cached Status Ratio"
+            },
+            "type": {
+              "@type": "string",
+              "@value": "QUICKVALUES"
+            },
+            "cache_time": {
+              "@type": "integer",
+              "@value": 10
+            },
+            "time_range": {
+              "type": {
+                "@type": "string",
+                "@value": "relative"
+              },
+              "range": {
+                "@type": "integer",
+                "@value": 1800
+              }
+            },
+            "configuration": {
+              "query": {
+                "@type": "string",
+                "@value": ""
+              },
+              "show_pie_chart": {
+                "@type": "boolean",
+                "@value": false
+              },
+              "sort_order": {
+                "@type": "string",
+                "@value": "desc"
+              },
+              "timerange": {
+                "type": {
+                  "@type": "string",
+                  "@value": "relative"
+                },
+                "range": {
+                  "@value": "time_range",
+                  "@type": "parameter"
+                }
+              },
+              "stacked_fields": {
+                "@type": "string",
+                "@value": ""
+              },
+              "data_table_limit": {
+                "@type": "integer",
+                "@value": 50
+              },
+              "field": {
+                "@type": "string",
+                "@value": "CacheCacheStatus"
+              },
+              "stream_id": {
+                "@type": "string",
+                "@value": "58b3d55a-51ad-4b3e-865c-85776016a151"
+              },
+              "show_data_table": {
+                "@type": "boolean",
+                "@value": true
+              },
+              "limit": {
+                "@type": "integer",
+                "@value": 5
+              }
+            },
+            "position": {
+              "width": {
+                "@type": "integer",
+                "@value": 2
+              },
+              "height": {
+                "@type": "integer",
+                "@value": 2
+              },
+              "row": {
+                "@type": "integer",
+                "@value": 1
+              },
+              "col": {
+                "@type": "integer",
+                "@value": 7
+              }
+            }
+          },
+          {
+            "id": {
+              "@type": "string",
+              "@value": "b959fa46-524c-4009-a493-7db87d8532ba"
+            },
+            "description": {
+              "@type": "string",
+              "@value": "Cached Requests by Content Type"
+            },
+            "type": {
+              "@type": "string",
+              "@value": "QUICKVALUES_HISTOGRAM"
+            },
+            "cache_time": {
+              "@type": "integer",
+              "@value": 10
+            },
+            "time_range": {
+              "type": {
+                "@type": "string",
+                "@value": "relative"
+              },
+              "range": {
+                "@type": "integer",
+                "@value": 1800
+              }
+            },
+            "configuration": {
+              "timerange": {
+                "type": {
+                  "@type": "string",
+                  "@value": "relative"
+                },
+                "range": {
+                  "@value": "time_range",
+                  "@type": "parameter"
+                }
+              },
+              "field": {
+                "@type": "string",
+                "@value": "EdgeResponseContentType"
+              },
+              "stream_id": {
+                "@type": "string",
+                "@value": "58b3d55a-51ad-4b3e-865c-85776016a151"
+              },
+              "query": {
+                "@type": "string",
+                "@value": "CacheCacheStatus:hit"
+              },
+              "limit": {
+                "@type": "integer",
+                "@value": 5
+              },
+              "sort_order": {
+                "@type": "string",
+                "@value": "desc"
+              },
+              "stacked_fields": {
+                "@type": "string",
+                "@value": ""
+              }
+            },
+            "position": {
+              "width": {
+                "@type": "integer",
+                "@value": 4
+              },
+              "height": {
+                "@type": "integer",
+                "@value": 2
+              },
+              "row": {
+                "@type": "integer",
+                "@value": 6
+              },
+              "col": {
+                "@type": "integer",
+                "@value": 5
+              }
+            }
+          },
+          {
+            "id": {
+              "@type": "string",
+              "@value": "eb75eb75-0403-4b2c-ba3a-0772b5c4f99a"
+            },
+            "description": {
+              "@type": "string",
+              "@value": "Total Requests"
+            },
+            "type": {
+              "@type": "string",
+              "@value": "SEARCH_RESULT_COUNT"
+            },
+            "cache_time": {
+              "@type": "integer",
+              "@value": 10
+            },
+            "time_range": {
+              "type": {
+                "@type": "string",
+                "@value": "relative"
+              },
+              "range": {
+                "@type": "integer",
+                "@value": 1800
+              }
+            },
+            "configuration": {
+              "timerange": {
+                "type": {
+                  "@type": "string",
+                  "@value": "relative"
+                },
+                "range": {
+                  "@value": "time_range",
+                  "@type": "parameter"
+                }
+              },
+              "lower_is_better": {
+                "@type": "boolean",
+                "@value": false
+              },
+              "stream_id": {
+                "@type": "string",
+                "@value": "58b3d55a-51ad-4b3e-865c-85776016a151"
+              },
+              "trend": {
+                "@type": "boolean",
+                "@value": false
+              },
+              "query": {
+                "@type": "string",
+                "@value": ""
+              }
+            },
+            "position": {
+              "width": {
+                "@type": "integer",
+                "@value": 2
+              },
+              "height": {
+                "@type": "integer",
+                "@value": 1
+              },
+              "row": {
+                "@type": "integer",
+                "@value": 1
+              },
+              "col": {
+                "@type": "integer",
+                "@value": 1
+              }
+            }
+          }
+        ]
+      },
+      "constraints": [
+        {
+          "type": "server-version",
+          "version": ">=3.1.2+9e96b08"
+        }
+      ]
+    },
+    {
+      "v": "1",
+      "type": {
+        "name": "pipeline_rule",
+        "version": "1"
+      },
+      "id": "f8c713a8-7e08-450b-91b6-cd3642412dc1",
+      "data": {
+        "title": {
+          "@type": "string",
+          "@value": "cloudflare-geoip-lookup"
+        },
+        "description": {
+          "@type": "string",
+          "@value": "Lookup for Cloudflare geo-IP fields."
+        },
+        "source": {
+          "@type": "string",
+          "@value": "rule \"cloudflare-geoip-lookup\"\nwhen\n  has_field(\"ClientIP\")\nthen\n  let geo = lookup(\"cloudflare-geo-lookup-table\", $message.ClientIP);\n  set_field(\"ClientIpGeolocation\", geo[\"coordinates\"]);\n  set_field(\"ClientIpGeoCountryCode\", geo[\"country\"].iso_code);\n  set_field(\"ClientIpGeoCountry\", geo[\"country\"].names.en);\n  set_field(\"ClientIpGeoCityCode\", geo[\"city\"].names.en);\nend"
+        }
+      },
+      "constraints": [
+        {
+          "type": "server-version",
+          "version": ">=3.1.2+9e96b08"
+        }
+      ]
+    },
+    {
+      "v": "1",
+      "type": {
+        "name": "dashboard",
+        "version": "1"
+      },
+      "id": "68ed2659-ae4e-4a43-8429-cfa93e47cd07",
+      "data": {
+        "title": {
+          "@type": "string",
+          "@value": "Cloudflare - Reliability"
+        },
+        "description": {
+          "@type": "string",
+          "@value": "This dashboard provides insights into application/site reliability with an overview of request successes and errors. More details breakdowns by HTTP status codes, and request URIs are also provided."
+        },
+        "widgets": [
+          {
+            "id": {
+              "@type": "string",
+              "@value": "4a50da67-ec89-44a5-a714-f0fb3e458fa4"
+            },
+            "description": {
+              "@type": "string",
+              "@value": "5xx Responses"
+            },
+            "type": {
+              "@type": "string",
+              "@value": "STATS_COUNT"
+            },
+            "cache_time": {
+              "@type": "integer",
+              "@value": 10
+            },
+            "time_range": {
+              "type": {
+                "@type": "string",
+                "@value": "relative"
+              },
+              "range": {
+                "@type": "integer",
+                "@value": 1800
+              }
+            },
+            "configuration": {
+              "timerange": {
+                "type": {
+                  "@type": "string",
+                  "@value": "relative"
+                },
+                "range": {
+                  "@value": "time_range",
+                  "@type": "parameter"
+                }
+              },
+              "field": {
+                "@type": "string",
+                "@value": "EdgeResponseStatusClass"
+              },
+              "stream_id": {
+                "@type": "string",
+                "@value": "58b3d55a-51ad-4b3e-865c-85776016a151"
+              },
+              "trend": {
+                "@type": "boolean",
+                "@value": false
+              },
+              "query": {
+                "@type": "string",
+                "@value": "EdgeResponseStatusClass:5xx"
+              },
+              "stats_function": {
+                "@type": "string",
+                "@value": "count"
+              },
+              "lower_is_better": {
+                "@type": "boolean",
+                "@value": false
+              }
+            },
+            "position": {
+              "width": {
+                "@type": "integer",
+                "@value": 2
+              },
+              "height": {
+                "@type": "integer",
+                "@value": 1
+              },
+              "row": {
+                "@type": "integer",
+                "@value": 1
+              },
+              "col": {
+                "@type": "integer",
+                "@value": 7
+              }
+            }
+          },
+          {
+            "id": {
+              "@type": "string",
+              "@value": "83d0f560-32d7-46c0-ab57-4f2a0453b7bc"
+            },
+            "description": {
+              "@type": "string",
+              "@value": "4xx Responses"
+            },
+            "type": {
+              "@type": "string",
+              "@value": "STATS_COUNT"
+            },
+            "cache_time": {
+              "@type": "integer",
+              "@value": 10
+            },
+            "time_range": {
+              "type": {
+                "@type": "string",
+                "@value": "relative"
+              },
+              "range": {
+                "@type": "integer",
+                "@value": 1800
+              }
+            },
+            "configuration": {
+              "timerange": {
+                "type": {
+                  "@type": "string",
+                  "@value": "relative"
+                },
+                "range": {
+                  "@value": "time_range",
+                  "@type": "parameter"
+                }
+              },
+              "field": {
+                "@type": "string",
+                "@value": "EdgeResponseStatusClass"
+              },
+              "stream_id": {
+                "@type": "string",
+                "@value": "58b3d55a-51ad-4b3e-865c-85776016a151"
+              },
+              "trend": {
+                "@type": "boolean",
+                "@value": false
+              },
+              "query": {
+                "@type": "string",
+                "@value": "EdgeResponseStatusClass:4xx"
+              },
+              "stats_function": {
+                "@type": "string",
+                "@value": "count"
+              },
+              "lower_is_better": {
+                "@type": "boolean",
+                "@value": false
+              }
+            },
+            "position": {
+              "width": {
+                "@type": "integer",
+                "@value": 2
+              },
+              "height": {
+                "@type": "integer",
+                "@value": 1
+              },
+              "row": {
+                "@type": "integer",
+                "@value": 1
+              },
+              "col": {
+                "@type": "integer",
+                "@value": 3
+              }
+            }
+          },
+          {
+            "id": {
+              "@type": "string",
+              "@value": "cb1d08c3-dbbc-4375-a9c8-1d1c8b3bbda6"
+            },
+            "description": {
+              "@type": "string",
+              "@value": "Top 4xx Request URIs"
+            },
+            "type": {
+              "@type": "string",
+              "@value": "QUICKVALUES"
+            },
+            "cache_time": {
+              "@type": "integer",
+              "@value": 10
+            },
+            "time_range": {
+              "type": {
+                "@type": "string",
+                "@value": "relative"
+              },
+              "range": {
+                "@type": "integer",
+                "@value": 1800
+              }
+            },
+            "configuration": {
+              "query": {
+                "@type": "string",
+                "@value": "EdgeResponseStatusClass:4xx"
+              },
+              "show_pie_chart": {
+                "@type": "boolean",
+                "@value": false
+              },
+              "sort_order": {
+                "@type": "string",
+                "@value": "desc"
+              },
+              "timerange": {
+                "type": {
+                  "@type": "string",
+                  "@value": "relative"
+                },
+                "range": {
+                  "@value": "time_range",
+                  "@type": "parameter"
+                }
+              },
+              "stacked_fields": {
+                "@type": "string",
+                "@value": ""
+              },
+              "data_table_limit": {
+                "@type": "integer",
+                "@value": 50
+              },
+              "field": {
+                "@type": "string",
+                "@value": "ClientRequestURI"
+              },
+              "stream_id": {
+                "@type": "string",
+                "@value": "58b3d55a-51ad-4b3e-865c-85776016a151"
+              },
+              "show_data_table": {
+                "@type": "boolean",
+                "@value": true
+              },
+              "limit": {
+                "@type": "integer",
+                "@value": 5
+              }
+            },
+            "position": {
+              "width": {
+                "@type": "integer",
+                "@value": 8
+              },
+              "height": {
+                "@type": "integer",
+                "@value": 3
+              },
+              "row": {
+                "@type": "integer",
+                "@value": 13
+              },
+              "col": {
+                "@type": "integer",
+                "@value": 1
+              }
+            }
+          },
+          {
+            "id": {
+              "@type": "string",
+              "@value": "13aab1cf-7327-4179-8b18-4e3843f81758"
+            },
+            "description": {
+              "@type": "string",
+              "@value": "Total Responses"
+            },
+            "type": {
+              "@type": "string",
+              "@value": "SEARCH_RESULT_COUNT"
+            },
+            "cache_time": {
+              "@type": "integer",
+              "@value": 10
+            },
+            "time_range": {
+              "type": {
+                "@type": "string",
+                "@value": "relative"
+              },
+              "range": {
+                "@type": "integer",
+                "@value": 1800
+              }
+            },
+            "configuration": {
+              "timerange": {
+                "type": {
+                  "@type": "string",
+                  "@value": "relative"
+                },
+                "range": {
+                  "@value": "time_range",
+                  "@type": "parameter"
+                }
+              },
+              "lower_is_better": {
+                "@type": "boolean",
+                "@value": false
+              },
+              "stream_id": {
+                "@type": "string",
+                "@value": "58b3d55a-51ad-4b3e-865c-85776016a151"
+              },
+              "trend": {
+                "@type": "boolean",
+                "@value": false
+              },
+              "query": {
+                "@type": "string",
+                "@value": ""
+              }
+            },
+            "position": {
+              "width": {
+                "@type": "integer",
+                "@value": 2
+              },
+              "height": {
+                "@type": "integer",
+                "@value": 1
+              },
+              "row": {
+                "@type": "integer",
+                "@value": 1
+              },
+              "col": {
+                "@type": "integer",
+                "@value": 1
+              }
+            }
+          },
+          {
+            "id": {
+              "@type": "string",
+              "@value": "2794fbd1-43d8-457c-bc92-a3ab652fcfd4"
+            },
+            "description": {
+              "@type": "string",
+              "@value": "Origin Response Error Ratios"
+            },
+            "type": {
+              "@type": "string",
+              "@value": "QUICKVALUES"
+            },
+            "cache_time": {
+              "@type": "integer",
+              "@value": 10
+            },
+            "time_range": {
+              "type": {
+                "@type": "string",
+                "@value": "relative"
+              },
+              "range": {
+                "@type": "integer",
+                "@value": 1800
+              }
+            },
+            "configuration": {
+              "query": {
+                "@type": "string",
+                "@value": ""
+              },
+              "show_pie_chart": {
+                "@type": "boolean",
+                "@value": true
+              },
+              "sort_order": {
+                "@type": "string",
+                "@value": "desc"
+              },
+              "timerange": {
+                "type": {
+                  "@type": "string",
+                  "@value": "relative"
+                },
+                "range": {
+                  "@value": "time_range",
+                  "@type": "parameter"
+                }
+              },
+              "stacked_fields": {
+                "@type": "string",
+                "@value": ""
+              },
+              "data_table_limit": {
+                "@type": "integer",
+                "@value": 50
+              },
+              "field": {
+                "@type": "string",
+                "@value": "OriginResponseStatusClass"
+              },
+              "stream_id": {
+                "@type": "string",
+                "@value": "58b3d55a-51ad-4b3e-865c-85776016a151"
+              },
+              "show_data_table": {
+                "@type": "boolean",
+                "@value": true
+              },
+              "limit": {
+                "@type": "integer",
+                "@value": 5
+              }
+            },
+            "position": {
+              "width": {
+                "@type": "integer",
+                "@value": 2
+              },
+              "height": {
+                "@type": "integer",
+                "@value": 4
+              },
+              "row": {
+                "@type": "integer",
+                "@value": 6
+              },
+              "col": {
+                "@type": "integer",
+                "@value": 7
+              }
+            }
+          },
+          {
+            "id": {
+              "@type": "string",
+              "@value": "1d01c51c-ece2-4460-a15e-f108de0fd102"
+            },
+            "description": {
+              "@type": "string",
+              "@value": "Origin Response Statuses Over Time"
+            },
+            "type": {
+              "@type": "string",
+              "@value": "QUICKVALUES_HISTOGRAM"
+            },
+            "cache_time": {
+              "@type": "integer",
+              "@value": 10
+            },
+            "time_range": {
+              "type": {
+                "@type": "string",
+                "@value": "relative"
+              },
+              "range": {
+                "@type": "integer",
+                "@value": 1800
+              }
+            },
+            "configuration": {
+              "timerange": {
+                "type": {
+                  "@type": "string",
+                  "@value": "relative"
+                },
+                "range": {
+                  "@value": "time_range",
+                  "@type": "parameter"
+                }
+              },
+              "field": {
+                "@type": "string",
+                "@value": "OriginResponseStatusClass"
+              },
+              "stream_id": {
+                "@type": "string",
+                "@value": "58b3d55a-51ad-4b3e-865c-85776016a151"
+              },
+              "query": {
+                "@type": "string",
+                "@value": ""
+              },
+              "limit": {
+                "@type": "integer",
+                "@value": 5
+              },
+              "sort_order": {
+                "@type": "string",
+                "@value": "desc"
+              },
+              "stacked_fields": {
+                "@type": "string",
+                "@value": ""
+              }
+            },
+            "position": {
+              "width": {
+                "@type": "integer",
+                "@value": 6
+              },
+              "height": {
+                "@type": "integer",
+                "@value": 4
+              },
+              "row": {
+                "@type": "integer",
+                "@value": 6
+              },
+              "col": {
+                "@type": "integer",
+                "@value": 1
+              }
+            }
+          },
+          {
+            "id": {
+              "@type": "string",
+              "@value": "09b19818-df42-4d79-b543-e614ccf356d7"
+            },
+            "description": {
+              "@type": "string",
+              "@value": "Cache Response Status Over Time"
+            },
+            "type": {
+              "@type": "string",
+              "@value": "QUICKVALUES_HISTOGRAM"
+            },
+            "cache_time": {
+              "@type": "integer",
+              "@value": 10
+            },
+            "time_range": {
+              "type": {
+                "@type": "string",
+                "@value": "relative"
+              },
+              "range": {
+                "@type": "integer",
+                "@value": 1800
+              }
+            },
+            "configuration": {
+              "timerange": {
+                "type": {
+                  "@type": "string",
+                  "@value": "relative"
+                },
+                "range": {
+                  "@value": "time_range",
+                  "@type": "parameter"
+                }
+              },
+              "field": {
+                "@type": "string",
+                "@value": "CacheResponseStatusClass"
+              },
+              "stream_id": {
+                "@type": "string",
+                "@value": "58b3d55a-51ad-4b3e-865c-85776016a151"
+              },
+              "query": {
+                "@type": "string",
+                "@value": ""
+              },
+              "limit": {
+                "@type": "integer",
+                "@value": 5
+              },
+              "sort_order": {
+                "@type": "string",
+                "@value": "desc"
+              },
+              "stacked_fields": {
+                "@type": "string",
+                "@value": ""
+              }
+            },
+            "position": {
+              "width": {
+                "@type": "integer",
+                "@value": 6
+              },
+              "height": {
+                "@type": "integer",
+                "@value": 4
+              },
+              "row": {
+                "@type": "integer",
+                "@value": 2
+              },
+              "col": {
+                "@type": "integer",
+                "@value": 1
+              }
+            }
+          },
+          {
+            "id": {
+              "@type": "string",
+              "@value": "b8873c60-40ef-4e1d-9216-261fc8b4201d"
+            },
+            "description": {
+              "@type": "string",
+              "@value": "Top 5xx Request URIs"
+            },
+            "type": {
+              "@type": "string",
+              "@value": "QUICKVALUES"
+            },
+            "cache_time": {
+              "@type": "integer",
+              "@value": 10
+            },
+            "time_range": {
+              "type": {
+                "@type": "string",
+                "@value": "relative"
+              },
+              "range": {
+                "@type": "integer",
+                "@value": 1800
+              }
+            },
+            "configuration": {
+              "query": {
+                "@type": "string",
+                "@value": "EdgeResponseStatusClass:4xx"
+              },
+              "show_pie_chart": {
+                "@type": "boolean",
+                "@value": false
+              },
+              "sort_order": {
+                "@type": "string",
+                "@value": "desc"
+              },
+              "timerange": {
+                "type": {
+                  "@type": "string",
+                  "@value": "relative"
+                },
+                "range": {
+                  "@value": "time_range",
+                  "@type": "parameter"
+                }
+              },
+              "stacked_fields": {
+                "@type": "string",
+                "@value": ""
+              },
+              "data_table_limit": {
+                "@type": "integer",
+                "@value": 50
+              },
+              "field": {
+                "@type": "string",
+                "@value": "ClientRequestURI"
+              },
+              "stream_id": {
+                "@type": "string",
+                "@value": "58b3d55a-51ad-4b3e-865c-85776016a151"
+              },
+              "show_data_table": {
+                "@type": "boolean",
+                "@value": true
+              },
+              "limit": {
+                "@type": "integer",
+                "@value": 5
+              }
+            },
+            "position": {
+              "width": {
+                "@type": "integer",
+                "@value": 8
+              },
+              "height": {
+                "@type": "integer",
+                "@value": 3
+              },
+              "row": {
+                "@type": "integer",
+                "@value": 10
+              },
+              "col": {
+                "@type": "integer",
+                "@value": 1
+              }
+            }
+          },
+          {
+            "id": {
+              "@type": "string",
+              "@value": "45c8e847-be84-4755-9741-08546cef446d"
+            },
+            "description": {
+              "@type": "string",
+              "@value": "3xx Responses"
+            },
+            "type": {
+              "@type": "string",
+              "@value": "STATS_COUNT"
+            },
+            "cache_time": {
+              "@type": "integer",
+              "@value": 10
+            },
+            "time_range": {
+              "type": {
+                "@type": "string",
+                "@value": "relative"
+              },
+              "range": {
+                "@type": "integer",
+                "@value": 1800
+              }
+            },
+            "configuration": {
+              "timerange": {
+                "type": {
+                  "@type": "string",
+                  "@value": "relative"
+                },
+                "range": {
+                  "@value": "time_range",
+                  "@type": "parameter"
+                }
+              },
+              "field": {
+                "@type": "string",
+                "@value": "EdgeResponseStatusClass"
+              },
+              "stream_id": {
+                "@type": "string",
+                "@value": "58b3d55a-51ad-4b3e-865c-85776016a151"
+              },
+              "trend": {
+                "@type": "boolean",
+                "@value": false
+              },
+              "query": {
+                "@type": "string",
+                "@value": "EdgeResponseStatusClass:3xx"
+              },
+              "stats_function": {
+                "@type": "string",
+                "@value": "count"
+              },
+              "lower_is_better": {
+                "@type": "boolean",
+                "@value": false
+              }
+            },
+            "position": {
+              "width": {
+                "@type": "integer",
+                "@value": 2
+              },
+              "height": {
+                "@type": "integer",
+                "@value": 1
+              },
+              "row": {
+                "@type": "integer",
+                "@value": 1
+              },
+              "col": {
+                "@type": "integer",
+                "@value": 5
+              }
+            }
+          },
+          {
+            "id": {
+              "@type": "string",
+              "@value": "8e495b61-5fb7-4f99-8d88-5c7dfb7fb152"
+            },
+            "description": {
+              "@type": "string",
+              "@value": "Edge Response Error/Success Ratios"
+            },
+            "type": {
+              "@type": "string",
+              "@value": "QUICKVALUES"
+            },
+            "cache_time": {
+              "@type": "integer",
+              "@value": 10
+            },
+            "time_range": {
+              "type": {
+                "@type": "string",
+                "@value": "relative"
+              },
+              "range": {
+                "@type": "integer",
+                "@value": 1800
+              }
+            },
+            "configuration": {
+              "query": {
+                "@type": "string",
+                "@value": ""
+              },
+              "show_pie_chart": {
+                "@type": "boolean",
+                "@value": true
+              },
+              "sort_order": {
+                "@type": "string",
+                "@value": "desc"
+              },
+              "timerange": {
+                "type": {
+                  "@type": "string",
+                  "@value": "relative"
+                },
+                "range": {
+                  "@value": "time_range",
+                  "@type": "parameter"
+                }
+              },
+              "stacked_fields": {
+                "@type": "string",
+                "@value": ""
+              },
+              "data_table_limit": {
+                "@type": "integer",
+                "@value": 50
+              },
+              "field": {
+                "@type": "string",
+                "@value": "EdgeResponseStatusClass"
+              },
+              "stream_id": {
+                "@type": "string",
+                "@value": "58b3d55a-51ad-4b3e-865c-85776016a151"
+              },
+              "show_data_table": {
+                "@type": "boolean",
+                "@value": true
+              },
+              "limit": {
+                "@type": "integer",
+                "@value": 5
+              }
+            },
+            "position": {
+              "width": {
+                "@type": "integer",
+                "@value": 2
+              },
+              "height": {
+                "@type": "integer",
+                "@value": 4
+              },
+              "row": {
+                "@type": "integer",
+                "@value": 2
+              },
+              "col": {
+                "@type": "integer",
+                "@value": 7
+              }
+            }
+          }
+        ]
+      },
+      "constraints": [
+        {
+          "type": "server-version",
+          "version": ">=3.1.2+9e96b08"
+        }
+      ]
+    },
+    {
+      "v": "1",
+      "type": {
+        "name": "dashboard",
+        "version": "1"
+      },
+      "id": "bdceb18f-aeeb-420c-aa66-3fbc802e3eb0",
+      "data": {
+        "title": {
+          "@type": "string",
+          "@value": "Cloudflare - Snapshot"
+        },
+        "description": {
+          "@type": "string",
+          "@value": "This dashboard provides a high-level overview of the most important Cloudflare log metrics including a breakdown of request and caching details. More detailed metrics by content type, IP, location, protocol, and request method are also provided."
+        },
+        "widgets": [
+          {
+            "id": {
+              "@type": "string",
+              "@value": "b10e30e1-057e-4542-8c67-d0af5b7b5df5"
+            },
+            "description": {
+              "@type": "string",
+              "@value": "Cached Bandwidth (bytes)"
+            },
+            "type": {
+              "@type": "string",
+              "@value": "STATS_COUNT"
+            },
+            "cache_time": {
+              "@type": "integer",
+              "@value": 10
+            },
+            "time_range": {
+              "type": {
+                "@type": "string",
+                "@value": "relative"
+              },
+              "range": {
+                "@type": "integer",
+                "@value": 1800
+              }
+            },
+            "configuration": {
+              "timerange": {
+                "type": {
+                  "@type": "string",
+                  "@value": "relative"
+                },
+                "range": {
+                  "@value": "time_range",
+                  "@type": "parameter"
+                }
+              },
+              "field": {
+                "@type": "string",
+                "@value": "CacheResponseBytes"
+              },
+              "stream_id": {
+                "@type": "string",
+                "@value": "58b3d55a-51ad-4b3e-865c-85776016a151"
+              },
+              "trend": {
+                "@type": "boolean",
+                "@value": false
+              },
+              "query": {
+                "@type": "string",
+                "@value": "CacheCacheStatus:hit"
+              },
+              "stats_function": {
+                "@type": "string",
+                "@value": "sum"
+              },
+              "lower_is_better": {
+                "@type": "boolean",
+                "@value": false
+              }
+            },
+            "position": {
+              "width": {
+                "@type": "integer",
+                "@value": 2
+              },
+              "height": {
+                "@type": "integer",
+                "@value": 2
+              },
+              "row": {
+                "@type": "integer",
+                "@value": 1
+              },
+              "col": {
+                "@type": "integer",
+                "@value": 7
+              }
+            }
+          },
+          {
+            "id": {
+              "@type": "string",
+              "@value": "798bf9a8-d0c3-4b7e-b8c9-6304ff7c7892"
+            },
+            "description": {
+              "@type": "string",
+              "@value": "Protocols"
+            },
+            "type": {
+              "@type": "string",
+              "@value": "QUICKVALUES"
+            },
+            "cache_time": {
+              "@type": "integer",
+              "@value": 10
+            },
+            "time_range": {
+              "type": {
+                "@type": "string",
+                "@value": "relative"
+              },
+              "range": {
+                "@type": "integer",
+                "@value": 1800
+              }
+            },
+            "configuration": {
+              "query": {
+                "@type": "string",
+                "@value": ""
+              },
+              "show_pie_chart": {
+                "@type": "boolean",
+                "@value": false
+              },
+              "sort_order": {
+                "@type": "string",
+                "@value": "desc"
+              },
+              "timerange": {
+                "type": {
+                  "@type": "string",
+                  "@value": "relative"
+                },
+                "range": {
+                  "@value": "time_range",
+                  "@type": "parameter"
+                }
+              },
+              "stacked_fields": {
+                "@type": "string",
+                "@value": ""
+              },
+              "data_table_limit": {
+                "@type": "integer",
+                "@value": 50
+              },
+              "field": {
+                "@type": "string",
+                "@value": "ClientRequestProtocol"
+              },
+              "stream_id": {
+                "@type": "string",
+                "@value": "58b3d55a-51ad-4b3e-865c-85776016a151"
+              },
+              "show_data_table": {
+                "@type": "boolean",
+                "@value": true
+              },
+              "limit": {
+                "@type": "integer",
+                "@value": 5
+              }
+            },
+            "position": {
+              "width": {
+                "@type": "integer",
+                "@value": 2
+              },
+              "height": {
+                "@type": "integer",
+                "@value": 2
+              },
+              "row": {
+                "@type": "integer",
+                "@value": 8
+              },
+              "col": {
+                "@type": "integer",
+                "@value": 3
+              }
+            }
+          },
+          {
+            "id": {
+              "@type": "string",
+              "@value": "1702e972-4909-42df-9822-da4b24a3812b"
+            },
+            "description": {
+              "@type": "string",
+              "@value": "Countries Traffic Map"
+            },
+            "type": {
+              "@type": "string",
+              "@value": "org.graylog.plugins.map.widget.strategy.MapWidgetStrategy"
+            },
+            "cache_time": {
+              "@type": "integer",
+              "@value": 10
+            },
+            "time_range": {
+              "type": {
+                "@type": "string",
+                "@value": "relative"
+              },
+              "range": {
+                "@type": "integer",
+                "@value": 1800
+              }
+            },
+            "configuration": {
+              "timerange": {
+                "type": {
+                  "@type": "string",
+                  "@value": "relative"
+                },
+                "range": {
+                  "@value": "time_range",
+                  "@type": "parameter"
+                }
+              },
+              "field": {
+                "@type": "string",
+                "@value": "ClientIpGeolocation"
+              },
+              "stream_id": {
+                "@type": "string",
+                "@value": "58b3d55a-51ad-4b3e-865c-85776016a151"
+              },
+              "query": {
+                "@type": "string",
+                "@value": ""
+              }
+            },
+            "position": {
+              "width": {
+                "@type": "integer",
+                "@value": 4
+              },
+              "height": {
+                "@type": "integer",
+                "@value": 3
+              },
+              "row": {
+                "@type": "integer",
+                "@value": 5
+              },
+              "col": {
+                "@type": "integer",
+                "@value": 1
+              }
+            }
+          },
+          {
+            "id": {
+              "@type": "string",
+              "@value": "c20c3fef-1b82-4d7f-b698-990d8b48d63e"
+            },
+            "description": {
+              "@type": "string",
+              "@value": "Request Methods"
+            },
+            "type": {
+              "@type": "string",
+              "@value": "QUICKVALUES"
+            },
+            "cache_time": {
+              "@type": "integer",
+              "@value": 10
+            },
+            "time_range": {
+              "type": {
+                "@type": "string",
+                "@value": "relative"
+              },
+              "range": {
+                "@type": "integer",
+                "@value": 1800
+              }
+            },
+            "configuration": {
+              "query": {
+                "@type": "string",
+                "@value": ""
+              },
+              "show_pie_chart": {
+                "@type": "boolean",
+                "@value": false
+              },
+              "sort_order": {
+                "@type": "string",
+                "@value": "desc"
+              },
+              "timerange": {
+                "type": {
+                  "@type": "string",
+                  "@value": "relative"
+                },
+                "range": {
+                  "@value": "time_range",
+                  "@type": "parameter"
+                }
+              },
+              "stacked_fields": {
+                "@type": "string",
+                "@value": ""
+              },
+              "data_table_limit": {
+                "@type": "integer",
+                "@value": 50
+              },
+              "field": {
+                "@type": "string",
+                "@value": "ClientRequestMethod"
+              },
+              "stream_id": {
+                "@type": "string",
+                "@value": "58b3d55a-51ad-4b3e-865c-85776016a151"
+              },
+              "show_data_table": {
+                "@type": "boolean",
+                "@value": true
+              },
+              "limit": {
+                "@type": "integer",
+                "@value": 5
+              }
+            },
+            "position": {
+              "width": {
+                "@type": "integer",
+                "@value": 2
+              },
+              "height": {
+                "@type": "integer",
+                "@value": 2
+              },
+              "row": {
+                "@type": "integer",
+                "@value": 8
+              },
+              "col": {
+                "@type": "integer",
+                "@value": 7
+              }
+            }
+          },
+          {
+            "id": {
+              "@type": "string",
+              "@value": "f11c03a4-feee-4c04-bbbd-8a06cebf5704"
+            },
+            "description": {
+              "@type": "string",
+              "@value": "Top Countries Traffic"
+            },
+            "type": {
+              "@type": "string",
+              "@value": "QUICKVALUES"
+            },
+            "cache_time": {
+              "@type": "integer",
+              "@value": 10
+            },
+            "time_range": {
+              "type": {
+                "@type": "string",
+                "@value": "relative"
+              },
+              "range": {
+                "@type": "integer",
+                "@value": 1800
+              }
+            },
+            "configuration": {
+              "query": {
+                "@type": "string",
+                "@value": ""
+              },
+              "show_pie_chart": {
+                "@type": "boolean",
+                "@value": false
+              },
+              "sort_order": {
+                "@type": "string",
+                "@value": "desc"
+              },
+              "timerange": {
+                "type": {
+                  "@type": "string",
+                  "@value": "relative"
+                },
+                "range": {
+                  "@value": "time_range",
+                  "@type": "parameter"
+                }
+              },
+              "stacked_fields": {
+                "@type": "string",
+                "@value": ""
+              },
+              "data_table_limit": {
+                "@type": "integer",
+                "@value": 50
+              },
+              "field": {
+                "@type": "string",
+                "@value": "ClientIpGeoCountry"
+              },
+              "stream_id": {
+                "@type": "string",
+                "@value": "58b3d55a-51ad-4b3e-865c-85776016a151"
+              },
+              "show_data_table": {
+                "@type": "boolean",
+                "@value": true
+              },
+              "limit": {
+                "@type": "integer",
+                "@value": 5
+              }
+            },
+            "position": {
+              "width": {
+                "@type": "integer",
+                "@value": 2
+              },
+              "height": {
+                "@type": "integer",
+                "@value": 3
+              },
+              "row": {
+                "@type": "integer",
+                "@value": 5
+              },
+              "col": {
+                "@type": "integer",
+                "@value": 5
+              }
+            }
+          },
+          {
+            "id": {
+              "@type": "string",
+              "@value": "e5062665-5655-4fbb-aefa-64ddc5264ade"
+            },
+            "description": {
+              "@type": "string",
+              "@value": "Content Types"
+            },
+            "type": {
+              "@type": "string",
+              "@value": "QUICKVALUES"
+            },
+            "cache_time": {
+              "@type": "integer",
+              "@value": 10
+            },
+            "time_range": {
+              "type": {
+                "@type": "string",
+                "@value": "relative"
+              },
+              "range": {
+                "@type": "integer",
+                "@value": 1800
+              }
+            },
+            "configuration": {
+              "query": {
+                "@type": "string",
+                "@value": ""
+              },
+              "show_pie_chart": {
+                "@type": "boolean",
+                "@value": false
+              },
+              "sort_order": {
+                "@type": "string",
+                "@value": "desc"
+              },
+              "timerange": {
+                "type": {
+                  "@type": "string",
+                  "@value": "relative"
+                },
+                "range": {
+                  "@value": "time_range",
+                  "@type": "parameter"
+                }
+              },
+              "stacked_fields": {
+                "@type": "string",
+                "@value": ""
+              },
+              "data_table_limit": {
+                "@type": "integer",
+                "@value": 50
+              },
+              "field": {
+                "@type": "string",
+                "@value": "EdgeResponseContentType"
+              },
+              "stream_id": {
+                "@type": "string",
+                "@value": "58b3d55a-51ad-4b3e-865c-85776016a151"
+              },
+              "show_data_table": {
+                "@type": "boolean",
+                "@value": true
+              },
+              "limit": {
+                "@type": "integer",
+                "@value": 5
+              }
+            },
+            "position": {
+              "width": {
+                "@type": "integer",
+                "@value": 2
+              },
+              "height": {
+                "@type": "integer",
+                "@value": 2
+              },
+              "row": {
+                "@type": "integer",
+                "@value": 8
+              },
+              "col": {
+                "@type": "integer",
+                "@value": 5
+              }
+            }
+          },
+          {
+            "id": {
+              "@type": "string",
+              "@value": "2ce606a2-2caf-46ec-8438-ed7d566bdbc7"
+            },
+            "description": {
+              "@type": "string",
+              "@value": "Cached Requests"
+            },
+            "type": {
+              "@type": "string",
+              "@value": "SEARCH_RESULT_COUNT"
+            },
+            "cache_time": {
+              "@type": "integer",
+              "@value": 10
+            },
+            "time_range": {
+              "type": {
+                "@type": "string",
+                "@value": "relative"
+              },
+              "range": {
+                "@type": "integer",
+                "@value": 1800
+              }
+            },
+            "configuration": {
+              "timerange": {
+                "type": {
+                  "@type": "string",
+                  "@value": "relative"
+                },
+                "range": {
+                  "@value": "time_range",
+                  "@type": "parameter"
+                }
+              },
+              "lower_is_better": {
+                "@type": "boolean",
+                "@value": false
+              },
+              "stream_id": {
+                "@type": "string",
+                "@value": "58b3d55a-51ad-4b3e-865c-85776016a151"
+              },
+              "trend": {
+                "@type": "boolean",
+                "@value": false
+              },
+              "query": {
+                "@type": "string",
+                "@value": "CacheCacheStatus:hit"
+              }
+            },
+            "position": {
+              "width": {
+                "@type": "integer",
+                "@value": 2
+              },
+              "height": {
+                "@type": "integer",
+                "@value": 2
+              },
+              "row": {
+                "@type": "integer",
+                "@value": 1
+              },
+              "col": {
+                "@type": "integer",
+                "@value": 5
+              }
+            }
+          },
+          {
+            "id": {
+              "@type": "string",
+              "@value": "621a6e80-72c7-4a18-99f0-6bf59d9b1cec"
+            },
+            "description": {
+              "@type": "string",
+              "@value": "Request URIs"
+            },
+            "type": {
+              "@type": "string",
+              "@value": "QUICKVALUES"
+            },
+            "cache_time": {
+              "@type": "integer",
+              "@value": 10
+            },
+            "time_range": {
+              "type": {
+                "@type": "string",
+                "@value": "relative"
+              },
+              "range": {
+                "@type": "integer",
+                "@value": 1800
+              }
+            },
+            "configuration": {
+              "query": {
+                "@type": "string",
+                "@value": ""
+              },
+              "show_pie_chart": {
+                "@type": "boolean",
+                "@value": false
+              },
+              "sort_order": {
+                "@type": "string",
+                "@value": "desc"
+              },
+              "timerange": {
+                "type": {
+                  "@type": "string",
+                  "@value": "relative"
+                },
+                "range": {
+                  "@value": "time_range",
+                  "@type": "parameter"
+                }
+              },
+              "stacked_fields": {
+                "@type": "string",
+                "@value": ""
+              },
+              "data_table_limit": {
+                "@type": "integer",
+                "@value": 50
+              },
+              "field": {
+                "@type": "string",
+                "@value": "ClientRequestURI"
+              },
+              "stream_id": {
+                "@type": "string",
+                "@value": "58b3d55a-51ad-4b3e-865c-85776016a151"
+              },
+              "show_data_table": {
+                "@type": "boolean",
+                "@value": true
+              },
+              "limit": {
+                "@type": "integer",
+                "@value": 5
+              }
+            },
+            "position": {
+              "width": {
+                "@type": "integer",
+                "@value": 4
+              },
+              "height": {
+                "@type": "integer",
+                "@value": 2
+              },
+              "row": {
+                "@type": "integer",
+                "@value": 10
+              },
+              "col": {
+                "@type": "integer",
+                "@value": 1
+              }
+            }
+          },
+          {
+            "id": {
+              "@type": "string",
+              "@value": "5f9524f8-6068-4d88-9578-e9cd57c3cece"
+            },
+            "description": {
+              "@type": "string",
+              "@value": "Client Request Referrers"
+            },
+            "type": {
+              "@type": "string",
+              "@value": "QUICKVALUES"
+            },
+            "cache_time": {
+              "@type": "integer",
+              "@value": 10
+            },
+            "time_range": {
+              "type": {
+                "@type": "string",
+                "@value": "relative"
+              },
+              "range": {
+                "@type": "integer",
+                "@value": 1800
+              }
+            },
+            "configuration": {
+              "query": {
+                "@type": "string",
+                "@value": ""
+              },
+              "show_pie_chart": {
+                "@type": "boolean",
+                "@value": false
+              },
+              "sort_order": {
+                "@type": "string",
+                "@value": "desc"
+              },
+              "timerange": {
+                "type": {
+                  "@type": "string",
+                  "@value": "relative"
+                },
+                "range": {
+                  "@value": "time_range",
+                  "@type": "parameter"
+                }
+              },
+              "stacked_fields": {
+                "@type": "string",
+                "@value": ""
+              },
+              "data_table_limit": {
+                "@type": "integer",
+                "@value": 50
+              },
+              "field": {
+                "@type": "string",
+                "@value": "ClientRequestReferer"
+              },
+              "stream_id": {
+                "@type": "string",
+                "@value": "58b3d55a-51ad-4b3e-865c-85776016a151"
+              },
+              "show_data_table": {
+                "@type": "boolean",
+                "@value": true
+              },
+              "limit": {
+                "@type": "integer",
+                "@value": 5
+              }
+            },
+            "position": {
+              "width": {
+                "@type": "integer",
+                "@value": 4
+              },
+              "height": {
+                "@type": "integer",
+                "@value": 2
+              },
+              "row": {
+                "@type": "integer",
+                "@value": 10
+              },
+              "col": {
+                "@type": "integer",
+                "@value": 5
+              }
+            }
+          },
+          {
+            "id": {
+              "@type": "string",
+              "@value": "3010e468-dc9a-4209-893e-657981d26b4b"
+            },
+            "description": {
+              "@type": "string",
+              "@value": "Bandwidth Over Time (bytes)"
+            },
+            "type": {
+              "@type": "string",
+              "@value": "FIELD_CHART"
+            },
+            "cache_time": {
+              "@type": "integer",
+              "@value": 10
+            },
+            "time_range": {
+              "type": {
+                "@type": "string",
+                "@value": "relative"
+              },
+              "range": {
+                "@type": "integer",
+                "@value": 1800
+              }
+            },
+            "configuration": {
+              "renderer": {
+                "@type": "string",
+                "@value": "area"
+              },
+              "interpolation": {
+                "@type": "string",
+                "@value": "linear"
+              },
+              "interval": {
+                "@type": "string",
+                "@value": "minute"
+              },
+              "query": {
+                "@type": "string",
+                "@value": ""
+              },
+              "valuetype": {
+                "@type": "string",
+                "@value": "count"
+              },
+              "relative": {
+                "@type": "integer",
+                "@value": 300
+              },
+              "timerange": {
+                "type": {
+                  "@type": "string",
+                  "@value": "relative"
+                },
+                "range": {
+                  "@value": "time_range",
+                  "@type": "parameter"
+                }
+              },
+              "rangeType": {
+                "@type": "string",
+                "@value": "relative"
+              },
+              "field": {
+                "@type": "string",
+                "@value": "EdgeResponseBytes"
+              }
+            },
+            "position": {
+              "width": {
+                "@type": "integer",
+                "@value": 8
+              },
+              "height": {
+                "@type": "integer",
+                "@value": 2
+              },
+              "row": {
+                "@type": "integer",
+                "@value": 3
+              },
+              "col": {
+                "@type": "integer",
+                "@value": 1
+              }
+            }
+          },
+          {
+            "id": {
+              "@type": "string",
+              "@value": "e514284c-740f-41ff-9c43-1eb72fb5600e"
+            },
+            "description": {
+              "@type": "string",
+              "@value": "Total Bandwidth (bytes)"
+            },
+            "type": {
+              "@type": "string",
+              "@value": "STATS_COUNT"
+            },
+            "cache_time": {
+              "@type": "integer",
+              "@value": 10
+            },
+            "time_range": {
+              "type": {
+                "@type": "string",
+                "@value": "relative"
+              },
+              "range": {
+                "@type": "integer",
+                "@value": 1800
+              }
+            },
+            "configuration": {
+              "timerange": {
+                "type": {
+                  "@type": "string",
+                  "@value": "relative"
+                },
+                "range": {
+                  "@value": "time_range",
+                  "@type": "parameter"
+                }
+              },
+              "field": {
+                "@type": "string",
+                "@value": "EdgeResponseBytes"
+              },
+              "stream_id": {
+                "@type": "string",
+                "@value": "58b3d55a-51ad-4b3e-865c-85776016a151"
+              },
+              "trend": {
+                "@type": "boolean",
+                "@value": false
+              },
+              "query": {
+                "@type": "string",
+                "@value": ""
+              },
+              "stats_function": {
+                "@type": "string",
+                "@value": "sum"
+              },
+              "lower_is_better": {
+                "@type": "boolean",
+                "@value": false
+              }
+            },
+            "position": {
+              "width": {
+                "@type": "integer",
+                "@value": 2
+              },
+              "height": {
+                "@type": "integer",
+                "@value": 2
+              },
+              "row": {
+                "@type": "integer",
+                "@value": 1
+              },
+              "col": {
+                "@type": "integer",
+                "@value": 3
+              }
+            }
+          },
+          {
+            "id": {
+              "@type": "string",
+              "@value": "2ad6b929-95fb-424b-87af-47003d6d67c5"
+            },
+            "description": {
+              "@type": "string",
+              "@value": "Device Types"
+            },
+            "type": {
+              "@type": "string",
+              "@value": "QUICKVALUES"
+            },
+            "cache_time": {
+              "@type": "integer",
+              "@value": 10
+            },
+            "time_range": {
+              "type": {
+                "@type": "string",
+                "@value": "relative"
+              },
+              "range": {
+                "@type": "integer",
+                "@value": 1800
+              }
+            },
+            "configuration": {
+              "query": {
+                "@type": "string",
+                "@value": ""
+              },
+              "show_pie_chart": {
+                "@type": "boolean",
+                "@value": false
+              },
+              "sort_order": {
+                "@type": "string",
+                "@value": "desc"
+              },
+              "timerange": {
+                "type": {
+                  "@type": "string",
+                  "@value": "relative"
+                },
+                "range": {
+                  "@value": "time_range",
+                  "@type": "parameter"
+                }
+              },
+              "stacked_fields": {
+                "@type": "string",
+                "@value": ""
+              },
+              "data_table_limit": {
+                "@type": "integer",
+                "@value": 50
+              },
+              "field": {
+                "@type": "string",
+                "@value": "ClientDeviceType"
+              },
+              "stream_id": {
+                "@type": "string",
+                "@value": "58b3d55a-51ad-4b3e-865c-85776016a151"
+              },
+              "show_data_table": {
+                "@type": "boolean",
+                "@value": true
+              },
+              "limit": {
+                "@type": "integer",
+                "@value": 5
+              }
+            },
+            "position": {
+              "width": {
+                "@type": "integer",
+                "@value": 2
+              },
+              "height": {
+                "@type": "integer",
+                "@value": 2
+              },
+              "row": {
+                "@type": "integer",
+                "@value": 8
+              },
+              "col": {
+                "@type": "integer",
+                "@value": 1
+              }
+            }
+          },
+          {
+            "id": {
+              "@type": "string",
+              "@value": "a000f569-44aa-4a34-b17e-68e279bccee2"
+            },
+            "description": {
+              "@type": "string",
+              "@value": "Total Number of Requests"
+            },
+            "type": {
+              "@type": "string",
+              "@value": "SEARCH_RESULT_COUNT"
+            },
+            "cache_time": {
+              "@type": "integer",
+              "@value": 10
+            },
+            "time_range": {
+              "type": {
+                "@type": "string",
+                "@value": "relative"
+              },
+              "range": {
+                "@type": "integer",
+                "@value": 1800
+              }
+            },
+            "configuration": {
+              "timerange": {
+                "type": {
+                  "@type": "string",
+                  "@value": "relative"
+                },
+                "range": {
+                  "@value": "time_range",
+                  "@type": "parameter"
+                }
+              },
+              "lower_is_better": {
+                "@type": "boolean",
+                "@value": false
+              },
+              "stream_id": {
+                "@type": "string",
+                "@value": "58b3d55a-51ad-4b3e-865c-85776016a151"
+              },
+              "trend": {
+                "@type": "boolean",
+                "@value": false
+              },
+              "query": {
+                "@type": "string",
+                "@value": ""
+              }
+            },
+            "position": {
+              "width": {
+                "@type": "integer",
+                "@value": 2
+              },
+              "height": {
+                "@type": "integer",
+                "@value": 2
+              },
+              "row": {
+                "@type": "integer",
+                "@value": 1
+              },
+              "col": {
+                "@type": "integer",
+                "@value": 1
+              }
+            }
+          },
+          {
+            "id": {
+              "@type": "string",
+              "@value": "1a69e3cc-8de3-4bf2-8585-cf1d3f5825f2"
+            },
+            "description": {
+              "@type": "string",
+              "@value": "Top Cities Traffic"
+            },
+            "type": {
+              "@type": "string",
+              "@value": "QUICKVALUES"
+            },
+            "cache_time": {
+              "@type": "integer",
+              "@value": 10
+            },
+            "time_range": {
+              "type": {
+                "@type": "string",
+                "@value": "relative"
+              },
+              "range": {
+                "@type": "integer",
+                "@value": 1800
+              }
+            },
+            "configuration": {
+              "query": {
+                "@type": "string",
+                "@value": ""
+              },
+              "show_pie_chart": {
+                "@type": "boolean",
+                "@value": false
+              },
+              "sort_order": {
+                "@type": "string",
+                "@value": "desc"
+              },
+              "timerange": {
+                "type": {
+                  "@type": "string",
+                  "@value": "relative"
+                },
+                "range": {
+                  "@value": "time_range",
+                  "@type": "parameter"
+                }
+              },
+              "stacked_fields": {
+                "@type": "string",
+                "@value": ""
+              },
+              "data_table_limit": {
+                "@type": "integer",
+                "@value": 50
+              },
+              "field": {
+                "@type": "string",
+                "@value": "ClientIpGeoCityCode"
+              },
+              "stream_id": {
+                "@type": "string",
+                "@value": "58b3d55a-51ad-4b3e-865c-85776016a151"
+              },
+              "show_data_table": {
+                "@type": "boolean",
+                "@value": true
+              },
+              "limit": {
+                "@type": "integer",
+                "@value": 5
+              }
+            },
+            "position": {
+              "width": {
+                "@type": "integer",
+                "@value": 2
+              },
+              "height": {
+                "@type": "integer",
+                "@value": 3
+              },
+              "row": {
+                "@type": "integer",
+                "@value": 5
+              },
+              "col": {
+                "@type": "integer",
+                "@value": 7
+              }
+            }
+          }
+        ]
+      },
+      "constraints": [
+        {
+          "type": "server-version",
+          "version": ">=3.1.2+9e96b08"
+        }
+      ]
+    },
+    {
+      "v": "1",
+      "type": {
+        "name": "lookup_adapter",
+        "version": "1"
+      },
+      "id": "5d655ae3-bf80-49a4-a4e4-fcd3696499fa",
+      "data": {
+        "name": {
+          "@type": "string",
+          "@value": "cloudflare-threat-lookup-adaptor"
+        },
+        "title": {
+          "@type": "string",
+          "@value": "cloudflare-threat-lookup-adaptor"
+        },
+        "description": {
+          "@type": "string",
+          "@value": "A lookup adaptor for Cloudflare threat data. See https://developers.cloudflare.com/logs/tutorials/parsing-json-log-data/ for more info."
+        },
+        "configuration": {
+          "type": {
+            "@type": "string",
+            "@value": "csvfile"
+          },
+          "path": {
+            "@value": "threat_lookup_file_path",
+            "@type": "parameter"
+          },
+          "separator": {
+            "@type": "string",
+            "@value": ","
+          },
+          "quotechar": {
+            "@type": "string",
+            "@value": "\""
+          },
+          "key_column": {
+            "@type": "string",
+            "@value": "key"
+          },
+          "value_column": {
+            "@type": "string",
+            "@value": "value"
+          },
+          "check_interval": {
+            "@type": "long",
+            "@value": 60
+          },
+          "case_insensitive_lookup": {
+            "@type": "boolean",
+            "@value": false
+          }
+        }
+      },
+      "constraints": [
+        {
+          "type": "server-version",
+          "version": ">=3.1.2+9e96b08"
+        }
+      ]
+    },
+    {
+      "v": "1",
+      "type": {
+        "name": "lookup_cache",
+        "version": "1"
+      },
+      "id": "d52fbc6d-9701-4307-86c4-d905f1f6db1a",
+      "data": {
+        "name": {
+          "@type": "string",
+          "@value": "geo-cache"
+        },
+        "title": {
+          "@type": "string",
+          "@value": "geo-cache"
+        },
+        "description": {
+          "@type": "string",
+          "@value": "geo-cache"
+        },
+        "configuration": {
+          "type": {
+            "@type": "string",
+            "@value": "guava_cache"
+          },
+          "max_size": {
+            "@type": "integer",
+            "@value": 1000
+          },
+          "expire_after_access": {
+            "@type": "long",
+            "@value": 60
+          },
+          "expire_after_access_unit": {
+            "@type": "string",
+            "@value": "SECONDS"
+          },
+          "expire_after_write": {
+            "@type": "long",
+            "@value": 0
+          }
+        }
+      },
+      "constraints": [
+        {
+          "type": "server-version",
+          "version": ">=3.1.2+9e96b08"
+        }
+      ]
+    },
+    {
+      "v": "1",
+      "type": {
+        "name": "stream",
+        "version": "1"
+      },
+      "id": "58b3d55a-51ad-4b3e-865c-85776016a151",
+      "data": {
+        "alarm_callbacks": [],
+        "outputs": [],
+        "remove_matches": {
+          "@type": "boolean",
+          "@value": false
+        },
+        "title": {
+          "@type": "string",
+          "@value": "Cloudflare"
+        },
+        "stream_rules": [
+          {
+            "type": {
+              "@type": "string",
+              "@value": "PRESENCE"
+            },
+            "field": {
+              "@type": "string",
+              "@value": "EdgeServerIP"
+            },
+            "value": {
+              "@type": "string",
+              "@value": ""
+            },
+            "inverted": {
+              "@type": "boolean",
+              "@value": false
+            },
+            "description": {
+              "@type": "string",
+              "@value": ""
+            }
+          }
+        ],
+        "alert_conditions": [],
+        "matching_type": {
+          "@type": "string",
+          "@value": "AND"
+        },
+        "disabled": {
+          "@type": "boolean",
+          "@value": false
+        },
+        "description": {
+          "@type": "string",
+          "@value": "CloudFlare Logpush messages"
+        },
+        "default_stream": {
+          "@type": "boolean",
+          "@value": false
+        }
+      },
+      "constraints": [
+        {
+          "type": "server-version",
+          "version": ">=3.1.2+9e96b08"
+        }
+      ]
+    },
+    {
+      "v": "1",
+      "type": {
+        "name": "dashboard",
+        "version": "1"
+      },
+      "id": "5427067d-5413-4a87-b55c-51743e4b298e",
+      "data": {
+        "title": {
+          "@type": "string",
+          "@value": "Cloudflare - Bots"
+        },
+        "description": {
+          "@type": "string",
+          "@value": "This dashboard helps to detect and investigate bot traffic. Detailed breakdowns by bot type, country, request URIs and user agents are also provided."
+        },
+        "widgets": [
+          {
+            "id": {
+              "@type": "string",
+              "@value": "1650f61c-c432-4a52-9784-0646e6bf414c"
+            },
+            "description": {
+              "@type": "string",
+              "@value": "Bot Traffic Over Time"
+            },
+            "type": {
+              "@type": "string",
+              "@value": "SEARCH_RESULT_CHART"
+            },
+            "cache_time": {
+              "@type": "integer",
+              "@value": 10
+            },
+            "time_range": {
+              "type": {
+                "@type": "string",
+                "@value": "relative"
+              },
+              "range": {
+                "@type": "integer",
+                "@value": 3600
+              }
+            },
+            "configuration": {
+              "timerange": {
+                "type": {
+                  "@type": "string",
+                  "@value": "relative"
+                },
+                "range": {
+                  "@value": "time_range",
+                  "@type": "parameter"
+                }
+              },
+              "interval": {
+                "@type": "string",
+                "@value": "minute"
+              },
+              "stream_id": {
+                "@type": "string",
+                "@value": "58b3d55a-51ad-4b3e-865c-85776016a151"
+              },
+              "query": {
+                "@type": "string",
+                "@value": "BadBot:true"
+              }
+            },
+            "position": {
+              "width": {
+                "@type": "integer",
+                "@value": 8
+              },
+              "height": {
+                "@type": "integer",
+                "@value": 2
+              },
+              "row": {
+                "@type": "integer",
+                "@value": 3
+              },
+              "col": {
+                "@type": "integer",
+                "@value": 1
+              }
+            }
+          },
+          {
+            "id": {
+              "@type": "string",
+              "@value": "1ae216e2-1420-4207-9fb7-d661c0659269"
+            },
+            "description": {
+              "@type": "string",
+              "@value": "Total Bot Requests"
+            },
+            "type": {
+              "@type": "string",
+              "@value": "STREAM_SEARCH_RESULT_COUNT"
+            },
+            "cache_time": {
+              "@type": "integer",
+              "@value": 10
+            },
+            "time_range": {
+              "type": {
+                "@type": "string",
+                "@value": "relative"
+              },
+              "range": {
+                "@type": "integer",
+                "@value": 1800
+              }
+            },
+            "configuration": {
+              "timerange": {
+                "type": {
+                  "@type": "string",
+                  "@value": "relative"
+                },
+                "range": {
+                  "@value": "time_range",
+                  "@type": "parameter"
+                }
+              },
+              "lower_is_better": {
+                "@type": "boolean",
+                "@value": false
+              },
+              "stream_id": {
+                "@type": "string",
+                "@value": "58b3d55a-51ad-4b3e-865c-85776016a151"
+              },
+              "trend": {
+                "@type": "boolean",
+                "@value": false
+              },
+              "query": {
+                "@type": "string",
+                "@value": "Bot:true"
+              }
+            },
+            "position": {
+              "width": {
+                "@type": "integer",
+                "@value": 4
+              },
+              "height": {
+                "@type": "integer",
+                "@value": 2
+              },
+              "row": {
+                "@type": "integer",
+                "@value": 1
+              },
+              "col": {
+                "@type": "integer",
+                "@value": 1
+              }
+            }
+          },
+          {
+            "id": {
+              "@type": "string",
+              "@value": "08d6ff68-4233-4d16-bce1-8a75eb7935d4"
+            },
+            "description": {
+              "@type": "string",
+              "@value": "Top Bot URIs"
+            },
+            "type": {
+              "@type": "string",
+              "@value": "QUICKVALUES"
+            },
+            "cache_time": {
+              "@type": "integer",
+              "@value": 10
+            },
+            "time_range": {
+              "type": {
+                "@type": "string",
+                "@value": "relative"
+              },
+              "range": {
+                "@type": "integer",
+                "@value": 1800
+              }
+            },
+            "configuration": {
+              "query": {
+                "@type": "string",
+                "@value": "Bot:true"
+              },
+              "show_pie_chart": {
+                "@type": "boolean",
+                "@value": false
+              },
+              "sort_order": {
+                "@type": "string",
+                "@value": "desc"
+              },
+              "timerange": {
+                "type": {
+                  "@type": "string",
+                  "@value": "relative"
+                },
+                "range": {
+                  "@value": "time_range",
+                  "@type": "parameter"
+                }
+              },
+              "stacked_fields": {
+                "@type": "string",
+                "@value": ""
+              },
+              "data_table_limit": {
+                "@type": "integer",
+                "@value": 50
+              },
+              "field": {
+                "@type": "string",
+                "@value": "ClientRequestURI"
+              },
+              "stream_id": {
+                "@type": "string",
+                "@value": "58b3d55a-51ad-4b3e-865c-85776016a151"
+              },
+              "show_data_table": {
+                "@type": "boolean",
+                "@value": true
+              },
+              "limit": {
+                "@type": "integer",
+                "@value": 5
+              }
+            },
+            "position": {
+              "width": {
+                "@type": "integer",
+                "@value": 8
+              },
+              "height": {
+                "@type": "integer",
+                "@value": 2
+              },
+              "row": {
+                "@type": "integer",
+                "@value": 11
+              },
+              "col": {
+                "@type": "integer",
+                "@value": 1
+              }
+            }
+          },
+          {
+            "id": {
+              "@type": "string",
+              "@value": "712063e4-7de4-4033-b6e5-3d8320058c1b"
+            },
+            "description": {
+              "@type": "string",
+              "@value": "Bad Bot Requests"
+            },
+            "type": {
+              "@type": "string",
+              "@value": "STATS_COUNT"
+            },
+            "cache_time": {
+              "@type": "integer",
+              "@value": 10
+            },
+            "time_range": {
+              "type": {
+                "@type": "string",
+                "@value": "relative"
+              },
+              "range": {
+                "@type": "integer",
+                "@value": 300
+              }
+            },
+            "configuration": {
+              "timerange": {
+                "type": {
+                  "@type": "string",
+                  "@value": "relative"
+                },
+                "range": {
+                  "@value": "time_range",
+                  "@type": "parameter"
+                }
+              },
+              "field": {
+                "@type": "string",
+                "@value": "BadBot"
+              },
+              "stream_id": {
+                "@type": "string",
+                "@value": "58b3d55a-51ad-4b3e-865c-85776016a151"
+              },
+              "trend": {
+                "@type": "boolean",
+                "@value": false
+              },
+              "query": {
+                "@type": "string",
+                "@value": "BadBot:true"
+              },
+              "stats_function": {
+                "@type": "string",
+                "@value": "count"
+              },
+              "lower_is_better": {
+                "@type": "boolean",
+                "@value": false
+              }
+            },
+            "position": {
+              "width": {
+                "@type": "integer",
+                "@value": 4
+              },
+              "height": {
+                "@type": "integer",
+                "@value": 2
+              },
+              "row": {
+                "@type": "integer",
+                "@value": 1
+              },
+              "col": {
+                "@type": "integer",
+                "@value": 5
+              }
+            }
+          },
+          {
+            "id": {
+              "@type": "string",
+              "@value": "dbd1c482-c30d-4ce9-a0e4-ae862e0f22ff"
+            },
+            "description": {
+              "@type": "string",
+              "@value": "Top Bot User Agents"
+            },
+            "type": {
+              "@type": "string",
+              "@value": "QUICKVALUES"
+            },
+            "cache_time": {
+              "@type": "integer",
+              "@value": 10
+            },
+            "time_range": {
+              "type": {
+                "@type": "string",
+                "@value": "relative"
+              },
+              "range": {
+                "@type": "integer",
+                "@value": 1800
+              }
+            },
+            "configuration": {
+              "query": {
+                "@type": "string",
+                "@value": "Bot:true"
+              },
+              "show_pie_chart": {
+                "@type": "boolean",
+                "@value": false
+              },
+              "sort_order": {
+                "@type": "string",
+                "@value": "desc"
+              },
+              "timerange": {
+                "type": {
+                  "@type": "string",
+                  "@value": "relative"
+                },
+                "range": {
+                  "@value": "time_range",
+                  "@type": "parameter"
+                }
+              },
+              "stacked_fields": {
+                "@type": "string",
+                "@value": ""
+              },
+              "data_table_limit": {
+                "@type": "integer",
+                "@value": 50
+              },
+              "field": {
+                "@type": "string",
+                "@value": "ClientRequestUserAgent"
+              },
+              "stream_id": {
+                "@type": "string",
+                "@value": "58b3d55a-51ad-4b3e-865c-85776016a151"
+              },
+              "show_data_table": {
+                "@type": "boolean",
+                "@value": true
+              },
+              "limit": {
+                "@type": "integer",
+                "@value": 5
+              }
+            },
+            "position": {
+              "width": {
+                "@type": "integer",
+                "@value": 8
+              },
+              "height": {
+                "@type": "integer",
+                "@value": 4
+              },
+              "row": {
+                "@type": "integer",
+                "@value": 9
+              },
+              "col": {
+                "@type": "integer",
+                "@value": 1
+              }
+            }
+          },
+          {
+            "id": {
+              "@type": "string",
+              "@value": "6e374edc-eda6-402d-9b16-76f4a8fe6ab4"
+            },
+            "description": {
+              "@type": "string",
+              "@value": "Top Bots by Country"
+            },
+            "type": {
+              "@type": "string",
+              "@value": "org.graylog.plugins.map.widget.strategy.MapWidgetStrategy"
+            },
+            "cache_time": {
+              "@type": "integer",
+              "@value": 10
+            },
+            "time_range": {
+              "type": {
+                "@type": "string",
+                "@value": "relative"
+              },
+              "range": {
+                "@type": "integer",
+                "@value": 1800
+              }
+            },
+            "configuration": {
+              "timerange": {
+                "type": {
+                  "@type": "string",
+                  "@value": "relative"
+                },
+                "range": {
+                  "@value": "time_range",
+                  "@type": "parameter"
+                }
+              },
+              "field": {
+                "@type": "string",
+                "@value": "ClientIpGeolocation"
+              },
+              "stream_id": {
+                "@type": "string",
+                "@value": "58b3d55a-51ad-4b3e-865c-85776016a151"
+              },
+              "query": {
+                "@type": "string",
+                "@value": "Bot:false"
+              }
+            },
+            "position": {
+              "width": {
+                "@type": "integer",
+                "@value": 4
+              },
+              "height": {
+                "@type": "integer",
+                "@value": 3
+              },
+              "row": {
+                "@type": "integer",
+                "@value": 5
+              },
+              "col": {
+                "@type": "integer",
+                "@value": 1
+              }
+            }
+          },
+          {
+            "id": {
+              "@type": "string",
+              "@value": "63e8e90b-d138-4d5a-8097-f1dcd2fc60e3"
+            },
+            "description": {
+              "@type": "string",
+              "@value": "Top Bot Countries"
+            },
+            "type": {
+              "@type": "string",
+              "@value": "QUICKVALUES"
+            },
+            "cache_time": {
+              "@type": "integer",
+              "@value": 10
+            },
+            "time_range": {
+              "type": {
+                "@type": "string",
+                "@value": "relative"
+              },
+              "range": {
+                "@type": "integer",
+                "@value": 1800
+              }
+            },
+            "configuration": {
+              "query": {
+                "@type": "string",
+                "@value": "Bot:true"
+              },
+              "show_pie_chart": {
+                "@type": "boolean",
+                "@value": false
+              },
+              "sort_order": {
+                "@type": "string",
+                "@value": "desc"
+              },
+              "timerange": {
+                "type": {
+                  "@type": "string",
+                  "@value": "relative"
+                },
+                "range": {
+                  "@value": "time_range",
+                  "@type": "parameter"
+                }
+              },
+              "stacked_fields": {
+                "@type": "string",
+                "@value": ""
+              },
+              "data_table_limit": {
+                "@type": "integer",
+                "@value": 50
+              },
+              "field": {
+                "@type": "string",
+                "@value": "ClientIpGeoCountry"
+              },
+              "stream_id": {
+                "@type": "string",
+                "@value": "58b3d55a-51ad-4b3e-865c-85776016a151"
+              },
+              "show_data_table": {
+                "@type": "boolean",
+                "@value": true
+              },
+              "limit": {
+                "@type": "integer",
+                "@value": 5
+              }
+            },
+            "position": {
+              "width": {
+                "@type": "integer",
+                "@value": 2
+              },
+              "height": {
+                "@type": "integer",
+                "@value": 3
+              },
+              "row": {
+                "@type": "integer",
+                "@value": 5
+              },
+              "col": {
+                "@type": "integer",
+                "@value": 5
+              }
+            }
+          },
+          {
+            "id": {
+              "@type": "string",
+              "@value": "0701f00c-5cb4-4b0f-9458-713e0deaf459"
+            },
+            "description": {
+              "@type": "string",
+              "@value": "Top Bot Cities"
+            },
+            "type": {
+              "@type": "string",
+              "@value": "QUICKVALUES"
+            },
+            "cache_time": {
+              "@type": "integer",
+              "@value": 10
+            },
+            "time_range": {
+              "type": {
+                "@type": "string",
+                "@value": "relative"
+              },
+              "range": {
+                "@type": "integer",
+                "@value": 1800
+              }
+            },
+            "configuration": {
+              "query": {
+                "@type": "string",
+                "@value": "Bot:true"
+              },
+              "show_pie_chart": {
+                "@type": "boolean",
+                "@value": false
+              },
+              "sort_order": {
+                "@type": "string",
+                "@value": "desc"
+              },
+              "timerange": {
+                "type": {
+                  "@type": "string",
+                  "@value": "relative"
+                },
+                "range": {
+                  "@value": "time_range",
+                  "@type": "parameter"
+                }
+              },
+              "stacked_fields": {
+                "@type": "string",
+                "@value": ""
+              },
+              "data_table_limit": {
+                "@type": "integer",
+                "@value": 50
+              },
+              "field": {
+                "@type": "string",
+                "@value": "ClientIpGeoCityCode"
+              },
+              "stream_id": {
+                "@type": "string",
+                "@value": "58b3d55a-51ad-4b3e-865c-85776016a151"
+              },
+              "show_data_table": {
+                "@type": "boolean",
+                "@value": true
+              },
+              "limit": {
+                "@type": "integer",
+                "@value": 5
+              }
+            },
+            "position": {
+              "width": {
+                "@type": "integer",
+                "@value": 2
+              },
+              "height": {
+                "@type": "integer",
+                "@value": 3
+              },
+              "row": {
+                "@type": "integer",
+                "@value": 5
+              },
+              "col": {
+                "@type": "integer",
+                "@value": 7
+              }
+            }
+          }
+        ]
+      },
+      "constraints": [
+        {
+          "type": "server-version",
+          "version": ">=3.1.2+9e96b08"
+        }
+      ]
+    },
+    {
+      "v": "1",
+      "type": {
+        "name": "pipeline",
+        "version": "1"
+      },
+      "id": "095a79a7-af43-45b0-9fff-51751192957b",
+      "data": {
+        "title": {
+          "@type": "string",
+          "@value": "Cloudflare "
+        },
+        "description": {
+          "@type": "string",
+          "@value": "Message enrichment for CloudFlare messages and dashboards."
+        },
+        "source": {
+          "@type": "string",
+          "@value": "pipeline \"Cloudflare \"\nstage 0 match all\nrule \"cloudflare-bot-captcha-calculations\"\nrule \"cloudflare-bot-detection\"\nrule \"cloudflare-geoip-lookup\"\nrule \"cloudflare-threat-lookup\"\nend"
+        },
+        "connected_streams": [
+          {
+            "@type": "string",
+            "@value": "58b3d55a-51ad-4b3e-865c-85776016a151"
+          }
+        ]
+      },
+      "constraints": [
+        {
+          "type": "server-version",
+          "version": ">=3.1.2+9e96b08"
+        }
+      ]
+    },
+    {
+      "v": "1",
+      "type": {
+        "name": "pipeline_rule",
+        "version": "1"
+      },
+      "id": "05c2bc1a-97df-4c84-9c1e-1b6a8129322d",
+      "data": {
+        "title": {
+          "@type": "string",
+          "@value": "cloudflare-bot-captcha-calculations"
+        },
+        "description": {
+          "@type": "string",
+          "@value": "Calculates the Cloudflare Bot and Captcha fields."
+        },
+        "source": {
+          "@type": "string",
+          "@value": "rule \"cloudflare-bot-captcha-calculations\"\nwhen\n  has_field(\"EdgePathingSrc\")\nthen\n  // See https://developers.cloudflare.com/logs/tutorials/bot-management-dashboard/#task2\n  // Identify captcha statuses to compute if bad bot.\n  let captchaNew = $message.EdgePathingSrc == \"filterBasedFirewall\" && $message.EdgePathingStatus == \"captchaNew\";\n  set_field(\"CaptchaNew\", captchaNew );\n  let catchaSuccess = $message.EdgePathingSrc == \"filterBasedFirewall\" && $message.EdgePathingStatus == \"captchaSucc\";\n  set_field(\"CaptchaSuccess\", catchaSuccess );\n  set_field(\"BadBot\", captchaNew == true && catchaSuccess != true );\nend"
+        }
+      },
+      "constraints": [
+        {
+          "type": "server-version",
+          "version": ">=3.1.2+9e96b08"
+        }
+      ]
+    },
+    {
+      "v": "1",
+      "type": {
+        "name": "lookup_cache",
+        "version": "1"
+      },
+      "id": "301656f9-c23e-467f-a2ec-0c970839eeee",
+      "data": {
+        "name": {
+          "@type": "string",
+          "@value": "no-cache"
+        },
+        "title": {
+          "@type": "string",
+          "@value": "no-cache"
+        },
+        "description": {
+          "@type": "string",
+          "@value": "nc"
+        },
+        "configuration": {
+          "type": {
+            "@type": "string",
+            "@value": "none"
+          }
+        }
+      },
+      "constraints": [
+        {
+          "type": "server-version",
+          "version": ">=3.1.2+9e96b08"
+        }
+      ]
+    }
+  ]
+}
