@@ -1,0 +1,17 @@
+key,value
+macro.wl.nr,No Threat
+c.ban.unknown,Bad browser
+hot.ban.unknown,Blocked hotlink
+hot.ban.ip,Banned hotlink IP
+macro.ban.ip,Bad IP
+user.ban.ctry,Country block
+user.ban.ip,IP block (user)
+user.ban.ipr16,IP range block (/16)
+user.ban.ipr24,IP range block (/24)
+macro.chl.captchaErr,Captcha Error
+macro.chl.captchaFail,Human Challenged
+macro.chl.captchaNew,New CAPTCHA (CF)
+macro.chl.jschlFail,Browser Challenged
+macro.chl.jschlNew,Challenged threat
+macro.chl.jschlErr,Bot request
+user.chl.captchaNew,New CAPTCHA (user)

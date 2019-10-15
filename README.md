@@ -60,6 +60,6 @@ Create an AWS S3 Trigger for the Lambda function so that the function can execut
 
 If your Graylog cluster is located within a VPC, you will need to configure your Lambda function to access resources in a VPC.
 
-### Step 4: Create GELF (TCP) input
+### Step 4: Create GELF (TCP) input.
 
 Create a GELF (TCP) input on a Graylog node. You can create the input globally and put the nodes behind a TCP load balancer if load balancing is desired. 
