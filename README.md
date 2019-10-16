@@ -1,5 +1,5 @@
 # Graylog S3 Lambda
-An AWS Lambda function that reads log messages from AWS S3 and sends them to a Graylog GELF (TCP) input.
+An AWS Lambda function that reads log messages from AWS S3 and sends them to the Graylog GELF (TCP) input.
 
 ## Overview
 
@@ -14,8 +14,9 @@ for any log formats that are not directly supported.
 
 ### Step 1: Create base Lambda function and policy
 
-Navigate to the Lambda service page in the AWS web console. Create a new Lambda function from and specify a function name of your choice, and choose the Java-8 runtime.
-Create or specify an execution role with the following permissions. You can also further restrict the Resource permissions as desired for your specific setup.
+Navigate to the Lambda service page in the AWS web console. Create a new Lambda function from and specify a function 
+name of your choice, and choose the Java-8 runtime. Create or specify an execution role with the following permissions. 
+You can also further restrict the Resource permissions as desired for your specific setup.
 
 ```
 {
@@ -39,9 +40,11 @@ Create or specify an execution role with the following permissions. You can also
 }
 ```
 
-NOTE: If your Graylog cluster is running in a VPC, you may need to add the AWSLambdaVPCAccessExecutionRole managed role to allow the Lambda function to route traffic to the VPC.
+NOTE: If your Graylog cluster is running in a VPC, you may need to add the AWSLambdaVPCAccessExecutionRole managed 
+role to allow the Lambda function to route traffic to the VPC.
 
-Once the function is created, upload the function code graylog-s3-lambda.jar located in the Preparation task section.  Specify the following method for the Handler: `org.graylog.integrations.s3.GraylogS3Function::handleRequest`
+Once the function is created, upload the function code graylog-s3-lambda.jar located in the Preparation task section. 
+Specify the following method for the Handler: `org.graylog.integrations.s3.GraylogS3Function::handleRequest`
 
 ### Step 2: Specify configuration
 
@@ -65,13 +68,17 @@ Specify the following environment variables to configure the Lambda function for
 * `CLOUDFLARE_LOGPUSH_MESSAGE_SUMMARY_FIELDS `: *(optional - defaults to `ClientRequestHost, ClientRequestPath, OriginIP, ClientSrcPort, EdgeServerIP, EdgeResponseBytes`) The fields to include in the message summary that appears above the parsed fields at the top of each message in Graylog, specify as a comma-separated list of field names.
 
 Note: 
-All log messages are sent over TCP by default. TLS encryption between the Lambda function and Graylog is not currently supported. We recommend taking appropriate measures to secure the log messages in transit (such as placing the Lambda function within a secure VPC subnet where the Graylog node or cluster is running).
+All log messages are sent over TCP by default. TLS encryption between the Lambda function and Graylog is not currently 
+supported. We recommend taking appropriate measures to secure the log messages in transit (such as placing the Lambda 
+function within a secure VPC subnet where the Graylog node or cluster is running).
 
 ![Environment Variables](images/environment-variables.png)
 
 ### Step 3: Create S3 trigger
 
-Create an AWS S3 Trigger for the Lambda function so that the function can execute each Cloudflare log file that is written. Specify the same S3 bucket that you did in the Preparation step and make sure to choose All object create events option is selected. You can also apply any other desired file filters here.
+Create an AWS S3 Trigger for the Lambda function so that the function can process each Cloudflare log file that is 
+written. Specify the same S3 bucket that you did in the Preparation step and make sure to choose All object create 
+events option is selected. You can also apply any other desired file filters here.
 
 ![Add S3 Trigger](images/add-s3-trigger.png)
 
@@ -84,4 +91,7 @@ Once the function is fully set up, it should look like the following image.
 
 ### Step 4: Create GELF (TCP) input
 
-Create a GELF (TCP) input on a Graylog node. You can create the input globally and put the nodes behind a TCP load balancer if load balancing is desired. 
+Create a GELF (TCP) input on a Graylog node. The input can be created globally if load balancing is desired. Note that 
+the port number should match that specified in the configuration.  
+
+![GELF Input](images/gelf-input.png) 
