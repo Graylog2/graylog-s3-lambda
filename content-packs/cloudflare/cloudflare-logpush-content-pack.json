@@ -27,7 +27,7 @@
       "title": "Threat Lookup CSV Location",
       "description": "The full path the the location of threat-lookup.csv, which will be used to look up Cloudflare threat values. You can obtain the file from the release download.",
       "type": "string",
-      "default_value": "/etc/graylog/threat-lookup.csv"
+      "default_value": "/etc/graylog/server/threat-lookup.csv"
     },
     {
       "name": "geo_ip_db_path",
@@ -86,7 +86,7 @@
       "constraints": [
         {
           "type": "server-version",
-          "version": ">=3.1.2+9e96b08"
+          "version": ">=3.0.0"
         }
       ]
     },
@@ -136,7 +136,7 @@
       "constraints": [
         {
           "type": "server-version",
-          "version": ">=3.1.2+9e96b08"
+          "version": ">=3.0.0"
         }
       ]
     },
@@ -1026,7 +1026,7 @@
       "constraints": [
         {
           "type": "server-version",
-          "version": ">=3.1.2+9e96b08"
+          "version": ">=3.0.0"
         }
       ]
     },
@@ -1114,7 +1114,7 @@
       "constraints": [
         {
           "type": "server-version",
-          "version": ">=3.1.2+9e96b08"
+          "version": ">=3.0.0"
         }
       ]
     },
@@ -1166,7 +1166,7 @@
       "constraints": [
         {
           "type": "server-version",
-          "version": ">=3.1.2+9e96b08"
+          "version": ">=3.0.0"
         }
       ]
     },
@@ -1194,7 +1194,7 @@
       "constraints": [
         {
           "type": "server-version",
-          "version": ">=3.1.2+9e96b08"
+          "version": ">=3.0.0"
         }
       ]
     },
@@ -1222,7 +1222,7 @@
       "constraints": [
         {
           "type": "server-version",
-          "version": ">=3.1.2+9e96b08"
+          "version": ">=3.0.0"
         }
       ]
     },
@@ -2580,7 +2580,7 @@
       "constraints": [
         {
           "type": "server-version",
-          "version": ">=3.1.2+9e96b08"
+          "version": ">=3.0.0"
         }
       ]
     },
@@ -2608,7 +2608,7 @@
       "constraints": [
         {
           "type": "server-version",
-          "version": ">=3.1.2+9e96b08"
+          "version": ">=3.0.0"
         }
       ]
     },
@@ -3494,7 +3494,7 @@
       "constraints": [
         {
           "type": "server-version",
-          "version": ">=3.1.2+9e96b08"
+          "version": ">=3.0.0"
         }
       ]
     },
@@ -4744,7 +4744,7 @@
       "constraints": [
         {
           "type": "server-version",
-          "version": ">=3.1.2+9e96b08"
+          "version": ">=3.0.0"
         }
       ]
     },
@@ -4806,7 +4806,7 @@
       "constraints": [
         {
           "type": "server-version",
-          "version": ">=3.1.2+9e96b08"
+          "version": ">=3.0.0"
         }
       ]
     },
@@ -4856,7 +4856,7 @@
       "constraints": [
         {
           "type": "server-version",
-          "version": ">=3.1.2+9e96b08"
+          "version": ">=3.0.0"
         }
       ]
     },
@@ -4923,7 +4923,7 @@
       "constraints": [
         {
           "type": "server-version",
-          "version": ">=3.1.2+9e96b08"
+          "version": ">=3.0.0"
         }
       ]
     },
@@ -5621,7 +5621,7 @@
       "constraints": [
         {
           "type": "server-version",
-          "version": ">=3.1.2+9e96b08"
+          "version": ">=3.0.0"
         }
       ]
     },
@@ -5655,7 +5655,7 @@
       "constraints": [
         {
           "type": "server-version",
-          "version": ">=3.1.2+9e96b08"
+          "version": ">=3.0.0"
         }
       ]
     },
@@ -5683,7 +5683,7 @@
       "constraints": [
         {
           "type": "server-version",
-          "version": ">=3.1.2+9e96b08"
+          "version": ">=3.0.0"
         }
       ]
     },
@@ -5717,7 +5717,7 @@
       "constraints": [
         {
           "type": "server-version",
-          "version": ">=3.1.2+9e96b08"
+          "version": ">=3.0.0"
         }
       ]
     }
