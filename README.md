@@ -41,7 +41,7 @@ Create or specify an execution role with the following permissions. You can also
 
 NOTE: If your Graylog cluster is running in a VPC, you may need to add the AWSLambdaVPCAccessExecutionRole managed role to allow the Lambda function to route traffic to the VPC.
 
-Once the function is created, upload the function code graylog-s3-lambda.jar located in the Preparation task section.  Specify the following method for the Handler: org.graylog.integrations.s3.GraylogS3Function::handleRequest
+Once the function is created, upload the function code graylog-s3-lambda.jar located in the Preparation task section.  Specify the following method for the Handler: `org.graylog.integrations.s3.GraylogS3Function::handleRequest`
 
 ### Step 2: Specify configuration
 
@@ -73,9 +73,14 @@ All log messages are sent over TCP by default. TLS encryption between the Lambda
 
 Create an AWS S3 Trigger for the Lambda function so that the function can execute each Cloudflare log file that is written. Specify the same S3 bucket that you did in the Preparation step and make sure to choose All object create events option is selected. You can also apply any other desired file filters here.
 
+![Add S3 Trigger](images/add-s3-trigger.png)
+
 If your Graylog cluster is located within a VPC, you will need to configure your Lambda function to access resources in a VPC.
 
-![Add S3 Trigger](images/add-s3-trigger.png)
+#### Fully configured function
+Once the function is fully set up, it should look like the following image.
+
+![Fully Setup Function](images/fully-setup-function.png)
 
 ### Step 4: Create GELF (TCP) input
 
