@@ -63,7 +63,7 @@ Specify the following environment variables to configure the Lambda function for
 * `TCP_MAX_IN_FLIGHT_SENDS`: *(optional - defaults to `512`)* The maximum number of messages that can be in flight at one time.
 * `PROTOCOL_TYPE`: *(optional - defaults to `tcp`)* The type of protocol. Supported values: `tcp` `udp`
 * `SHUTDOWN_FLUSH_TIMEOUT_MS`: *(optional - defaults to `100`)* The number of milliseconds to wait or all messages to finish flushing/sending after message processing is complete.    
-* `SHUTDOWN_FLUSH_RETRIES`: *(optional - defaults to `600`)* The number of times to retry the `SHUTDOWN_FLUSH_TIMEOUT_MS`. Increase this value if not all messages are sent by the time the Lambda function exits (only if the maximum Lambda function [timeout](https://docs.aws.amazon.com/lambda/latest/dg/resource-model.html) has not been reached ). 
+* `SHUTDOWN_FLUSH_RETRIES`: *(optional - defaults to `600`)* The number of times to retry the `SHUTDOWN_FLUSH_TIMEOUT_MS`. Increase this value if not all messages are sent by the time the Lambda function exits (only if the maximum Lambda function [timeout](https://docs.aws.amazon.com/lambda/latest/dg/resource-model.html) has not been reached). 
 * `CLOUDFLARE_LOGPUSH_MESSAGE_FIELDS`: *(optional - defaults to all fields in Cloudflare log JSON)* The fields to parse from the message. Specify as a comma-separated list of field names.
 * `CLOUDFLARE_LOGPUSH_MESSAGE_SUMMARY_FIELDS `: *(optional - defaults to `ClientRequestHost, ClientRequestPath, OriginIP, ClientSrcPort, EdgeServerIP, EdgeResponseBytes`) The fields to include in the message summary that appears above the parsed fields at the top of each message in Graylog, specify as a comma-separated list of field names.
 
