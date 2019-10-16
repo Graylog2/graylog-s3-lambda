@@ -4,15 +4,15 @@ An AWS Lambda function that reads log messages from AWS S3 and sends them to a G
 ## Overview
 
 The Graylog S3 Lambda function reads log files written to an S3 bucket and sends them to a Graylog cluster where a GELF 
-(TCP or UDP) input is running. The function triggers automatically each time a new file is written to S3. When the function is 
-triggered, each line in the file is streamed and processed by the Lambda function then sent to the specified Graylog 
-node or cluster. Several log formats are supported. The `text/plain` CONTENT_TYPE can be used in combination with 
-Graylog [Pipelines](https://docs.graylog.org/en/3.1/pages/pipelines/pipelines.html) for any log formats that are not 
-directly supported.       
+(TCP or UDP) input is running. The function triggers automatically each time a new file is written to S3. With each 
+function execution, each line in the file is streamed and processed by the Lambda function then sent to the specified 
+Graylog node or cluster. Each line is considered a single message. Several log formats are supported. The `text/plain` 
+CONTENT_TYPE can be used in combination with Graylog [Pipelines](https://docs.graylog.org/en/3.1/pages/pipelines/pipelines.html) 
+for any log formats that are not directly supported.       
 
-## Installation:
+## Installation
 
-### Step 1: Create base Lambda function and policy.
+### Step 1: Create base Lambda function and policy
 
 Navigate to the Lambda service page in the AWS web console. Create a new Lambda function from and specify a function name of your choice, and choose the Java-8 runtime.
 Create or specify an execution role with the following permissions. You can also further restrict the Resource permissions as desired for your specific setup.
@@ -43,7 +43,7 @@ NOTE: If your Graylog cluster is running in a VPC, you may need to add the AWSLa
 
 Once the function is created, upload the function code graylog-s3-lambda.jar located in the Preparation task section.  Specify the following method for the Handler: org.graylog.integrations.s3.GraylogS3Function::handleRequest
 
-### Step 2: Specify configuration.
+### Step 2: Specify configuration
 
 Specify the following environment variables to configure the Lambda function for your Graylog cluster:
 
@@ -67,12 +67,16 @@ Specify the following environment variables to configure the Lambda function for
 Note: 
 All log messages are sent over TCP by default. TLS encryption between the Lambda function and Graylog is not currently supported. We recommend taking appropriate measures to secure the log messages in transit (such as placing the Lambda function within a secure VPC subnet where the Graylog node or cluster is running).
 
-### Step 3: Create S3 trigger.
+![Environment Variables](images/environment-variables.png)
+
+### Step 3: Create S3 trigger
 
 Create an AWS S3 Trigger for the Lambda function so that the function can execute each Cloudflare log file that is written. Specify the same S3 bucket that you did in the Preparation step and make sure to choose All object create events option is selected. You can also apply any other desired file filters here.
 
 If your Graylog cluster is located within a VPC, you will need to configure your Lambda function to access resources in a VPC.
 
-### Step 4: Create GELF (TCP) input.
+![Add S3 Trigger](images/add-s3-trigger.png)
+
+### Step 4: Create GELF (TCP) input
 
 Create a GELF (TCP) input on a Graylog node. You can create the input globally and put the nodes behind a TCP load balancer if load balancing is desired. 
