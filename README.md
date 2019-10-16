@@ -1,4 +1,4 @@
-# Graylog S3 Input
+# Graylog S3 Lambda Input
 An AWS Lambda function that reads log messages from AWS S3 and sends them to a Graylog GELF (TCP) input.
 
 ## Overview
@@ -52,7 +52,8 @@ Specify the following environment variables to configure the Lambda function for
 * `CONNECT_TIMEOUT` *(optional - defaults to 10000ms)* The number of milliseconds to wait for the connection to be established.
 * `LOG_LEVEL` *(optional - defaults to INFO)* The level of detail to include in the CloudWatch logs generated from the Lambda function. Supported values are OFF, ERROR, WARN, INFO, DEBUG, TRACE, and ALL. Increase the logging level to help with troubleshooting. See this page for more information. 
 
-More configuration options will be documented soon.
+Note: 
+All log messages are sent over TCP by default. TLS encryption between the Lambda function and Graylog is not currently supported. We recommend taking appropriate measures to secure the log messages in transit (such as placing the Lambda function within a secure VPC subnet where the Graylog node or cluster is running).
 
 ### Step 3: Create S3 trigger.
 
