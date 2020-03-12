@@ -112,7 +112,7 @@ public class CloudflareLogCodec extends AbstractS3Codec implements S3Codec {
                 if ("OriginResponseTime".equals(key)) {
                     final Object nodeValue = getNodeValue(valueNode);
                     if (nodeValue != null) {
-                        gelfMessage.addAdditionalField("OriginResponseTimeMillis", Double.valueOf((Integer) nodeValue) / 1_000_000);
+                        gelfMessage.addAdditionalField("OriginResponseTimeMillis", ((Number) nodeValue).doubleValue() / 1_000_000);
                     }
                 }
 
