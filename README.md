@@ -33,7 +33,7 @@ You can also further restrict the Resource permissions as desired for your speci
             ],
             "Resource": [
                 "arn:aws:logs:your-region:your-account-number:*"
-                "arn:aws:s3:your-region::s3-bucket-name/*"
+                "arn:aws:s3:::s3-bucket-name/*"
             ]
         }
     ]

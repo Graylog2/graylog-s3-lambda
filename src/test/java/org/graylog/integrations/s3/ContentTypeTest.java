@@ -10,6 +10,6 @@ public class ContentTypeTest {
 
         Assert.assertEquals(ContentType.APPLICATION_JSON, ContentType.findByType("application/json"));
         Assert.assertEquals(ContentType.TEXT_PLAIN, ContentType.findByType("text/plain"));
-        Assert.assertEquals(ContentType.CLOUD_FLARE_LOG, ContentType.findByType("application/x.cloudflare.logpush"));
+        Assert.assertEquals(ContentType.CLOUD_FLARE_LOG, ContentType.findByType("application/x.cloudflare.log"));
     }
 }

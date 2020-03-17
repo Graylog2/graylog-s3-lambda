@@ -135,7 +135,7 @@ public class GraylogS3Function implements RequestHandler<S3Event, Object> {
                                                     config.getShutdownFlushReties());
             LOG.debug("Transport shutdown complete.");
         } catch (Exception e) {
-            LOG.error("An uncaught exception was thrown while processing file [{}]. Skipping file.", s3Object.getKey());
+            LOG.error("An uncaught exception was thrown while processing file [{}]. Skipping file.", s3Object.getKey(), e);
         } finally {
             // Always try to close the S3 object.
             try {
@@ -199,7 +199,7 @@ public class GraylogS3Function implements RequestHandler<S3Event, Object> {
             }
             LOG.debug("Finished sending [{}] messages.", lineNumber);
         } catch (Exception e) {
-            LOG.error("An uncaught exception was thrown while processing file [{}]. Skipping file.", s3Object.getKey());
+            LOG.error("An uncaught exception was thrown while processing file [{}]. Skipping file.", s3Object.getKey(), e);
         } finally {
             // Always attempt to close the stream.
             try {
