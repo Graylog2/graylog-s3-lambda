@@ -2,6 +2,7 @@ package org.graylog.integrations.s3;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.graylog.integrations.s3.codec.S3CodecFactory;
 
 import java.util.Arrays;
 import java.util.Objects;
@@ -12,7 +13,7 @@ import java.util.Objects;
  * Technically, MediaType or MimeType is a more accurate name for this configuration option (since ContentType is
  * specifically an HTTP construct). However, ContentType is used here, since it is the most clear/well know term.
  *
- * See {@link org.graylog.integrations.s3.codec.CodecProcessor} for the log message codec selection.
+ * See {@link S3CodecFactory} for the log message codec selection.
  *
  * See {@link Configuration}.
  */
