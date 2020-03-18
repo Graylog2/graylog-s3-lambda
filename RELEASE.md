@@ -7,12 +7,12 @@ Therefore, it must be built and released on it's own.
 
 ## Release Steps
 
-1) Update the version element in the POM file to the version number to be released. For example, if currently “1.0.1-SNAPSHOT”,
+1) Update the [version element](https://github.com/Graylog2/graylog-s3-lambda/blob/8c5fecaf667bf5f44f2de43f981e93681b8fa97a/pom.xml#L6) 
+   in the POM file to the version number to be released. For example, if currently “1.0.1-SNAPSHOT”,
    change the version number to "1.0.1", so that the correct version number is included in the JAR file name.
  
 2) Commit the change to the version (usually with message "Prepare for release 1.0.1"). Now add a tag for that version (`git tag 1.0.1`). 
    Push the commit and the tag (`git push && git push --tags`)
-   https://github.com/Graylog2/graylog-s3-lambda/blob/8c5fecaf667bf5f44f2de43f981e93681b8fa97a/pom.xml#L6
 
 3) Run `mvn package` to build the JAR file.
 
