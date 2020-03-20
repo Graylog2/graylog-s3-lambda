@@ -65,7 +65,7 @@ public class S3CodecFactoryTest {
 
     // WHENs
     private void whenGetCodecIsCalled() {
-        codec = cut.getCodec();
+        codec = cut.get();
     }
 
     // THENs

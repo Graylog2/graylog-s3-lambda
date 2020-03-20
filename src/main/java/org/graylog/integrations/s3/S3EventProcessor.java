@@ -10,6 +10,7 @@ import org.graylog.integrations.s3.codec.S3Codec;
 import org.graylog2.gelfclient.GelfMessage;
 import org.graylog2.gelfclient.transport.GelfTransport;
 
+import javax.inject.Inject;
 import java.io.IOException;
 import java.util.Scanner;
 import java.util.concurrent.TimeUnit;
@@ -23,7 +24,9 @@ public class S3EventProcessor {
     private final S3Codec s3Codec;
     private final S3ScannerFactory scannerFactory;
 
-    public S3EventProcessor(Configuration config, GelfTransport gelfTransport, AmazonS3 s3Client, S3Codec s3Codec, S3ScannerFactory scannerFactory) {
+    @Inject
+    public S3EventProcessor(Configuration config, GelfTransport gelfTransport, AmazonS3 s3Client, S3Codec s3Codec,
+                            S3ScannerFactory scannerFactory) {
         this.config = config;
         this.gelfTransport = gelfTransport;
         this.s3Client = s3Client;
@@ -37,14 +40,11 @@ public class S3EventProcessor {
      * @param s3Entity The key for the S3 object/file. This will be used to retrieve the object.
      */
     public void processS3Event(S3EventNotification.S3Entity s3Entity) {
-
-        LOG.debug("Attempting to read object [{}] from S3.", s3Entity);
         final String s3BucketName = s3Entity.getBucket().getName();
         final String s3ObjectKey = s3Entity.getObject().getKey();
+        LOG.info("Reading object [{}] from bucket [{}]", s3ObjectKey, s3BucketName);
 
         try (S3Object s3Object = s3Client.getObject(s3BucketName, s3ObjectKey)){
-            LOG.debug("Object [{}] read from S3 bucket [{}] successfully.", s3ObjectKey, s3BucketName);
-
             processObjectLines(s3Object);
 
             // Wait for all messages to send before shutting down the transport.
@@ -62,14 +62,13 @@ public class S3EventProcessor {
     /**
      * Streams the S3 object contents line by line. Each line is decoded to a message and sent to Graylog over TCP.
      *
-     * @param s3Object      The S3 file object.
+     * @param s3Object The S3 file object.
      */
     private void processObjectLines(S3Object s3Object) {
         try (Scanner scanner = scannerFactory.getScanner(s3Object)) {
-            String messageLine;
-            int lineNumber = 1;
+            int lineNumber = 0;
             while (scanner.hasNextLine()) {
-                messageLine = scanner.nextLine();
+                String messageLine = scanner.nextLine();
 
                 if (Strings.isNullOrEmpty(messageLine)) {
                     LOG.warn("Line is empty. Skipping.");
@@ -92,7 +91,7 @@ public class S3EventProcessor {
                     LOG.debug("Sent [{}] messages.", lineNumber);
                 }
             }
-            LOG.debug("Finished sending [{}] messages.", lineNumber);
+            LOG.info("Sent [{}] messages.", lineNumber);
         } catch (Exception e) {
             LOG.error("An uncaught exception was thrown while processing file [{}]. Skipping file.", s3Object.getKey(), e);
         }

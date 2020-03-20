@@ -4,6 +4,7 @@ import com.amazonaws.services.s3.model.S3Object;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import javax.inject.Inject;
 import java.io.IOException;
 import java.util.Scanner;
 import java.util.zip.GZIPInputStream;
@@ -13,6 +14,7 @@ public class S3ScannerFactory {
 
     private final Configuration config;
 
+    @Inject
     public S3ScannerFactory(Configuration config) {
         this.config = config;
     }
