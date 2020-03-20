@@ -1,14 +1,8 @@
 package org.graylog.integrations.s3.codec;
 
-
-import org.graylog.integrations.s3.Configuration;
 import org.graylog2.gelfclient.GelfMessage;
 
-public class PlainTextCodec extends AbstractS3Codec implements S3Codec {
-
-    PlainTextCodec(Configuration config) {
-        super(config);
-    }
+public class PlainTextCodec implements S3Codec {
 
     public GelfMessage decode(String message) {
 

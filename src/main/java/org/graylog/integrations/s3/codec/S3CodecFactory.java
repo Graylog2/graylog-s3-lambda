@@ -17,11 +17,11 @@ public class S3CodecFactory {
     public S3Codec getCodec() {
         switch (config.getContentType()) {
             case APPLICATION_JSON:
-                return new ApplicationJsonCodec(config);
+                return new ApplicationJsonCodec();
             case CLOUD_FLARE_LOG:
                 return new CloudflareLogCodec(config, objectMapper);
             case TEXT_PLAIN:
-                return new PlainTextCodec(config);
+                return new PlainTextCodec();
             default:
                 throw new IllegalArgumentException(String.format("The content type [%s] is not yet supported. " +
                         "This is a development error.", config.getContentType()));

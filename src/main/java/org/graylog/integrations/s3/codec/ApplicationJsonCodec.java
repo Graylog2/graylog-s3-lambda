@@ -1,17 +1,11 @@
 package org.graylog.integrations.s3.codec;
 
-
 import com.github.wnameless.json.flattener.JsonFlattener;
-import org.graylog.integrations.s3.Configuration;
 import org.graylog2.gelfclient.GelfMessage;
 
 import java.util.Map;
 
-public class ApplicationJsonCodec extends AbstractS3Codec implements S3Codec {
-
-    public ApplicationJsonCodec(Configuration config) {
-        super(config);
-    }
+public class ApplicationJsonCodec implements S3Codec {
 
     /**
      * Flatten the JSON with an underscore separator and array [x] notation.

@@ -14,6 +14,7 @@ import static org.graylog.integrations.s3.ContentType.APPLICATION_JSON;
 import static org.graylog.integrations.s3.ContentType.CLOUD_FLARE_LOG;
 import static org.graylog.integrations.s3.ContentType.TEXT_PLAIN;
 import static org.hamcrest.CoreMatchers.instanceOf;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.BDDMockito.given;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -25,7 +26,6 @@ public class S3CodecFactoryTest {
 
     // Mocks
     @Mock Configuration mockConfig;
-    @Mock ObjectMapper mockObjectMapper;
 
     // Test objects
     private S3Codec codec;
@@ -37,7 +37,7 @@ public class S3CodecFactoryTest {
 
         whenGetCodecIsCalled();
 
-        Assert.assertThat(codec, instanceOf(ApplicationJsonCodec.class));
+       thenCodecInstanceOf(ApplicationJsonCodec.class);
     }
 
     @Test
@@ -46,7 +46,7 @@ public class S3CodecFactoryTest {
 
         whenGetCodecIsCalled();
 
-        Assert.assertThat(codec, instanceOf(CloudflareLogCodec.class));
+        thenCodecInstanceOf(CloudflareLogCodec.class);
     }
 
     @Test
@@ -55,7 +55,7 @@ public class S3CodecFactoryTest {
 
         whenGetCodecIsCalled();
 
-        Assert.assertThat(codec, instanceOf(PlainTextCodec.class));
+        thenCodecInstanceOf(PlainTextCodec.class);
     }
 
     // GIVENs
@@ -69,6 +69,7 @@ public class S3CodecFactoryTest {
     }
 
     // THENs
-    private void thenCodecInstanceOf() {
+    private void thenCodecInstanceOf(Class clazz) {
+        assertThat(codec, instanceOf(clazz));
     }
 }

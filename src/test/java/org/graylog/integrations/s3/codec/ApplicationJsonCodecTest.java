@@ -18,11 +18,6 @@ public class ApplicationJsonCodecTest {
     @InjectMocks
     private ApplicationJsonCodec cut;
 
-    // Mocks
-    @Mock
-    Configuration mockConfig;
-
-
     /**
      * Verify that JSON is flattened out.
      *
