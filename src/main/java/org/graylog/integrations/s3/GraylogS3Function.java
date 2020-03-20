@@ -15,8 +15,7 @@ import org.apache.logging.log4j.core.config.Configurator;
 /**
  * This method is called each time a file is written to S3.
  *
- * This class is purely a driver with as little business logic as possible.  It is also currently acting as a stand-in
- * for actual dependency injection.
+ * This class is purely a driver with as little business logic as possible.
  */
 public class GraylogS3Function implements RequestHandler<S3Event, Object> {
     private static final Logger LOG = LogManager.getLogger(GraylogS3Function.class);

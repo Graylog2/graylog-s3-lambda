@@ -19,8 +19,8 @@ import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
 public class CloudflareLogCodec extends AbstractS3Codec implements S3Codec {
-
-    private static final Logger LOG = LogManager.getLogger(S3CodecFactory.class);
+    private static final Logger LOG = LogManager.getLogger(CloudflareLogCodec.class);
+    
     private static final List<String> TIMESTAMP_FIELDS = Arrays.asList("EdgeEndTimestamp", "EdgeStartTimestamp");
     private static final List<String> HTTP_CODE_FIELDS = Arrays.asList("CacheResponseStatus", "EdgeResponseStatus", "OriginResponseStatus");
 
