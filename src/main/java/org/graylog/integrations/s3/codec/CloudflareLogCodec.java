@@ -2,6 +2,7 @@ package org.graylog.integrations.s3.codec;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.common.collect.Maps;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.graylog.integrations.s3.Configuration;
@@ -11,7 +12,6 @@ import java.io.IOException;
 import java.time.Instant;
 import java.util.Arrays;
 import java.util.Iterator;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -19,16 +19,16 @@ import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
 public class CloudflareLogCodec extends AbstractS3Codec implements S3Codec {
-
-    private static final Logger LOG = LogManager.getLogger(CodecProcessor.class);
+    private static final Logger LOG = LogManager.getLogger(CloudflareLogCodec.class);
+    
     private static final List<String> TIMESTAMP_FIELDS = Arrays.asList("EdgeEndTimestamp", "EdgeStartTimestamp");
     private static final List<String> HTTP_CODE_FIELDS = Arrays.asList("CacheResponseStatus", "EdgeResponseStatus", "OriginResponseStatus");
 
     private final ObjectMapper objectMapper;
 
-    CloudflareLogCodec(Configuration config) {
+    CloudflareLogCodec(Configuration config, ObjectMapper objectMapper) {
         super(config);
-        this.objectMapper = new ObjectMapper();
+        this.objectMapper = objectMapper;
     }
 
     public GelfMessage decode(String message) throws IOException {
@@ -39,7 +39,7 @@ public class CloudflareLogCodec extends AbstractS3Codec implements S3Codec {
                                                      .limit(rootNode.size())
                                                      .collect(Collectors.toList());
 
-        final Map<String, Object> messageMap = new LinkedHashMap<>();
+        final Map<String, Object> messageMap = Maps.newLinkedHashMap();
 
         // Prepare message summary. Use fields indicated in the configuration.
         config.getMessageSummaryFields().stream()
