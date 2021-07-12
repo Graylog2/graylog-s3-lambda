@@ -29,7 +29,6 @@ pipeline
       ansiColor('xterm')
       buildDiscarder logRotator(artifactDaysToKeepStr: '30', artifactNumToKeepStr: '5', daysToKeepStr: '30', numToKeepStr: '30')
       timestamps()
-      skipDefaultCheckout(true)
       withAWS(region:'eu-west-1', credentials:'aws-key-snapshots')
    }
 
