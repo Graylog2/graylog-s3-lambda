@@ -24,32 +24,36 @@ import java.util.stream.IntStream;
 import java.util.zip.GZIPOutputStream;
 
 /**
- * Writes a compressed test Cloudflare Logopen file file to S3 for testing.
+ * Generates and publishes sample data for testing the graylog-s3-lambda function.
+ * Messages are randomly generated using the Cloudflare Logpush format.
  *
- * Use this to generate a bunch of test Cloudflare Logpush data to test the dashboards.
- *
- * You need to fill an S3 'bucket' environment variable to use this.
+ * Requires the target bucket name to be specified in the S3_BUCKET_NAME environment variable.
+ * Also requires that AWS credentials are provided in the system as described here:
+ * https://docs.aws.amazon.com/sdk-for-java/v1/developer-guide/credentials.html
  */
-public class CloudflareTestDataGenerator {
+public class TestDataGenerator {
 
     private static final int FILES = Integer.MAX_VALUE;
+    public static final int MESSAGE_BATCH_SIZE_MIN = 1;
+    public static final int MESSAGE_BATCH_SIZE_MAX = 5;
+    private static final String S3_BUCKET_NAME = System.getenv("S3_BUCKET_NAME");
 
     public static void main(String[] args) throws IOException, InterruptedException {
 
         for (int i = 0; i < FILES; i++) {
-            // Generate files with 1-10 log files in each message.
-            final int batchSize = randomInRange(1, 5);
+            final int batchSize = randomInRange(MESSAGE_BATCH_SIZE_MIN, MESSAGE_BATCH_SIZE_MAX);
             final byte[] bytes = generateMessageData(batchSize);
             AmazonS3 s3Client = AmazonS3Client.builder().build();
             final ObjectMetadata metadata = new ObjectMetadata();
             metadata.setContentLength(bytes.length);
             final String fileName = "logs-" + UUID.randomUUID();
             System.out.println("Sending [" + batchSize + "] message [" + fileName + "]");
-            s3Client.putObject(new PutObjectRequest(System.getenv("S3_BUCKET_NAME"), fileName, new ByteArrayInputStream(bytes), metadata));
+            s3Client.putObject(new PutObjectRequest(S3_BUCKET_NAME, fileName, new ByteArrayInputStream(bytes),
+                                                    metadata));
 
-            // Add some randomness to the sleep over time.
-            // Add a fixed additional time within 10 minute span to get a more random message distribution over time.
-            TimeUnit.MILLISECONDS.sleep(randomInRange(1, 100) + (DateTime.now().getMinuteOfHour() % 10) * 10); // Multiply by 10 to amplify the deviation.
+            // Sleep for a random duration of time, to add randomness to the message data.
+            // This helps when trying to generate realistic data for dashboards.
+            TimeUnit.MILLISECONDS.sleep(randomInRange(1, 100) + (DateTime.now().getMinuteOfHour() % 10) * 10);
         }
     }
 
@@ -74,7 +78,7 @@ public class CloudflareTestDataGenerator {
 
     private static String buildMessage() {
 
-        // 200s should be really common
+        // 200s should be really common, so many are listed.
         int responseStatus = pickRandom(200, 200, 200, 200, 200, 200, 200, 200, 200, 200, 200, 200, 200, 200, 200, 200,
                                         200, 200, 200, 200, 200, 200, 200, 200, 200, 200, 200, 200, 200, 200, 200, 200,
                                         200, 200, 200, 200, 200, 200, 200, 200, 200, 200, 200, 200, 200, 200, 200, 200,
@@ -84,7 +88,6 @@ public class CloudflareTestDataGenerator {
                                         304, 307, 400, 401, 403, 404, 410, 500, 501, 503, 550);
         String method = pickRandom("GET", "GET", "GET", "GET", "GET", "POST", "DELETE", "PUT");
 
-        // Building JSON with string concatenation is not fun, but it's
         final String payload = "" +
                                "{" +
                                "  \"CacheCacheStatus\": \"" + pickRandom("hit", "unknown", "unknown", "unknown") + "\"," +
@@ -148,14 +151,14 @@ public class CloudflareTestDataGenerator {
                                "  \"ZoneID\": 175856242" +
                                "}";
 
-        // Marshall to JSON to verify JSON is good-to-go.
-        // Better to find this out when generating the traffic.
+        // Attempt to parse the JSON to validate it.
         final ObjectMapper mapper = new ObjectMapper();
         mapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS)
               .disable(DeserializationFeature.ADJUST_DATES_TO_CONTEXT_TIME_ZONE);
         try {
             mapper.readValue(payload, HashMap.class);
         } catch (IOException e) {
+            System.out.println("Failed to validate JSON. Check for JSON syntax errors.");
             e.printStackTrace();
         }
 
@@ -184,7 +187,6 @@ public class CloudflareTestDataGenerator {
     }
 
     private static String randomAgent() {
-
         return pickRandom("Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1; SV1)",
                           "Mozilla/4.0 (compatible; MSIE 8.0; Windows NT 5.1; Trident/4.0; .NET CLR 1.1.4322; .NET CLR 2.0.50727; .NET CLR 3.0.4506.2152; .NET CLR 3.5.30729)",
                           "Mozilla/5.0 (compatible, MSIE 11, Windows NT 6.3; Trident/7.0; rv:11.0) like Gecko",
