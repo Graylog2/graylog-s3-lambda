@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.graylog</groupId>
     <artifactId>graylog-s3-lambda</artifactId>
-    <version>1.0.2</version>
+    <version>1.0.3-SNAPSHOT</version>
     <packaging>jar</packaging>
     <name>A Lambda function which reads logs from S3 and sends them to Graylog.</name>
     <properties>
