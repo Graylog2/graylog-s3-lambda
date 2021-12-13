@@ -1,7 +1,7 @@
 package org.graylog.integrations.s3;
 
+import com.amazonaws.services.lambda.runtime.events.models.s3.S3EventNotification;
 import com.amazonaws.services.s3.AmazonS3;
-import com.amazonaws.services.s3.event.S3EventNotification;
 import com.amazonaws.services.s3.model.S3Object;
 import org.graylog.integrations.s3.codec.S3Codec;
 import org.graylog2.gelfclient.GelfMessage;
