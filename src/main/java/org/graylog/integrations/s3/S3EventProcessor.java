@@ -1,7 +1,7 @@
 package org.graylog.integrations.s3;
 
+import com.amazonaws.services.lambda.runtime.events.models.s3.S3EventNotification;
 import com.amazonaws.services.s3.AmazonS3;
-import com.amazonaws.services.s3.event.S3EventNotification;
 import com.amazonaws.services.s3.model.S3Object;
 import com.google.common.base.Strings;
 import org.apache.logging.log4j.LogManager;
