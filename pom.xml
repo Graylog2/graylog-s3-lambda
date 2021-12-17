@@ -131,6 +131,29 @@
                   </dependency>
               </dependencies>
           </plugin>
+          <plugin>
+              <groupId>org.apache.maven.plugins</groupId>
+              <artifactId>maven-assembly-plugin</artifactId>
+              <version>3.3.0</version>
+              <executions>
+                  <execution>
+                      <id>generate-artifact</id>
+                      <phase>package</phase>
+                      <goals>
+                          <goal>single</goal>
+                      </goals>
+                  </execution>
+              </executions>
+              <configuration>
+                  <attach>true</attach>
+                  <appendAssemblyId>false</appendAssemblyId>
+                  <descriptors>
+                      <descriptor>src/main/assembly/artifact.xml</descriptor>
+                  </descriptors>
+                  <outputDirectory>${project.build.directory}/artifacts</outputDirectory>
+                  <finalName>${project.artifactId}-${project.version}</finalName>
+              </configuration>
+          </plugin>
       </plugins>
     </build>
 </project>
