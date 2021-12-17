@@ -2,7 +2,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.graylog</groupId>
     <artifactId>graylog-s3-lambda</artifactId>
-    <version>1.0.4</version>
+    <version>1.0.5-SNAPSHOT</version>
     <packaging>jar</packaging>
     <description>A Lambda function which reads logs from S3 and sends them to Graylog.</description>
     <properties>
@@ -22,7 +22,7 @@
         <connection>scm:git:git@github.com:Graylog2/graylog-s3-lambda.git</connection>
         <developerConnection>scm:git:git@github.com:Graylog2/graylog-s3-lambda.git</developerConnection>
         <url>https://github.com/Graylog2/graylog-s3-lambda</url>
-        <tag>1.0.4</tag>
+        <tag>HEAD</tag>
     </scm>
 
     <dependencies>
