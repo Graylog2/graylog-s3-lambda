@@ -5,12 +5,26 @@
     <artifactId>graylog-s3-lambda</artifactId>
     <version>1.0.4-SNAPSHOT</version>
     <packaging>jar</packaging>
-    <name>A Lambda function which reads logs from S3 and sends them to Graylog.</name>
+    <description>A Lambda function which reads logs from S3 and sends them to Graylog.</description>
     <properties>
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
+
+        <maven.source.skip>true</maven.source.skip>
+        <maven.javadoc.skip>true</maven.javadoc.skip>
+        <maven.install.skip>true</maven.install.skip>
+        <maven.deploy.skip>true</maven.deploy.skip>
+        <maven.site.skip>true</maven.site.skip>
+
         <log4j.version>2.16.0</log4j.version>
     </properties>
+
+    <scm>
+        <connection>scm:git:git@github.com:Graylog2/graylog-s3-lambda.git</connection>
+        <developerConnection>scm:git:git@github.com:Graylog2/graylog-s3-lambda.git</developerConnection>
+        <url>https://github.com/Graylog2/graylog-s3-lambda</url>
+        <tag>HEAD</tag>
+    </scm>
 
     <dependencies>
         <dependency>
@@ -152,6 +166,15 @@
                   </descriptors>
                   <outputDirectory>${project.build.directory}/artifacts</outputDirectory>
                   <finalName>${project.artifactId}-${project.version}</finalName>
+              </configuration>
+          </plugin>
+
+          <plugin>
+              <groupId>org.apache.maven.plugins</groupId>
+              <artifactId>maven-release-plugin</artifactId>
+              <version>2.5.3</version>
+              <configuration>
+                  <tagNameFormat>@{project.version}</tagNameFormat>
               </configuration>
           </plugin>
       </plugins>

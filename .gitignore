@@ -8,9 +8,7 @@
 .sh
 target/
 dependency-reduced-pom.xml
-node_modules
-node
-build
-build.config.js.sample
-/cache/
-src/web/aws-cloudwatch/context/aws.js
+/release.properties
+/pom.xml.next
+/pom.xml.releaseBackup
+/pom.xml.tag
