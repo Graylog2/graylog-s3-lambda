@@ -1,16 +1,29 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.graylog</groupId>
     <artifactId>graylog-s3-lambda</artifactId>
-    <version>1.0.4-SNAPSHOT</version>
+    <version>1.0.5-SNAPSHOT</version>
     <packaging>jar</packaging>
-    <name>A Lambda function which reads logs from S3 and sends them to Graylog.</name>
+    <description>A Lambda function which reads logs from S3 and sends them to Graylog.</description>
     <properties>
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
+
+        <maven.source.skip>true</maven.source.skip>
+        <maven.javadoc.skip>true</maven.javadoc.skip>
+        <maven.install.skip>true</maven.install.skip>
+        <maven.deploy.skip>true</maven.deploy.skip>
+        <maven.site.skip>true</maven.site.skip>
+
         <log4j.version>2.17.1</log4j.version>
     </properties>
+
+    <scm>
+        <connection>scm:git:git@github.com:Graylog2/graylog-s3-lambda.git</connection>
+        <developerConnection>scm:git:git@github.com:Graylog2/graylog-s3-lambda.git</developerConnection>
+        <url>https://github.com/Graylog2/graylog-s3-lambda</url>
+        <tag>HEAD</tag>
+    </scm>
 
     <dependencies>
         <dependency>
@@ -116,8 +129,7 @@
                       </goals>
                       <configuration>
                           <transformers>
-                              <transformer
-                                      implementation="com.github.edwgiz.maven_shade_plugin.log4j2_cache_transformer.PluginsCacheFileTransformer">
+                              <transformer implementation="io.github.edwgiz.log4j.maven.plugins.shade.transformer.Log4j2PluginCacheFileTransformer">
                               </transformer>
                           </transformers>
                       </configuration>
@@ -125,11 +137,43 @@
               </executions>
               <dependencies>
                   <dependency>
-                      <groupId>com.github.edwgiz</groupId>
-                      <artifactId>maven-shade-plugin.log4j2-cachefile-transformer</artifactId>
-                      <version>2.15.0</version>
+                      <groupId>io.github.edwgiz</groupId>
+                      <artifactId>log4j-maven-shade-plugin-extensions</artifactId>
+                      <version>2.16.0</version>
                   </dependency>
               </dependencies>
+          </plugin>
+          <plugin>
+              <groupId>org.apache.maven.plugins</groupId>
+              <artifactId>maven-assembly-plugin</artifactId>
+              <version>3.3.0</version>
+              <executions>
+                  <execution>
+                      <id>generate-artifact</id>
+                      <phase>package</phase>
+                      <goals>
+                          <goal>single</goal>
+                      </goals>
+                  </execution>
+              </executions>
+              <configuration>
+                  <attach>true</attach>
+                  <appendAssemblyId>false</appendAssemblyId>
+                  <descriptors>
+                      <descriptor>src/main/assembly/artifact.xml</descriptor>
+                  </descriptors>
+                  <outputDirectory>${project.build.directory}/artifacts</outputDirectory>
+                  <finalName>${project.artifactId}-${project.version}</finalName>
+              </configuration>
+          </plugin>
+
+          <plugin>
+              <groupId>org.apache.maven.plugins</groupId>
+              <artifactId>maven-release-plugin</artifactId>
+              <version>2.5.3</version>
+              <configuration>
+                  <tagNameFormat>@{project.version}</tagNameFormat>
+              </configuration>
           </plugin>
       </plugins>
     </build>
