@@ -76,7 +76,7 @@ function within a secure VPC subnet where the Graylog node or cluster is running
 
 ### Step 3: Create S3 trigger
 
-Create an AWS S3 Trigger for the Lambda function so that the function can process each Cloudflare log file that is 
+Create an AWS S3 Trigger for the Lambda function so that the function can process each log file that is 
 written. Specify the same S3 bucket that you did in the Preparation step and make sure to choose All object create 
 events option is selected. You can also apply any other desired file filters here.
 
